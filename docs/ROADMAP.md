@@ -9,8 +9,9 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [x] Core domain: `ChildProfile`, `Story`, `StoryTheme` models + SwiftData persistence
 - [x] `CuratedStoryEngine` with first 3 story templates + seeded-RNG unit tests
 - [x] Minimal but polished UI shell: profile setup → tonight's story flow → reader
-- [ ] `ModelStoryEngine` on FoundationModels with `@Generable` guided output + availability gating
-- [ ] Content post-check pass (denylist + age heuristics) with fallback wiring
+- [x] `ModelStoryEngine` on FoundationModels with `@Generable` guided output + availability gating
+- [x] Content post-check v1 (structural checks + denylist) with silent fallback wiring
+- [ ] Model prompt tuning: calmer tone and fuller pages (observed 1-sentence "very excited" pages); deepen content checks (age heuristics, richer patterns)
 - [ ] Reader polish: page-turn experience, warm theme, Dynamic Type audit
 
 ## Milestone 2 — Monetization (v0.5, TestFlight)
