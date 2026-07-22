@@ -4,13 +4,13 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 
 ## Open
 
-1. **App Store Connect setup — NOW BLOCKING (all Milestone 2 features are done, 2026-07-23).** In App Store Connect / developer.apple.com, please:
-   - Register bundle ID `com.markusskov.fable` (say if you prefer another prefix)
-   - Create the app record — working name **"Fable Bedtime"** (final name decided together; plain "Fable" is likely taken)
-   - Create a subscription group "Fable Plus" with two auto-renewing SKUs: `com.markusskov.fable.plus.monthly` ($4.99/month) and `com.markusskov.fable.plus.annual` ($39.99/year), both Family Shareable, each with a 7-day free introductory offer
-   - Confirm banking/tax forms are complete (required before paid subscriptions go live)
-   - Once the app record exists, I need the app's Apple ID / team ID visible in the project so I can set up signing + a TestFlight upload lane
-   Everything on the code side (entitlements, StoreKit config, metadata text, screenshots) I will prepare.
+1. **App Store Connect — remaining gaps** (record reviewed 2026-07-23; core setup confirmed correct: "Fable Bedtime", bundle `com.markusskov.fable`, Apple ID 6793714797, Lifestyle/Books, 4+, metadata pasted):
+   - Support URL empty (required for review) — Claude will stand up a support page unless you have a domain preference
+   - Copyright field empty → `2026 Markus Skov`
+   - DSA trader status is "non-trader" — with paid subscriptions the EU requires trader compliance (published contact info); either complete it or we exclude EU territories at launch. Owner decision.
+   - **Confirm subscriptions**: Monetization → Subscriptions needs group "Fable Plus" with `com.markusskov.fable.plus.monthly` ($4.99/mo) and `com.markusskov.fable.plus.annual` ($39.99/yr), both Family Shareable, 7-day free intro offer each — not visible in the shared captures
+   - App Privacy questionnaire: answer "Data Not Collected" everywhere (docs/appstore/metadata.md)
+   - Screenshots + build upload are Claude's side (TestFlight lane next)
 
 ## Done
 
