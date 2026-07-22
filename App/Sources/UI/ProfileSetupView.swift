@@ -10,6 +10,7 @@ struct ProfileSetupView: View {
     @State private var ageBand: AgeBand = .little
     @State private var companion = ""
     @State private var comfortObject = ""
+    @ScaledMetric(relativeTo: .largeTitle) private var sparkleSize = 44
 
     private var canContinue: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -20,7 +21,8 @@ struct ProfileSetupView: View {
             VStack(alignment: .leading, spacing: 28) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("✨")
-                        .font(.system(size: 44))
+                        .font(.system(size: sparkleSize))
+                        .accessibilityHidden(true)
                     Text("Who are tonight's\nstories for?")
                         .font(.system(.largeTitle, design: .serif, weight: .semibold))
                         .foregroundStyle(FableTheme.cream)

@@ -6,12 +6,20 @@ struct TonightView: View {
     let profile: ChildProfile
 
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var selectedTheme: StoryTheme = .adventure
     @State private var isWriting = false
     @State private var presentedStory: Story?
+    @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
     private let provider = StoryProvider()
-    private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+
+    // Three columns of theme cards, two once type grows into accessibility
+    // sizes so labels keep room to breathe instead of truncating.
+    private var columns: [GridItem] {
+        let count = typeSize.isAccessibilitySize ? 2 : 3
+        return Array(repeating: GridItem(.flexible()), count: count)
+    }
 
     var body: some View {
         ScrollView {
@@ -79,7 +87,9 @@ struct TonightView: View {
             selectedTheme = theme
         } label: {
             VStack(spacing: 6) {
-                Text(theme.emoji).font(.system(size: 30))
+                Text(theme.emoji)
+                    .font(.system(size: themeEmojiSize))
+                    .accessibilityHidden(true)
                 Text(theme.displayName)
                     .font(.footnote.weight(.medium))
                     .foregroundStyle(isSelected ? FableTheme.nightDeep : FableTheme.cream)
@@ -92,6 +102,7 @@ struct TonightView: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .animation(.snappy(duration: 0.2), value: selectedTheme)
     }
 
