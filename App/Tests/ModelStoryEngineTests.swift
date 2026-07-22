@@ -106,12 +106,26 @@ struct ModelStoryEngineTests {
         #expect(ModelStoryEngine.repaginated(story, for: request).pages == story.pages)
     }
 
-    @Test func repaginationDoesNotRescueAShortPageMidStory() {
-        // Mid-story pacing is the model's job; the gate must still reject it.
+    @Test func repaginationMergesAShortMidStoryPageForward() {
+        // Reversal of an earlier stance, measured 2026-07-22: below-floor
+        // mid pages dominated rejections, and a short fragment reads
+        // naturally as the opening of the next scene.
         let story = content(pages: [fullPage, fullPage, "Astrid feels happy.", fullPage, fullPage])
         let result = ModelStoryEngine.repaginated(story, for: request)
-        #expect(result.pages == story.pages)
-        #expect(!ContentSafetyCheck.isAcceptable(result, for: request))
+        #expect(result.pages.count == 4)
+        #expect(result.pages[2] == "Astrid feels happy." + " " + fullPage)
+        #expect(result.pages.joined(separator: " ") == story.pages.joined(separator: " "))
+    }
+
+    @Test func pervasiveSkimpinessStillFailsTheGate() {
+        // Merging is a pagination repair, not a quality amnesty: a story of
+        // nothing but fragments collapses below the 4-page floor and rejects.
+        let story = content(pages: [
+            "Astrid smiled.", "Luna purred.", "The sea was calm.",
+            "They sailed.", "Stars came out.", "Goodnight, Astrid.",
+        ])
+        let result = ModelStoryEngine.repaginated(story, for: request)
+        #expect(ContentSafetyCheck.rejection(of: result, for: request) == .pageCount(result.pages.count))
     }
 
     @Test func repaginationNeverLosesAWord() {
