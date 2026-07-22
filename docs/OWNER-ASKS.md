@@ -4,13 +4,11 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 
 ## Open
 
-1. **Apple Developer Program membership** (needed from Milestone 2, ~TestFlight time — not yet blocking):
-   - Confirm you have an active membership and can create an App Store Connect app record.
-   - Preferred bundle ID: `com.markusskov.fable` (say if you want a different org/prefix).
-   - I will prepare everything scriptable (entitlements, StoreKit config, screenshots, metadata text); you'll need to click through App Store Connect for: app record creation, subscription group + SKUs, banking/tax forms (if not already done), and final "Submit for review".
-2. **App name check:** "Fable" may be taken on the App Store (there is a known reading app named Fable). Likely we ship as **"Fable Bedtime"** or **"Fable: Bedtime Stories"** — no action needed yet, but flag a preference if you have one.
+1. **App Store Connect setup** (at TestFlight time, Milestone 2): app record creation with final name (see Done: naming), bundle ID `com.markusskov.fable` unless you prefer another prefix, subscription group + SKUs, banking/tax forms if not already done, final "Submit for review". I will prepare everything scriptable (entitlements, StoreKit config, screenshots, metadata text) beforehand.
 
 ## Done
 
+- **Apple Developer Program membership** — confirmed by owner 2026-07-22. ✅
+- **App name** — owner decided 2026-07-22: revisit together at TestFlight time ("Fable" is likely taken; "Fable Bedtime" is the working candidate). ✅
 - GitHub repository + authenticated `gh` CLI on the dev machine. ✅ (pre-existing)
 - Xcode 26.6 + iOS 26 SDK + simulators. ✅ (pre-existing)
