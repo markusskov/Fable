@@ -173,6 +173,28 @@ struct ContentSafetyCheckTests {
         #expect(!ContentSafetyCheck.isAcceptable(content, for: request))
     }
 
+    @Test func rejectionNamesTheRuleThatFired() {
+        // `isAcceptable` is `rejection == nil`; the diagnostic must identify
+        // the actual failure so red generation tests are actionable.
+        let excited = story(pages: [
+            "Nova raced into the meadow with Bruno! The fireflies were amazing tonight!",
+            "What a night! The stars were so bright and absolutely everything sparkled!",
+            "They leaped and cheered and spun around and around under the moonlight.",
+            "Then Nova bounced into bed, still buzzing with it all. Goodnight, Nova!",
+        ])
+        #expect(ContentSafetyCheck.rejection(of: excited, for: request) == .tooExcited(exclamationCount: 5))
+
+        let frightened = story(pages: [
+            "Nova walked into the whispering wood with Bruno close beside the whole way.",
+            "Nova felt afraid of the deep shadows gathering under the old fir trees.",
+            "Then Nova and Bruno turned around and walked all the long way back home.",
+            "Nova crawled into bed and closed both sleepy eyes. Goodnight, Nova.",
+        ])
+        #expect(ContentSafetyCheck.rejection(of: frightened, for: request) == .deniedWord("afraid"))
+
+        #expect(ContentSafetyCheck.rejection(of: story(), for: request) == nil)
+    }
+
     @Test func rejectsStoryWhoseEndingForgetsTheChild() {
         // The child appears earlier, but the last page must say goodnight
         // to them by name.
