@@ -38,6 +38,11 @@ jobs:
           echo "device=$DEVICE" >> "$GITHUB_OUTPUT"
 
       - name: Build and test
+        # TEST_RUNNER_ prefix: xcodebuild forwards the var (prefix stripped) into
+        # the test process, where the on-device generation test checks for CI.
+        # The runner's own CI var never reaches the simulator process.
+        env:
+          TEST_RUNNER_CI: "true"
         run: |
           xcodebuild -project Fable.xcodeproj -scheme Fable \
             -destination "platform=iOS Simulator,name=${{ steps.sim.outputs.device }}" \

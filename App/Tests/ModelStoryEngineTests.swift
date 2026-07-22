@@ -31,8 +31,16 @@ struct ModelStoryEngineTests {
         case .big: "seven-to-nine-year-old"
         }
         #expect(instructions.contains(marker))
-        // The always-on safety framing must survive any edit.
+        // Page fullness adapts to age too (the 1-sentence-page regression guard).
+        let fullness = switch ageBand {
+        case .toddler: "two or three short, soothing sentences"
+        case .little: "three or four gentle sentences"
+        case .big: "three to five flowing sentences"
+        }
+        #expect(instructions.contains(fullness))
+        // The always-on safety and calm framing must survive any edit.
         #expect(instructions.contains("calm, kind, and reassuring"))
+        #expect(instructions.contains("Never use exclamation marks"))
         #expect(instructions.contains("goodnight"))
     }
 
