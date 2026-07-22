@@ -26,7 +26,8 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [x] Story series: continuing adventures with same characters (Fable+ feature)
   - `StorySeries` model + per-story recap (model-authored, moral fallback); series context in prompts; create-from-end-page, continue-from-Tonight. DEBUG launch arg `-fable-debug-plus` simulates Fable+ for simulator UI checks.
   - Navigation hardening: single Story destination at the stack root, path-append everywhere (value-links from pushed screens resolved unreliably).
-- [ ] Multiple child profiles (Fable+ feature)
+- [x] Multiple child profiles (Fable+ feature)
+  - Stable `ChildProfile.uuid` + AppStorage active-profile selection; stories/series scoped per child (nil = legacy, belongs to everyone); switcher menu on Tonight; add-child gated on Fable+ beyond the first.
 - [ ] App icon + brand pass (warm, storybook, not childish-clipart)
 - [ ] **BLOCKED ON OWNER:** Apple Developer account details → App Store Connect app record, bundle ID registration, subscription products, TestFlight
 

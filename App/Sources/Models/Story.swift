@@ -19,6 +19,9 @@ final class Story {
     /// Set when this story is an episode of a continuing adventure.
     var series: StorySeries?
     var episodeNumber: Int?
+    /// The child this story was told for. Optional for pre-profiles stories,
+    /// which are treated as belonging to every child.
+    var profile: ChildProfile?
 
     var theme: StoryTheme {
         get { StoryTheme(rawValue: themeRaw) ?? .adventure }
@@ -42,6 +45,19 @@ final class Story {
         // Engines that can't author a recap (curated templates) leave it
         // empty; the moral is an honest one-line stand-in for "previously on".
         self.recap = content.recap.isEmpty ? content.moral : content.recap
+    }
+}
+
+extension Story {
+    /// Pre-profiles stories (nil profile) belong to every child.
+    func belongs(to profile: ChildProfile) -> Bool {
+        self.profile == nil || self.profile?.uuid == profile.uuid
+    }
+}
+
+extension StorySeries {
+    func belongs(to profile: ChildProfile) -> Bool {
+        profileUUID == nil || profileUUID == profile.uuid
     }
 }
 

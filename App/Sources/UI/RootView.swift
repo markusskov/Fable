@@ -3,13 +3,21 @@ import SwiftData
 
 struct RootView: View {
     @Query(sort: \ChildProfile.createdAt) private var profiles: [ChildProfile]
+    @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
     @State private var path = NavigationPath()
+
+    /// The child whose stories are on screen. Falls back to the first
+    /// profile when the stored id is stale (deleted profile, fresh install).
+    private var activeProfile: ChildProfile? {
+        profiles.first { $0.uuid.uuidString == activeProfileUUID } ?? profiles.first
+    }
 
     var body: some View {
         NavigationStack(path: $path) {
             Group {
-                if let profile = profiles.first {
+                if let profile = activeProfile {
                     TonightView(profile: profile, path: $path)
+                        .id(profile.uuid) // rebuild state when switching children
                 } else {
                     ProfileSetupView()
                 }
