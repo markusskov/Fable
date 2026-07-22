@@ -5,9 +5,9 @@ import Testing
 struct FablePlusTests {
     @Test func catalogCoversBothPlans() {
         #expect(FablePlus.productIDs.count == 2)
-        #expect(FablePlus.productIDs.contains("com.markusskov.fable.plus.monthly"))
-        #expect(FablePlus.productIDs.contains("com.markusskov.fable.plus.annual"))
-        #expect(FablePlus.plan(forProductID: "com.markusskov.fable.plus.annual") == .annual)
+        #expect(FablePlus.productIDs.contains("com.markusskov.fable.plus.monthlyy"))
+        #expect(FablePlus.productIDs.contains("com.markusskov.fable.plus.annualy"))
+        #expect(FablePlus.plan(forProductID: "com.markusskov.fable.plus.annualy") == .annual)
         #expect(FablePlus.plan(forProductID: "com.markusskov.fable.lifetime") == nil)
     }
 
