@@ -8,6 +8,38 @@ import Foundation
 /// a denylist with explicit inflections. Rejection is cheap — the caller falls
 /// back silently to the curated engine — so every rule errs strict.
 enum ContentSafetyCheck {
+    /// Why a story was rejected. Never shown to a child or parent — this
+    /// exists so tests and prompt tuning can see which rule fired instead of
+    /// a bare false.
+    enum Rejection: Equatable, CustomStringConvertible {
+        case pageCount(Int)
+        case badTitle
+        case badMoral
+        case pageLength(pageIndex: Int, count: Int, allowed: ClosedRange<Int>)
+        case tooExcited(exclamationCount: Int)
+        case childMissingFromLastPage
+        case deniedWord(String)
+
+        var description: String {
+            switch self {
+            case .pageCount(let count):
+                "page count \(count) outside 4...12"
+            case .badTitle:
+                "title empty or over 80 characters"
+            case .badMoral:
+                "moral empty or over 200 characters"
+            case .pageLength(let index, let count, let allowed):
+                "page \(index + 1) is \(count) characters, allowed \(allowed)"
+            case .tooExcited(let count):
+                "\(count) exclamation marks, allowed 3"
+            case .childMissingFromLastPage:
+                "last page does not say goodnight to the child by name"
+            case .deniedWord(let word):
+                "denied word \"\(word)\""
+            }
+        }
+    }
+
     /// Words that have no place in a bedtime story for small children.
     /// Matched case-insensitively on word boundaries, so each inflection that
     /// matters is listed explicitly ("monster" does not catch "monsters").
@@ -30,8 +62,8 @@ enum ContentSafetyCheck {
         "stupid", "dumb", "shut up", "idiot", "ugly",
     ]
 
-    private static func containsDeniedWord(_ text: String) -> Bool {
-        deniedWords.contains { word in
+    private static func firstDeniedWord(in text: String) -> String? {
+        deniedWords.first { word in
             let pattern = "\\b\(NSRegularExpression.escapedPattern(for: word))\\b"
             return text.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
         }
@@ -39,8 +71,9 @@ enum ContentSafetyCheck {
 
     /// A page short enough to be a single tossed-off sentence isn't a bedtime
     /// scene; one too long can't be read calmly. Younger listeners get shorter
-    /// pages on both ends.
-    private static func pageLengthBounds(for ageBand: AgeBand) -> ClosedRange<Int> {
+    /// pages on both ends. Internal so the model engine's repagination pass
+    /// works to the same thresholds it will be judged by.
+    static func pageLengthBounds(for ageBand: AgeBand) -> ClosedRange<Int> {
         switch ageBand {
         case .toddler: 40...400
         case .little: 50...550
@@ -49,21 +82,31 @@ enum ContentSafetyCheck {
     }
 
     static func isAcceptable(_ content: StoryContent, for request: StoryRequest) -> Bool {
+        rejection(of: content, for: request) == nil
+    }
+
+    /// The first rule the story breaks, or nil when it is safe to show.
+    static func rejection(of content: StoryContent, for request: StoryRequest) -> Rejection? {
         // Structure: a real story arc with full, readable pages.
-        guard (4...12).contains(content.pages.count) else { return false }
+        guard (4...12).contains(content.pages.count) else {
+            return .pageCount(content.pages.count)
+        }
         let trimmedTitle = content.title.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedTitle.isEmpty, trimmedTitle.count <= 80 else { return false }
+        guard !trimmedTitle.isEmpty, trimmedTitle.count <= 80 else { return .badTitle }
         let trimmedMoral = content.moral.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedMoral.isEmpty, trimmedMoral.count <= 200 else { return false }
+        guard !trimmedMoral.isEmpty, trimmedMoral.count <= 200 else { return .badMoral }
         let bounds = pageLengthBounds(for: request.ageBand)
-        for page in content.pages {
+        for (index, page) in content.pages.enumerated() {
             let trimmed = page.trimmingCharacters(in: .whitespacesAndNewlines)
-            guard bounds.contains(trimmed.count) else { return false }
+            guard bounds.contains(trimmed.count) else {
+                return .pageLength(pageIndex: index, count: trimmed.count, allowed: bounds)
+            }
         }
 
         // Calm: an excited story announces itself in punctuation.
         let fullText = ([content.title, content.moral] + content.pages).joined(separator: "\n")
-        guard fullText.count(where: { $0 == "!" }) <= 3 else { return false }
+        let exclamations = fullText.count(where: { $0 == "!" })
+        guard exclamations <= 3 else { return .tooExcited(exclamationCount: exclamations) }
 
         // The child must be the hero of their own story, and the story must
         // end with them — the last page says goodnight by name.
@@ -71,10 +114,11 @@ enum ContentSafetyCheck {
         if !name.isEmpty {
             guard let lastPage = content.pages.last,
                   lastPage.localizedCaseInsensitiveContains(name)
-            else { return false }
+            else { return .childMissingFromLastPage }
         }
 
         // Nothing frightening or unkind, anywhere in the text.
-        return !containsDeniedWord(fullText)
+        if let word = firstDeniedWord(in: fullText) { return .deniedWord(word) }
+        return nil
     }
 }

@@ -10,6 +10,41 @@ struct ModelStoryEngine: StoryEngine {
     }
 
     func makeStory(for request: StoryRequest, seed: UInt64) async throws -> StoryContent {
+        let content = Self.repaginated(try await rawStory(for: request), for: request)
+        guard ContentSafetyCheck.isAcceptable(content, for: request) else {
+            throw StoryEngineError.generationFailed
+        }
+        return content
+    }
+
+    /// Deterministic cleanup of the model's page breaks, applied before the
+    /// safety gate. The commonest observed rejections are pagination, not
+    /// content: a tiny final page holding only "Goodnight, …", or a one-line
+    /// opening page. Merging a too-short edge page into its neighbour never
+    /// adds, removes, or reorders a word the model wrote (blank pages
+    /// excepted), and the full safety check still judges the result.
+    /// Too-short pages mid-story are left alone — pacing there is the
+    /// model's job, and the gate rejects it.
+    static func repaginated(_ content: StoryContent, for request: StoryRequest) -> StoryContent {
+        let minLength = ContentSafetyCheck.pageLengthBounds(for: request.ageBand).lowerBound
+        var pages = content.pages
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+        while pages.count >= 2, pages[0].count < minLength {
+            pages[1] = pages[0] + " " + pages[1]
+            pages.removeFirst()
+        }
+        while pages.count >= 2, let last = pages.last, last.count < minLength {
+            pages[pages.count - 2] += " " + last
+            pages.removeLast()
+        }
+        return StoryContent(title: content.title, pages: pages, moral: content.moral)
+    }
+
+    /// One unchecked generation. Only `makeStory` (which gates it) and the
+    /// on-device test harness (which inspects rejections) may call this —
+    /// unchecked output must never reach the UI.
+    func rawStory(for request: StoryRequest) async throws -> StoryContent {
         guard Self.isAvailable else { throw StoryEngineError.unavailable }
 
         let session = LanguageModelSession(instructions: Self.instructions(for: request))
@@ -21,15 +56,11 @@ struct ModelStoryEngine: StoryEngine {
             generating: GeneratedStory.self,
             options: GenerationOptions(temperature: 0.7)
         )
-        let content = StoryContent(
+        return StoryContent(
             title: response.content.title,
             pages: response.content.pages,
             moral: response.content.moral
         )
-        guard ContentSafetyCheck.isAcceptable(content, for: request) else {
-            throw StoryEngineError.generationFailed
-        }
-        return content
     }
 
     // MARK: - Prompt building (deterministic, unit-tested)
@@ -43,6 +74,10 @@ struct ModelStoryEngine: StoryEngine {
         - The story is calm, kind, and reassuring from the first line to the last. \
         Mild, cozy adventure is welcome; danger, peril, villains, fighting, \
         scary imagery, sadness without comfort, and loud excitement are not.
+        - Nobody in the story ever feels fear or worry, not even briefly and \
+        not even to be comforted afterwards — in this story's world there is \
+        simply nothing to fear. Characters feel curious, cozy, delighted, \
+        sleepy, and loved.
         - The voice is hushed and unhurried, like reading by lamplight. Never \
         use exclamation marks. Nothing is sudden, loud, or thrilling; wonder \
         is quiet, and surprises are soft.
@@ -50,8 +85,12 @@ struct ModelStoryEngine: StoryEngine {
         \(pageFullnessGuidance(for: request.ageBand)) — never a single quick \
         sentence. Linger on cozy details: how things feel, glow, and sound.
         - \(vocabularyGuidance(for: request.ageBand))
-        - The story slows down as it goes: the final two pages wind toward rest, \
-        and the last page ends with the child snug and sleepy, told goodnight by name.
+        - The story slows down as it goes: the final two pages wind toward rest. \
+        The last page is a full page like every other — the child settles in \
+        snug and sleepy, and its final sentence says goodnight to the child \
+        by name, for example "Goodnight, \(request.childName)." Never put the \
+        goodnight on a tiny page of its own, and never end without the \
+        child's name.
         - No brand names, no pop-culture characters, no morals about obedience. \
         Warmth over lessons; if there is a takeaway, it is gentle.
         - Never address the reader or mention that this is a story being told.
