@@ -28,8 +28,9 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
   - Navigation hardening: single Story destination at the stack root, path-append everywhere (value-links from pushed screens resolved unreliably).
 - [x] Multiple child profiles (Fable+ feature)
   - Stable `ChildProfile.uuid` + AppStorage active-profile selection; stories/series scoped per child (nil = legacy, belongs to everyone); switcher menu on Tonight; add-child gated on Fable+ beyond the first.
-- [ ] App icon + brand pass (warm, storybook, not childish-clipart)
-- [ ] **BLOCKED ON OWNER:** Apple Developer account details → App Store Connect app record, bundle ID registration, subscription products, TestFlight
+- [x] App icon + brand pass (warm, storybook, not childish-clipart)
+  - Rendered programmatically from the Theme.swift palette (`scripts/render-app-icon.swift`) — deterministic, re-renderable, code-reviewed. Gold crescent, quiet sparkles, sleeping hills.
+- [ ] **BLOCKED ON OWNER — now the critical path:** App Store Connect app record, bundle ID registration, subscription SKUs, TestFlight (see docs/OWNER-ASKS.md)
 
 ## Milestone 3 — Ship (v1.0, App Store)
 
