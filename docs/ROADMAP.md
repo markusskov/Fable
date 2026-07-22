@@ -34,9 +34,9 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 
 ## Milestone 3 — Ship (v1.0, App Store)
 
-- [ ] Onboarding flow (first-run: create profile → first story in under 60 seconds)
-- [ ] Privacy nutrition label prep + App Review notes (kids-adjacent positioning, parental gate)
-- [ ] App Store page: screenshots, description, keywords (ASO pass)
+- [ ] Onboarding flow (first-run: create profile → first story in under 60 seconds — largely true today; audit and polish)
+- [x] Privacy nutrition label prep + App Review notes → docs/appstore/metadata.md
+- [ ] App Store page: description/keywords/subtitle done (docs/appstore/metadata.md); screenshots remain (need final devices + polish pass)
 - [ ] Release automation: version/build bump, changelog from conventional commits
 - [ ] Submit for review
 
