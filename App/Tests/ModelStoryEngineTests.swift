@@ -1,3 +1,4 @@
+import Foundation
 import Testing
 @testable import Fable
 
@@ -44,9 +45,13 @@ struct ModelStoryEngineTests {
         #expect(prompt.contains("a soft warm blanket"))
     }
 
-    /// Real end-to-end generation. Runs only where Apple Intelligence is
-    /// available (dev machines); skips cleanly in CI.
-    @Test(.enabled(if: ModelStoryEngine.isAvailable, "Requires Apple Intelligence"))
+    /// Real end-to-end generation, dev machines only. CI runners report the
+    /// model as available but lack the actual assets (Model Catalog error
+    /// 5000), so availability alone is not a sufficient gate.
+    @Test(
+        .enabled(if: ModelStoryEngine.isAvailable, "Requires Apple Intelligence"),
+        .disabled(if: ProcessInfo.processInfo.environment["CI"] != nil, "Model assets absent on CI runners")
+    )
     func generatesASafeStoryOnDevice() async throws {
         let engine = ModelStoryEngine()
         let content = try await engine.makeStory(for: request, seed: 1)
