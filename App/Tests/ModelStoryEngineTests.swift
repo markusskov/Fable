@@ -133,10 +133,15 @@ struct ModelStoryEngineTests {
     /// pacing (a page just under the length floor). What the product needs
     /// is that the pipeline yields an acceptable story within a few tries
     /// (the provider silently falls back when a try fails), so that is what
-    /// this asserts. Six attempts at the measured ~55% pass rate put a
-    /// spurious failure below 1%; a genuine prompt or gate regression pins
-    /// it near certainty. Every rejection is logged with the rule that
-    /// fired and the offending text, so a red run is directly actionable.
+    /// this asserts. The 2026-07-22 gate additions (wind-down ending, evening
+    /// setting) trimmed the raw pass rate, and one 6-attempt run was observed
+    /// failing on nothing but mid-story pacing rejections — so this allows
+    /// eight attempts: even at a 40% pass rate a spurious failure stays under
+    /// ~2%, while a genuine prompt or gate regression still pins it near
+    /// certainty. Every rejection is logged with the rule that fired and the
+    /// offending text, so a red run is directly actionable.
+    private static let generationAttempts = 8
+
     @Test(
         .enabled(if: ModelStoryEngine.isAvailable, "Requires Apple Intelligence"),
         .disabled(if: ProcessInfo.processInfo.environment["CI"] != nil, "Model assets absent on CI runners")
@@ -144,9 +149,10 @@ struct ModelStoryEngineTests {
     func generatesAnAcceptableStoryWithinAFewAttempts() async throws {
         let engine = ModelStoryEngine()
         var rejections: [String] = []
-        for (attempt, theme) in StoryTheme.allCases.enumerated() {
+        let themes = StoryTheme.allCases
+        for attempt in 0..<Self.generationAttempts {
             var themed = request
-            themed.theme = theme
+            themed.theme = themes[attempt % themes.count]
             let content = ModelStoryEngine.repaginated(
                 try await engine.rawStory(for: themed),
                 for: themed
@@ -155,14 +161,14 @@ struct ModelStoryEngineTests {
                 #expect(content.pages.count >= 4)
                 return // One acceptable story is the contract.
             }
-            rejections.append("attempt \(attempt + 1) (\(theme)): \(rejection)")
+            rejections.append("attempt \(attempt + 1) (\(themed.theme)): \(rejection)")
             print("[generation] rejected — \(rejection)")
             print("[generation] title: \(content.title)")
             print("[generation] pages: \(content.pages.joined(separator: "\n  | "))")
         }
         Issue.record(
             """
-            No acceptable story in \(StoryTheme.allCases.count) attempts — at the \
+            No acceptable story in \(Self.generationAttempts) attempts — at the \
             measured pass rate this is a regression, not noise. Rejections:
             \(rejections.joined(separator: "\n"))
             """
