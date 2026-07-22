@@ -12,4 +12,7 @@ struct GeneratedStory {
 
     @Guide(description: "One gentle closing sentence with the story's warm takeaway, phrased for a child.")
     var moral: String
+
+    @Guide(description: "One short narrator's sentence that could remind the child tomorrow night what happened in this story, mentioning the most memorable thing. Past tense, warm, no spoilers of feelings — just what happened.")
+    var recap: String
 }

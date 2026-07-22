@@ -47,6 +47,32 @@ struct ModelStoryEngineTests {
         #expect(instructions.contains("never write \"The End\""))
     }
 
+    @Test func seriesContextShapesThePrompt() {
+        var episode = request
+        episode.series = StoryRequest.SeriesContext(
+            title: "Astrid and the Quiet Tide",
+            episodeNumber: 3,
+            previously: ["Astrid met the lantern-fish.", "The tide sang them home."]
+        )
+        let prompt = ModelStoryEngine.prompt(for: episode)
+        #expect(prompt.contains("episode 3"))
+        #expect(prompt.contains("Astrid and the Quiet Tide"))
+        #expect(prompt.contains("- Astrid met the lantern-fish."))
+        #expect(prompt.contains("- The tide sang them home."))
+        // Recaps come oldest first, in the order given.
+        let fishIndex = prompt.range(of: "lantern-fish")!.lowerBound
+        let tideIndex = prompt.range(of: "tide sang")!.lowerBound
+        #expect(fishIndex < tideIndex)
+        // Standalone-readability demand survives.
+        #expect(prompt.contains("even if earlier nights are half-forgotten"))
+    }
+
+    @Test func aPlainRequestHasNoSeriesFraming() {
+        let prompt = ModelStoryEngine.prompt(for: request)
+        #expect(!prompt.contains("episode"))
+        #expect(!prompt.contains("continuing adventure"))
+    }
+
     @Test func blankOptionalFieldsUseDefaultsInPrompt() {
         var blank = request
         blank.companion = " "

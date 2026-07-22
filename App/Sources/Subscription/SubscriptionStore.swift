@@ -35,7 +35,15 @@ final class SubscriptionStore {
         updatesTask?.cancel()
     }
 
-    var isSubscribed: Bool { status.isSubscribed }
+    var isSubscribed: Bool {
+        #if DEBUG
+        // UI verification in plain simulators, where StoreKit test purchases
+        // can't run: `simctl launch <udid> com.markusskov.fable -fable-debug-plus`.
+        // DEBUG builds only; release builds never compile this branch.
+        if ProcessInfo.processInfo.arguments.contains("-fable-debug-plus") { return true }
+        #endif
+        return status.isSubscribed
+    }
 
     /// Begins listening for entitlement changes and loads the catalog.
     /// Idempotent, so it is safe to call from a view's `.task`.
