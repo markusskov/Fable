@@ -13,9 +13,13 @@ struct ModelStoryEngine: StoryEngine {
         guard Self.isAvailable else { throw StoryEngineError.unavailable }
 
         let session = LanguageModelSession(instructions: Self.instructions(for: request))
+        // Low temperature: bedtime stories want steady, predictable prose, not
+        // sparkle. Observed default-temperature output drifting into excited,
+        // exclamatory one-liners.
         let response = try await session.respond(
             to: Self.prompt(for: request),
-            generating: GeneratedStory.self
+            generating: GeneratedStory.self,
+            options: GenerationOptions(temperature: 0.7)
         )
         let content = StoryContent(
             title: response.content.title,
@@ -39,6 +43,12 @@ struct ModelStoryEngine: StoryEngine {
         - The story is calm, kind, and reassuring from the first line to the last. \
         Mild, cozy adventure is welcome; danger, peril, villains, fighting, \
         scary imagery, sadness without comfort, and loud excitement are not.
+        - The voice is hushed and unhurried, like reading by lamplight. Never \
+        use exclamation marks. Nothing is sudden, loud, or thrilling; wonder \
+        is quiet, and surprises are soft.
+        - Every page is a complete, unhurried scene of \
+        \(pageFullnessGuidance(for: request.ageBand)) — never a single quick \
+        sentence. Linger on cozy details: how things feel, glow, and sound.
         - \(vocabularyGuidance(for: request.ageBand))
         - The story slows down as it goes: the final two pages wind toward rest, \
         and the last page ends with the child snug and sleepy, told goodnight by name.
@@ -57,6 +67,14 @@ struct ModelStoryEngine: StoryEngine {
         Something cozy that should appear and bring comfort: \(request.comfortObjectOrDefault).
         Tonight's mood: \(themeDescription(for: request.theme)).
         """
+    }
+
+    private static func pageFullnessGuidance(for ageBand: AgeBand) -> String {
+        switch ageBand {
+        case .toddler: "two or three short, soothing sentences"
+        case .little: "three or four gentle sentences"
+        case .big: "three to five flowing sentences"
+        }
     }
 
     private static func vocabularyGuidance(for ageBand: AgeBand) -> String {

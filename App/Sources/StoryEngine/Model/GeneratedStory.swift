@@ -7,7 +7,7 @@ struct GeneratedStory {
     @Guide(description: "A short, warm story title of at most eight words. No quotation marks.")
     var title: String
 
-    @Guide(description: "The story told in 6 to 9 short pages. Each page is 2 to 4 gentle sentences that a parent reads aloud in about twenty seconds.", .count(6...9))
+    @Guide(description: "The story told in 6 to 9 pages. Each page is a complete calm scene of 2 to 5 soothing sentences — never a single sentence — that a parent reads aloud slowly in about half a minute. No exclamation marks.", .count(6...9))
     var pages: [String]
 
     @Guide(description: "One gentle closing sentence with the story's warm takeaway, phrased for a child.")

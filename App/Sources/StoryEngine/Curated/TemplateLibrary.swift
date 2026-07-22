@@ -59,7 +59,7 @@ enum TemplateLibrary {
         ],
         pages: [
             "When the house grew quiet and the lights grew low, {name}'s bed did something beds almost never do: it lifted, ever so gently, and became a little boat.",
-            "The boat drifted out the window and into the soft dark, which wasn't scary at all — it was cozy, like being tucked in by the whole sky. {companion} sat at the front, and {comfort} made the perfect pillow.",
+            "The boat drifted out the window and into the soft dark, which was friendly and cozy, like being tucked in by the whole sky. {companion} sat at the front, and {comfort} made the perfect pillow.",
             "They sailed past {setting}, where everything was already asleep. The waves — or were they clouds? — rocked the boat slowly. One... two... one... two...",
             "A family of stars came out to watch them pass. The littlest star hummed {sound}, which is the tune stars sing when it is time to rest. {name} hummed along, very quietly.",
             "\"Look,\" whispered {companion}. Ahead, glowing softly, floated {treasure}. It drifted close, dipped politely, and joined them like an old friend who knew the way.",
@@ -103,7 +103,7 @@ enum TemplateLibrary {
             "Just before bedtime, {name} heard the smallest sound in the world coming from the doorstep: {sound}. {name} and {companion} peeked outside.",
             "There, no bigger than a teacup, sat a little creature with big round eyes. It was lost. Its home was all the way past {setting}, and the evening was getting deeper.",
             "\"Don't worry,\" said {name}, in the gentle voice used for very small things. \"We'll walk you home.\" {name} brought {comfort} along, because everything is braver with {comfort}.",
-            "The little one rode on {companion}'s back, holding on tight. Along the way it sniffled, so {name} told it about {treasure} — and the little one's eyes went wide with wonder, and it forgot to be scared.",
+            "The little one rode on {companion}'s back, holding on tight. Along the way it sniffled, so {name} told it about {treasure} — and the little one's eyes went wide with wonder, and it forgot all about its worries.",
             "Past {setting} they went, step by soft step. The evening air smelled like grass and stars. The little one began to hum {sound}, but happier now — a going-home sort of hum.",
             "And there it was: a tiny door under a tiny hill, with a warm light inside and a family of little ones waving. The smallest guest hugged {name}'s thumb — which was the biggest hug it could manage.",
             "\"Thank you,\" it squeaked, \"for walking me all the way.\" And it left {name} a gift: one perfect, tiny whisker-tickle on the nose. That is a great honor, among little creatures.",
