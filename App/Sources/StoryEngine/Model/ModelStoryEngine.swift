@@ -19,20 +19,29 @@ struct ModelStoryEngine: StoryEngine {
 
     /// Deterministic cleanup of the model's page breaks, applied before the
     /// safety gate. The commonest observed rejections are pagination, not
-    /// content: a tiny final page holding only "Goodnight, …", or a one-line
-    /// opening page. Merging a too-short edge page into its neighbour never
-    /// adds, removes, or reorders a word the model wrote (blank pages and a
-    /// written-out "The End" excepted), and the full safety check still
-    /// judges the result. Too-short pages mid-story are left alone — pacing
-    /// there is the model's job, and the gate rejects it.
+    /// content: a below-floor page somewhere in the story, or a tiny final
+    /// page holding only "Goodnight, …". Any too-short page merges forward
+    /// into the page after it (the last one merges backward), which never
+    /// adds, removes, or reorders a word the model wrote — blank pages and a
+    /// written-out "The End" excepted — and the full safety check still
+    /// judges the result: pervasive skimpiness collapses the page count
+    /// below 4 or pushes a merged page past the ceiling, and both still
+    /// reject. (Earlier revisions refused to touch mid-story pages; measured
+    /// 2026-07-22, those rejections dominated the ~50% raw pass rate, and a
+    /// short fragment reads naturally as the opening of the next scene.)
     static func repaginated(_ content: StoryContent, for request: StoryRequest) -> StoryContent {
         let minLength = ContentSafetyCheck.pageLengthBounds(for: request.ageBand).lowerBound
         var pages = content.pages
             .map { Self.strippingWrittenEnd(from: $0) }
             .filter { !$0.isEmpty }
-        while pages.count >= 2, pages[0].count < minLength {
-            pages[1] = pages[0] + " " + pages[1]
-            pages.removeFirst()
+        var index = 0
+        while index < pages.count, pages.count >= 2 {
+            if pages[index].count < minLength, index + 1 < pages.count {
+                pages[index + 1] = pages[index] + " " + pages[index + 1]
+                pages.remove(at: index)
+            } else {
+                index += 1
+            }
         }
         while pages.count >= 2, let last = pages.last, last.count < minLength {
             pages[pages.count - 2] += " " + last
