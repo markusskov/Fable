@@ -1,0 +1,129 @@
+{
+  "identifier" : "B1D9F4A2",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 0,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21654001",
+      "localizations" : [
+
+      ],
+      "name" : "Fable Plus",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "21654011",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited bedtime stories, story series, and profiles for every child.",
+              "displayName" : "Fable+ Monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.markusskov.fable.plus.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Fable Plus Monthly",
+          "subscriptionGroupID" : "21654001",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "39.99",
+          "familyShareable" : true,
+          "groupNumber" : 1,
+          "internalID" : "21654012",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "A year of unlimited bedtime stories, story series, and profiles for every child.",
+              "displayName" : "Fable+ Yearly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.markusskov.fable.plus.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Fable Plus Yearly",
+          "subscriptionGroupID" : "21654001",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}
