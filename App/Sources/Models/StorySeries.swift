@@ -9,6 +9,9 @@ final class StorySeries {
     var themeRaw: String
     var childName: String
     var createdAt: Date
+    /// The child this adventure belongs to; nil for pre-profiles series,
+    /// which show for every child.
+    var profileUUID: UUID?
 
     @Relationship(deleteRule: .nullify, inverse: \Story.series)
     var episodes: [Story]

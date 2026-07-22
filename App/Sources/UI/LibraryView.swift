@@ -9,7 +9,12 @@ struct LibraryView: View {
     /// navigate the same way the Tonight flow does: `path.append(story)`.
     @Binding var path: NavigationPath
 
-    @Query(sort: \Story.createdAt, order: .reverse) private var stories: [Story]
+    @Query(sort: \Story.createdAt, order: .reverse) private var allStories: [Story]
+
+    /// This child's storybook. Pre-profiles stories belong to everyone.
+    private var stories: [Story] {
+        allStories.filter { $0.belongs(to: profile) }
+    }
 
     var body: some View {
         Group {

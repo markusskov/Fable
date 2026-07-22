@@ -154,6 +154,7 @@ struct ReaderView: View {
 
     private func startSeries() {
         let series = StorySeries(title: story.title, theme: story.theme, childName: story.childName)
+        series.profileUUID = story.profile?.uuid
         modelContext.insert(series)
         story.episodeNumber = 1
         story.series = series

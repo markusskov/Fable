@@ -1,10 +1,16 @@
 import SwiftUI
 import SwiftData
 
-/// First run: who are tonight's stories for?
-/// One screen, four questions, no account, no email — by design.
+/// Who are tonight's stories for? One screen, four questions, no account,
+/// no email — by design. Used at first run, and as a sheet when a Fable+
+/// family adds another child.
 struct ProfileSetupView: View {
+    /// True when presented as a sheet to add an additional child.
+    var isAddingAnotherChild = false
+
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
 
     @State private var name = ""
     @State private var ageBand: AgeBand = .little
@@ -23,7 +29,7 @@ struct ProfileSetupView: View {
                     Text("✨")
                         .font(.system(size: sparkleSize))
                         .accessibilityHidden(true)
-                    Text("Who are tonight's\nstories for?")
+                    Text(isAddingAnotherChild ? "Another hero\njoins the family" : "Who are tonight's\nstories for?")
                         .font(.system(.largeTitle, design: .serif, weight: .semibold))
                         .foregroundStyle(FableTheme.cream)
                     Text("Everything stays on this device. No account, ever.")
@@ -56,7 +62,7 @@ struct ProfileSetupView: View {
                 }
 
                 Button(action: save) {
-                    Text("Begin the first story")
+                    Text(isAddingAnotherChild ? "Welcome them in" : "Begin the first story")
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -82,6 +88,11 @@ struct ProfileSetupView: View {
             comfortObject: comfortObject.trimmingCharacters(in: .whitespacesAndNewlines)
         )
         modelContext.insert(profile)
+        // The newest child takes the stage right away.
+        activeProfileUUID = profile.uuid.uuidString
+        if isAddingAnotherChild {
+            dismiss()
+        }
     }
 
     private func label(_ text: String) -> some View {

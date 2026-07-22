@@ -4,6 +4,9 @@ import SwiftData
 /// The hero of every story. Stored locally only — never leaves the device.
 @Model
 final class ChildProfile {
+    /// Stable identity for "which child is active" (persisted in AppStorage).
+    /// SwiftData's persistentModelID isn't a good string key, so we keep our own.
+    var uuid: UUID = UUID()
     var name: String
     var ageBandRaw: String
     /// A favorite animal, toy, or friend who joins the adventures.
@@ -11,6 +14,9 @@ final class ChildProfile {
     /// Blanket, teddy, pacifier — woven into stories as a source of comfort.
     var comfortObject: String
     var createdAt: Date
+
+    @Relationship(deleteRule: .nullify, inverse: \Story.profile)
+    var stories: [Story] = []
 
     var ageBand: AgeBand {
         get { AgeBand(rawValue: ageBandRaw) ?? .little }

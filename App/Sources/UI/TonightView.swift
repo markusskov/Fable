@@ -10,11 +10,14 @@ struct TonightView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(SubscriptionStore.self) private var subscriptions
+    @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
     @Query private var stories: [Story]
     @Query(sort: \StorySeries.createdAt, order: .reverse) private var series: [StorySeries]
+    @Query(sort: \ChildProfile.createdAt) private var profiles: [ChildProfile]
     @State private var selectedTheme: StoryTheme = .adventure
     @State private var isWriting = false
     @State private var isShowingPaywall = false
+    @State private var isAddingChild = false
     @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
     private let provider = StoryProvider()
@@ -56,12 +59,13 @@ struct TonightView: View {
                     }
                 }
 
-                if subscriptions.isSubscribed, !series.isEmpty {
+                let childSeries = series.filter { $0.belongs(to: profile) }
+                if subscriptions.isSubscribed, !childSeries.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Or continue an adventure")
                             .font(.subheadline)
                             .foregroundStyle(FableTheme.creamDim)
-                        ForEach(series) { adventure in
+                        ForEach(childSeries) { adventure in
                             seriesCard(adventure)
                         }
                     }
@@ -98,6 +102,9 @@ struct TonightView: View {
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                profileMenu
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
                     LibraryView(profile: profile, path: $path)
@@ -105,6 +112,9 @@ struct TonightView: View {
                     Image(systemName: "books.vertical")
                 }
             }
+        }
+        .sheet(isPresented: $isAddingChild) {
+            ProfileSetupView(isAddingAnotherChild: true)
         }
         .sheet(isPresented: $isShowingPaywall) {
             PaywallView(nextFreeStoryDate: waitingUntil)
@@ -157,6 +167,41 @@ struct TonightView: View {
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .animation(.snappy(duration: 0.2), value: selectedTheme)
+    }
+
+    /// Switch children, or bring a new one into the family (Fable+ beyond
+    /// the first child; the free tier has one hero).
+    private var profileMenu: some View {
+        Menu {
+            ForEach(profiles) { child in
+                Button {
+                    activeProfileUUID = child.uuid.uuidString
+                } label: {
+                    if child.uuid == profile.uuid {
+                        Label(child.name, systemImage: "checkmark")
+                    } else {
+                        Text(child.name)
+                    }
+                }
+            }
+            Divider()
+            Button {
+                if subscriptions.isSubscribed {
+                    isAddingChild = true
+                } else {
+                    isShowingPaywall = true
+                }
+            } label: {
+                Label("Add a child", systemImage: "plus")
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: "person.circle")
+                Text(profile.name)
+                    .font(.subheadline.weight(.medium))
+            }
+        }
+        .accessibilityLabel("Switch child. \(profile.name) is active.")
     }
 
     private func seriesCard(_ adventure: StorySeries) -> some View {
@@ -230,6 +275,7 @@ struct TonightView: View {
                 story.episodeNumber = adventure.nextEpisodeNumber
                 story.series = adventure
             }
+            story.profile = profile
             modelContext.insert(story)
             path.append(story)
             isWriting = false
