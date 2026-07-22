@@ -47,7 +47,7 @@ struct ModelStoryEngine: StoryEngine {
             pages[pages.count - 2] += " " + last
             pages.removeLast()
         }
-        return StoryContent(title: content.title, pages: pages, moral: content.moral)
+        return StoryContent(title: content.title, pages: pages, moral: content.moral, recap: content.recap)
     }
 
     /// The reader draws its own "The End" marker; a model that writes one
@@ -78,7 +78,8 @@ struct ModelStoryEngine: StoryEngine {
         return StoryContent(
             title: response.content.title,
             pages: response.content.pages,
-            moral: response.content.moral
+            moral: response.content.moral,
+            recap: response.content.recap
         )
     }
 
@@ -121,7 +122,7 @@ struct ModelStoryEngine: StoryEngine {
     }
 
     static func prompt(for request: StoryRequest) -> String {
-        """
+        var lines = """
         Write tonight's bedtime story.
 
         The hero: \(request.childName), who is \(ageDescription(for: request.ageBand)).
@@ -129,6 +130,21 @@ struct ModelStoryEngine: StoryEngine {
         Something cozy that should appear and bring comfort: \(request.comfortObjectOrDefault).
         Tonight's mood: \(themeDescription(for: request.theme)).
         """
+        if let series = request.series {
+            lines += """
+
+
+            Tonight is episode \(series.episodeNumber) of the continuing adventure "\(series.title)". \
+            Keep the same hero and companion, and let one small, warm thread carry over — \
+            a place, a friend, or a promise from before. The episode must still make sense \
+            and end sleepily on its own, even if earlier nights are half-forgotten.
+            """
+            if !series.previously.isEmpty {
+                lines += "\nWhat has happened so far, oldest first:\n"
+                lines += series.previously.map { "- \($0)" }.joined(separator: "\n")
+            }
+        }
+        return lines
     }
 
     private static func pageFullnessGuidance(for ageBand: AgeBand) -> String {

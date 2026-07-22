@@ -7,6 +7,17 @@ struct StoryRequest: Sendable, Equatable {
     var theme: StoryTheme
     var companion: String
     var comfortObject: String
+    /// Present when tonight's story continues an adventure (Fable+).
+    var series: SeriesContext?
+
+    /// What an engine needs to continue a series: pure data lifted from the
+    /// `StorySeries` model so engines stay free of SwiftData.
+    struct SeriesContext: Sendable, Equatable {
+        var title: String
+        var episodeNumber: Int
+        /// Recent episode recaps, oldest first.
+        var previously: [String]
+    }
 
     /// Trimmed, display-ready companion with a sensible default.
     var companionOrDefault: String {
@@ -25,6 +36,9 @@ struct StoryContent: Sendable, Equatable {
     var title: String
     var pages: [String]
     var moral: String
+    /// One narrator's sentence for tomorrow's "previously on". Engines that
+    /// cannot author one leave it empty; callers fall back to the moral.
+    var recap: String = ""
 }
 
 enum StoryEngineError: Error {

@@ -23,7 +23,9 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [x] Free-tier metering (3 starter stories, 1/week after) + paywall screen (calm, honest copy)
   - Plan cards render only under Xcode's Run action (StoreKit config limitation, see above); verified logic in tests and the no-products state live.
 - [x] Raise model yield: below-floor mid pages now merge forward in `repaginated` (word-preserving; pervasive skimpiness still rejects via page count/ceiling) + word-count hint in the `@Guide`. Sampled after: 4/4 first-attempt passes vs ~50% before.
-- [ ] Story series: continuing adventures with same characters (Fable+ feature)
+- [x] Story series: continuing adventures with same characters (Fable+ feature)
+  - `StorySeries` model + per-story recap (model-authored, moral fallback); series context in prompts; create-from-end-page, continue-from-Tonight. DEBUG launch arg `-fable-debug-plus` simulates Fable+ for simulator UI checks.
+  - Navigation hardening: single Story destination at the stack root, path-append everywhere (value-links from pushed screens resolved unreliably).
 - [ ] Multiple child profiles (Fable+ feature)
 - [ ] App icon + brand pass (warm, storybook, not childish-clipart)
 - [ ] **BLOCKED ON OWNER:** Apple Developer account details → App Store Connect app record, bundle ID registration, subscription products, TestFlight

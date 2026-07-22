@@ -8,7 +8,10 @@ struct ReaderView: View {
     let story: Story
 
     @State private var pageIndex = 0
+    @State private var didStartSeries = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(SubscriptionStore.self) private var subscriptions
+    @Environment(\.modelContext) private var modelContext
     @ScaledMetric(relativeTo: .largeTitle) private var emblemSize = 52
     @ScaledMetric(relativeTo: .title2) private var storyLineSpacing = 7
 
@@ -66,6 +69,11 @@ struct ReaderView: View {
                 .font(.system(.largeTitle, design: .serif, weight: .semibold))
                 .foregroundStyle(FableTheme.cream)
                 .multilineTextAlignment(.center)
+            if let episode = story.episodeNumber, let seriesTitle = story.series?.title {
+                Text("Episode \(episode) of “\(seriesTitle)”")
+                    .font(.footnote)
+                    .foregroundStyle(FableTheme.gold)
+            }
             Text("A story for \(story.childName)")
                 .font(.callout)
                 .foregroundStyle(FableTheme.creamDim)
@@ -102,6 +110,9 @@ struct ReaderView: View {
                             .font(.footnote)
                             .foregroundStyle(FableTheme.creamDim)
                             .padding(.top, 8)
+
+                        seriesFooter
+                            .padding(.top, 16)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
@@ -109,6 +120,45 @@ struct ReaderView: View {
             }
             .padding(.horizontal, 32)
             .padding(.bottom, 24)
+        }
+    }
+
+    /// On the end page, Fable+ families can turn tonight's story into a
+    /// continuing adventure — or see that it already is one. Data-only:
+    /// the next episode is told from the Tonight screen, another night.
+    @ViewBuilder private var seriesFooter: some View {
+        if story.series != nil {
+            Label("The adventure continues another night", systemImage: "books.vertical")
+                .font(.footnote)
+                .foregroundStyle(FableTheme.creamDim)
+        } else if subscriptions.isSubscribed {
+            if didStartSeries {
+                Label("Saved — continue it from the Tonight screen", systemImage: "checkmark.circle")
+                    .font(.footnote)
+                    .foregroundStyle(FableTheme.gold)
+            } else {
+                Button {
+                    startSeries()
+                } label: {
+                    Label("Make this a continuing adventure", systemImage: "sparkles.rectangle.stack")
+                        .font(.footnote.weight(.medium))
+                        .foregroundStyle(FableTheme.nightDeep)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                        .background(FableTheme.gold, in: Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+        }
+    }
+
+    private func startSeries() {
+        let series = StorySeries(title: story.title, theme: story.theme, childName: story.childName)
+        modelContext.insert(series)
+        story.episodeNumber = 1
+        story.series = series
+        withAnimation(.snappy(duration: 0.25)) {
+            didStartSeries = true
         }
     }
 

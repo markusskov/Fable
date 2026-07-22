@@ -14,6 +14,6 @@ struct FableApp: App {
                 // flow waits on the store.
                 .task { subscriptions.start() }
         }
-        .modelContainer(for: [ChildProfile.self, Story.self])
+        .modelContainer(for: [ChildProfile.self, Story.self, StorySeries.self])
     }
 }

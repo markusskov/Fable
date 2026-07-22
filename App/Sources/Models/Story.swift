@@ -13,6 +13,12 @@ final class Story {
     var engineRaw: String
     var isFavorite: Bool
     var createdAt: Date
+    /// One narrator's sentence of what happened, used as "previously on"
+    /// context when a series continues. Empty for pre-series stories.
+    var recap: String = ""
+    /// Set when this story is an episode of a continuing adventure.
+    var series: StorySeries?
+    var episodeNumber: Int?
 
     var theme: StoryTheme {
         get { StoryTheme(rawValue: themeRaw) ?? .adventure }
@@ -33,6 +39,9 @@ final class Story {
         self.engineRaw = engine.rawValue
         self.isFavorite = false
         self.createdAt = .now
+        // Engines that can't author a recap (curated templates) leave it
+        // empty; the moral is an honest one-line stand-in for "previously on".
+        self.recap = content.recap.isEmpty ? content.moral : content.recap
     }
 }
 

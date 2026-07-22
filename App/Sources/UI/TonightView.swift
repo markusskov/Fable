@@ -4,14 +4,16 @@ import SwiftData
 /// The nightly ritual: pick a mood, get tonight's story.
 struct TonightView: View {
     let profile: ChildProfile
+    /// The enclosing stack's path; finished stories are pushed onto it.
+    @Binding var path: NavigationPath
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(SubscriptionStore.self) private var subscriptions
     @Query private var stories: [Story]
+    @Query(sort: \StorySeries.createdAt, order: .reverse) private var series: [StorySeries]
     @State private var selectedTheme: StoryTheme = .adventure
     @State private var isWriting = false
-    @State private var presentedStory: Story?
     @State private var isShowingPaywall = false
     @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
@@ -54,6 +56,17 @@ struct TonightView: View {
                     }
                 }
 
+                if subscriptions.isSubscribed, !series.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Or continue an adventure")
+                            .font(.subheadline)
+                            .foregroundStyle(FableTheme.creamDim)
+                        ForEach(series) { adventure in
+                            seriesCard(adventure)
+                        }
+                    }
+                }
+
                 VStack(spacing: 10) {
                     Button(action: tellStoryTapped) {
                         HStack(spacing: 8) {
@@ -87,14 +100,11 @@ struct TonightView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink {
-                    LibraryView(profile: profile)
+                    LibraryView(profile: profile, path: $path)
                 } label: {
                     Image(systemName: "books.vertical")
                 }
             }
-        }
-        .navigationDestination(item: $presentedStory) { story in
-            ReaderView(story: story)
         }
         .sheet(isPresented: $isShowingPaywall) {
             PaywallView(nextFreeStoryDate: waitingUntil)
@@ -149,23 +159,59 @@ struct TonightView: View {
         .animation(.snappy(duration: 0.2), value: selectedTheme)
     }
 
+    private func seriesCard(_ adventure: StorySeries) -> some View {
+        Button {
+            guard !isWriting else { return }
+            tellStory(continuing: adventure)
+        } label: {
+            HStack(spacing: 12) {
+                Text(adventure.theme.emoji)
+                    .font(.title3)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(adventure.title)
+                        .font(.system(.callout, design: .serif, weight: .medium))
+                        .foregroundStyle(FableTheme.cream)
+                        .lineLimit(1)
+                    Text("Episode \(adventure.nextEpisodeNumber) tonight")
+                        .font(.caption)
+                        .foregroundStyle(FableTheme.creamDim)
+                }
+                Spacer()
+                Image(systemName: "arrow.right.circle")
+                    .foregroundStyle(FableTheme.gold)
+            }
+            .padding(14)
+            .background(FableTheme.card, in: RoundedRectangle(cornerRadius: 14))
+        }
+        .buttonStyle(.plain)
+    }
+
     private func tellStoryTapped() {
         if subscriptions.isSubscribed || allowance.isAllowed {
-            tellStory()
+            tellStory(continuing: nil)
         } else {
             isShowingPaywall = true
         }
     }
 
-    private func tellStory() {
+    private func tellStory(continuing adventure: StorySeries?) {
         isWriting = true
-        let request = StoryRequest(
+        let theme = adventure?.theme ?? selectedTheme
+        var request = StoryRequest(
             childName: profile.name,
             ageBand: profile.ageBand,
-            theme: selectedTheme,
+            theme: theme,
             companion: profile.companion,
             comfortObject: profile.comfortObject
         )
+        if let adventure {
+            request.series = StoryRequest.SeriesContext(
+                title: adventure.title,
+                episodeNumber: adventure.nextEpisodeNumber,
+                previously: adventure.recentRecaps()
+            )
+        }
         Task {
             // A brief pause makes the moment feel authored, and keeps the UX
             // consistent once on-device model generation (which takes seconds)
@@ -176,12 +222,16 @@ struct TonightView: View {
 
             let story = Story(
                 content: result.content,
-                theme: selectedTheme,
+                theme: theme,
                 childName: profile.name,
                 engine: result.engine
             )
+            if let adventure {
+                story.episodeNumber = adventure.nextEpisodeNumber
+                story.series = adventure
+            }
             modelContext.insert(story)
-            presentedStory = story
+            path.append(story)
             isWriting = false
         }
     }
