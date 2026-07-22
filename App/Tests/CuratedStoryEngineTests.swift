@@ -91,7 +91,9 @@ struct CuratedStoryEngineTests {
     @Test func providerNeverFails() async {
         let provider = StoryProvider()
         let result = await provider.makeStory(for: request())
+        // Which engine answers depends on Apple Intelligence availability;
+        // the guarantee is that *something* good comes back.
         #expect(!result.content.pages.isEmpty)
-        #expect(result.engine == .curated)
+        #expect(ContentSafetyCheck.isAcceptable(result.content, for: request()))
     }
 }

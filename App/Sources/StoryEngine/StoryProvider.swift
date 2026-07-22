@@ -3,13 +3,18 @@ import Foundation
 /// The single entry point the UI uses to get a story. Encodes the product
 /// guardrail "never break bedtime": this method cannot fail.
 ///
-/// Milestone 1 will add `ModelStoryEngine` (FoundationModels) as the preferred
-/// engine when available; the curated engine remains the silent fallback.
+/// Prefers on-device model generation when available; any failure there —
+/// unavailability, refusal, safety-check rejection — falls back silently
+/// to the curated engine.
 struct StoryProvider: Sendable {
     private let curated = CuratedStoryEngine()
+    private let model = ModelStoryEngine()
 
     func makeStory(for request: StoryRequest) async -> (content: StoryContent, engine: StoryEngineKind) {
         let seed = UInt64.random(in: UInt64.min...UInt64.max)
+        if let content = try? await model.makeStory(for: request, seed: seed) {
+            return (content, .model)
+        }
         if let content = try? await curated.makeStory(for: request, seed: seed) {
             return (content, .curated)
         }
