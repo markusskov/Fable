@@ -16,7 +16,8 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 
 ## Milestone 2 — Monetization (v0.5, TestFlight)
 
-- [ ] StoreKit 2: Fable+ subscription (monthly/annual), StoreKit configuration file for local testing
+- [x] StoreKit 2: Fable+ subscription (monthly/annual), StoreKit configuration file for local testing
+  - Live purchase flows must be exercised from Xcode's Run action: under `xcodebuild`, the simulator's storekitd rejects `SKTestSession`'s attempt to install a test configuration (`SKInternalErrorDomain` 3) even for a minimal canonical file, so CI validates the config as data instead.
 - [ ] Free-tier metering (3 starter stories, 1/week after) + paywall screen (calm, honest copy)
 - [ ] Story series: continuing adventures with same characters (Fable+ feature)
 - [ ] Multiple child profiles (Fable+ feature)

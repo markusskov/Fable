@@ -32,6 +32,10 @@ targets:
     platform: iOS
     sources:
       - App/Tests
+      # Bundled so the tests can validate it; the app itself never reads it
+      # (Xcode's Run action applies it, and the real store is the App Store).
+      - path: App/StoreKit/Fable.storekit
+        buildPhase: resources
     settings:
       base:
         GENERATE_INFOPLIST_FILE: YES
@@ -45,6 +49,7 @@ schemes:
         FableTests: [test]
     run:
       config: Debug
+      storeKitConfiguration: App/StoreKit/Fable.storekit
     test:
       config: Debug
       targets:
