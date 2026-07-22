@@ -27,6 +27,14 @@ final class SubscriptionStore {
 
     private var updatesTask: Task<Void, Never>?
 
+    // In the app this store lives as long as the process, but nothing should
+    // rely on that: without the cancel, the updates listener would keep a
+    // deallocating store's task alive in tests or previews. `isolated` so the
+    // main-actor property is legal to touch here.
+    isolated deinit {
+        updatesTask?.cancel()
+    }
+
     var isSubscribed: Bool { status.isSubscribed }
 
     /// Begins listening for entitlement changes and loads the catalog.

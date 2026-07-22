@@ -33,7 +33,7 @@ Apple shipped on-device generative models (Foundation Models framework, iOS 26).
   - Story *series* (continuing adventures with the same characters)
   - Premium themes & seasonal collections
   - Multiple child profiles
-- Pricing intent (final prices set in App Store Connect): ~\$4.99/month, ~\$29.99/year with 7-day free trial. Family Sharing enabled — it's a family app; goodwill compounds.
+- Pricing intent (final prices set in App Store Connect): \$4.99/month, \$39.99/year (~33% saving, matching the tested `.storekit` config) with a 7-day free trial configured as an introductory offer on both plans at SKU-creation time. Family Sharing enabled — it's a family app; goodwill compounds.
 
 ## What success looks like
 

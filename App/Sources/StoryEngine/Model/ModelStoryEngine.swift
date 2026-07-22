@@ -21,14 +21,14 @@ struct ModelStoryEngine: StoryEngine {
     /// safety gate. The commonest observed rejections are pagination, not
     /// content: a tiny final page holding only "Goodnight, …", or a one-line
     /// opening page. Merging a too-short edge page into its neighbour never
-    /// adds, removes, or reorders a word the model wrote (blank pages
-    /// excepted), and the full safety check still judges the result.
-    /// Too-short pages mid-story are left alone — pacing there is the
-    /// model's job, and the gate rejects it.
+    /// adds, removes, or reorders a word the model wrote (blank pages and a
+    /// written-out "The End" excepted), and the full safety check still
+    /// judges the result. Too-short pages mid-story are left alone — pacing
+    /// there is the model's job, and the gate rejects it.
     static func repaginated(_ content: StoryContent, for request: StoryRequest) -> StoryContent {
         let minLength = ContentSafetyCheck.pageLengthBounds(for: request.ageBand).lowerBound
         var pages = content.pages
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .map { Self.strippingWrittenEnd(from: $0) }
             .filter { !$0.isEmpty }
         while pages.count >= 2, pages[0].count < minLength {
             pages[1] = pages[0] + " " + pages[1]
@@ -39,6 +39,16 @@ struct ModelStoryEngine: StoryEngine {
             pages.removeLast()
         }
         return StoryContent(title: content.title, pages: pages, moral: content.moral)
+    }
+
+    /// The reader draws its own "The End" marker; a model that writes one
+    /// anyway (observed in review 2026-07-22) would show it twice. Trailing
+    /// only — mid-sentence occurrences are left for the gate/reader as-is.
+    static func strippingWrittenEnd(from page: String) -> String {
+        page
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacing(/(?i)\s*the\s+end[.!…]*\s*$/, with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     /// One unchecked generation. Only `makeStory` (which gates it) and the
@@ -81,6 +91,9 @@ struct ModelStoryEngine: StoryEngine {
         - The voice is hushed and unhurried, like reading by lamplight. Never \
         use exclamation marks. Nothing is sudden, loud, or thrilling; wonder \
         is quiet, and surprises are soft.
+        - The story lives in the evening: it begins as the light goes low and \
+        golden, and the world settles toward night as it goes. Never set it \
+        on a bright morning or a sunny afternoon.
         - Every page is a complete, unhurried scene of \
         \(pageFullnessGuidance(for: request.ageBand)) — never a single quick \
         sentence. Linger on cozy details: how things feel, glow, and sound.
@@ -93,7 +106,8 @@ struct ModelStoryEngine: StoryEngine {
         child's name.
         - No brand names, no pop-culture characters, no morals about obedience. \
         Warmth over lessons; if there is a takeaway, it is gentle.
-        - Never address the reader or mention that this is a story being told.
+        - Never address the reader or mention that this is a story being told, \
+        and never write "The End" — the storybook closes itself.
         """
     }
 

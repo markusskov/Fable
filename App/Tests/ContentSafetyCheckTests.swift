@@ -195,6 +195,34 @@ struct ContentSafetyCheckTests {
         #expect(ContentSafetyCheck.rejection(of: story(), for: request) == nil)
     }
 
+    @Test func rejectsStoryWhoseEndingNeverWindsDown() {
+        // The review 2026-07-22 case: child named on the last page, but the
+        // story ends mid-adventure with no goodnight in sight.
+        let content = story(pages: [
+            "Nova stepped into the quiet meadow with Bruno, just as the fireflies woke up.",
+            "The fireflies blinked hello, one by one, and the tall grass swayed along.",
+            "Together they found the softest patch of moss and watched the stars come out.",
+            "And so Nova and Bruno grew closer, and they continued to explore new places together.",
+        ])
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == .endingNotSleepy)
+    }
+
+    @Test(arguments: [
+        "Nova pulled the covers up close and drifted off. Goodnight, Nova.",
+        "At last Nova was tucked in beside Bruno, warm from ears to toes, and Nova was very glad.",
+        "Nova gave one small yawn, and the moon dimmed its lamp for Nova most politely.",
+        "Soon Nova was asleep, and the meadow kept watch over Nova all night long.",
+    ])
+    func acceptsAnyReasonableWindDown(lastPage: String) {
+        let content = story(pages: [
+            "Nova stepped into the quiet meadow with Bruno, just as the fireflies woke up.",
+            "The fireflies blinked hello, one by one, and the tall grass swayed along.",
+            "Together they found the softest patch of moss and watched the stars come out.",
+            lastPage,
+        ])
+        #expect(ContentSafetyCheck.isAcceptable(content, for: request))
+    }
+
     @Test func rejectsStoryWhoseEndingForgetsTheChild() {
         // The child appears earlier, but the last page must say goodnight
         // to them by name.

@@ -18,6 +18,7 @@ enum ContentSafetyCheck {
         case pageLength(pageIndex: Int, count: Int, allowed: ClosedRange<Int>)
         case tooExcited(exclamationCount: Int)
         case childMissingFromLastPage
+        case endingNotSleepy
         case deniedWord(String)
 
         var description: String {
@@ -33,7 +34,9 @@ enum ContentSafetyCheck {
             case .tooExcited(let count):
                 "\(count) exclamation marks, allowed 3"
             case .childMissingFromLastPage:
-                "last page does not say goodnight to the child by name"
+                "last page does not mention the child by name"
+            case .endingNotSleepy:
+                "last page has no wind-down signal (goodnight, sleep, …)"
             case .deniedWord(let word):
                 "denied word \"\(word)\""
             }
@@ -62,11 +65,31 @@ enum ContentSafetyCheck {
         "stupid", "dumb", "shut up", "idiot", "ugly",
     ]
 
+    /// A bedtime story ends going to sleep, not mid-adventure. The last page
+    /// must carry at least one of these (word-boundary matched, explicit
+    /// inflections, same policy as the denylist). The prompt demands a
+    /// "Goodnight, <name>" ending; this is the gate that makes it stick —
+    /// review 2026-07-22 observed a passing story that ended "continued to
+    /// explore and discover new places".
+    private static let sleepSignals: [String] = [
+        "goodnight", "good night", "sleep", "sleeps", "sleepy", "asleep",
+        "sleeping", "dream", "dreams", "dreaming", "rest", "rests", "resting",
+        "rested", "snug", "snuggle", "snuggled", "snuggles", "yawn", "yawned",
+        "yawns", "drift", "drifted", "drifts", "lullaby", "hush", "hushed",
+        "tucked in", "eyes closed", "closed their eyes",
+    ]
+
     private static func firstDeniedWord(in text: String) -> String? {
-        deniedWords.first { word in
-            let pattern = "\\b\(NSRegularExpression.escapedPattern(for: word))\\b"
-            return text.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
-        }
+        deniedWords.first { containsWord($0, in: text) }
+    }
+
+    private static func containsSleepSignal(_ text: String) -> Bool {
+        sleepSignals.contains { containsWord($0, in: text) }
+    }
+
+    private static func containsWord(_ word: String, in text: String) -> Bool {
+        let pattern = "\\b\(NSRegularExpression.escapedPattern(for: word))\\b"
+        return text.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
     }
 
     /// A page short enough to be a single tossed-off sentence isn't a bedtime
@@ -109,12 +132,16 @@ enum ContentSafetyCheck {
         guard exclamations <= 3 else { return .tooExcited(exclamationCount: exclamations) }
 
         // The child must be the hero of their own story, and the story must
-        // end with them — the last page says goodnight by name.
+        // end with them — the last page says goodnight by name and actually
+        // winds down toward sleep.
         let name = request.childName.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !name.isEmpty {
-            guard let lastPage = content.pages.last,
-                  lastPage.localizedCaseInsensitiveContains(name)
-            else { return .childMissingFromLastPage }
+        if let lastPage = content.pages.last {
+            if !name.isEmpty, !lastPage.localizedCaseInsensitiveContains(name) {
+                return .childMissingFromLastPage
+            }
+            if !containsSleepSignal(lastPage) {
+                return .endingNotSleepy
+            }
         }
 
         // Nothing frightening or unkind, anywhere in the text.

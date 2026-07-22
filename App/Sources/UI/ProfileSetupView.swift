@@ -68,6 +68,9 @@ struct ProfileSetupView: View {
             .padding(.horizontal, 24)
         }
         .scrollDismissesKeyboard(.interactively)
+        // Soften scrolled text before it reaches the status bar — review
+        // 2026-07-22 saw the title collide with the clock.
+        .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
     }
 

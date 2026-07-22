@@ -42,6 +42,9 @@ struct ModelStoryEngineTests {
         #expect(instructions.contains("calm, kind, and reassuring"))
         #expect(instructions.contains("Never use exclamation marks"))
         #expect(instructions.contains("goodnight"))
+        // Review 2026-07-22 additions: evening setting, no written "The End".
+        #expect(instructions.contains("lives in the evening"))
+        #expect(instructions.contains("never write \"The End\""))
     }
 
     @Test func blankOptionalFieldsUseDefaultsInPrompt() {
@@ -60,6 +63,21 @@ struct ModelStoryEngineTests {
     }
 
     private let fullPage = "The waves hushed themselves against the shore while Astrid and Luna the cat watched the last gulls sail home."
+
+    @Test func repaginationStripsAWrittenTheEnd() {
+        // Review 2026-07-22: the model wrote "The End." inside the last page,
+        // doubling the reader's own end marker.
+        let ending = "Astrid drifted off to sleep beside Luna the cat, warm and snug. Goodnight, Astrid. The End."
+        let story = content(pages: [fullPage, fullPage, fullPage, ending])
+        let result = ModelStoryEngine.repaginated(story, for: request)
+        #expect(result.pages.last == "Astrid drifted off to sleep beside Luna the cat, warm and snug. Goodnight, Astrid.")
+        // A page that is nothing but "The End" disappears entirely.
+        let marker = content(pages: [fullPage, fullPage, fullPage, fullPage, "The end…"])
+        #expect(ModelStoryEngine.repaginated(marker, for: request).pages.count == 4)
+        // Mid-page mentions are untouched — only a trailing marker is a marker.
+        #expect(ModelStoryEngine.strippingWrittenEnd(from: "The end of the garden glowed softly.")
+            == "The end of the garden glowed softly.")
+    }
 
     @Test func repaginationMergesATinyGoodnightPageIntoThePreviousOne() {
         // The commonest observed rejection: the model puts the goodnight on
