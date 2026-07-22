@@ -7,12 +7,20 @@ struct TonightView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(SubscriptionStore.self) private var subscriptions
+    @Query private var stories: [Story]
     @State private var selectedTheme: StoryTheme = .adventure
     @State private var isWriting = false
     @State private var presentedStory: Story?
+    @State private var isShowingPaywall = false
     @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
     private let provider = StoryProvider()
+
+    /// Fable+ is unlimited; the free tier runs on the meter.
+    private var allowance: StoryMeter.Allowance {
+        StoryMeter.allowance(storyDates: stories.map(\.createdAt))
+    }
 
     // Three columns of theme cards, two once type grows into accessibility
     // sizes so labels keep room to breathe instead of truncating.
@@ -46,23 +54,31 @@ struct TonightView: View {
                     }
                 }
 
-                Button(action: tellStory) {
-                    HStack(spacing: 8) {
-                        if isWriting {
-                            ProgressView().tint(FableTheme.nightDeep)
-                            Text("Writing tonight's story…")
-                        } else {
-                            Image(systemName: "sparkles")
-                            Text("Tell tonight's story")
+                VStack(spacing: 10) {
+                    Button(action: tellStoryTapped) {
+                        HStack(spacing: 8) {
+                            if isWriting {
+                                ProgressView().tint(FableTheme.nightDeep)
+                                Text("Writing tonight's story…")
+                            } else {
+                                Image(systemName: "sparkles")
+                                Text("Tell tonight's story")
+                            }
                         }
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
                     }
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 14)
+                    .buttonStyle(.borderedProminent)
+                    .foregroundStyle(FableTheme.nightDeep)
+                    .disabled(isWriting)
+
+                    if let caption = meterCaption {
+                        Text(caption)
+                            .font(.caption)
+                            .foregroundStyle(FableTheme.creamDim)
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .foregroundStyle(FableTheme.nightDeep)
-                .disabled(isWriting)
             }
             .padding(.horizontal, 24)
         }
@@ -79,6 +95,32 @@ struct TonightView: View {
         }
         .navigationDestination(item: $presentedStory) { story in
             ReaderView(story: story)
+        }
+        .sheet(isPresented: $isShowingPaywall) {
+            PaywallView(nextFreeStoryDate: waitingUntil)
+        }
+    }
+
+    /// The date the meter unlocks, when it is the thing in the way.
+    private var waitingUntil: Date? {
+        if case .waiting(let date) = allowance { return date }
+        return nil
+    }
+
+    /// One honest line about where the free tier stands. Subscribers and
+    /// mid-starter families with plenty left see nothing — quiet by default.
+    private var meterCaption: String? {
+        guard !subscriptions.isSubscribed else { return nil }
+        switch allowance {
+        case .starter(let remaining) where remaining < StoryMeter.starterStories:
+            let word = remaining == 1 ? "story" : "stories"
+            return "\(remaining) starter \(word) left — then one free story a week"
+        case .starter:
+            return nil
+        case .weeklyReady:
+            return "Your free story of the week is ready"
+        case .waiting(let date):
+            return "Next free story \(date.formatted(.relative(presentation: .named)))"
         }
     }
 
@@ -105,6 +147,14 @@ struct TonightView: View {
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .animation(.snappy(duration: 0.2), value: selectedTheme)
+    }
+
+    private func tellStoryTapped() {
+        if subscriptions.isSubscribed || allowance.isAllowed {
+            tellStory()
+        } else {
+            isShowingPaywall = true
+        }
     }
 
     private func tellStory() {

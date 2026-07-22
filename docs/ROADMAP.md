@@ -20,7 +20,9 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 
 - [x] StoreKit 2: Fable+ subscription (monthly/annual), StoreKit configuration file for local testing
   - Live purchase flows must be exercised from Xcode's Run action: under `xcodebuild`, the simulator's storekitd rejects `SKTestSession`'s attempt to install a test configuration (`SKInternalErrorDomain` 3) even for a minimal canonical file, so CI validates the config as data instead.
-- [ ] Free-tier metering (3 starter stories, 1/week after) + paywall screen (calm, honest copy)
+- [x] Free-tier metering (3 starter stories, 1/week after) + paywall screen (calm, honest copy)
+  - Plan cards render only under Xcode's Run action (StoreKit config limitation, see above); verified logic in tests and the no-products state live.
+- [ ] Raise model yield: mid-story pacing rejections (a page just under the length floor) dominate the ~45–55% raw pass rate — try per-page length hints in the `@Guide`, or revisit the no-mid-story-merge stance in `repaginated`
 - [ ] Story series: continuing adventures with same characters (Fable+ feature)
 - [ ] Multiple child profiles (Fable+ feature)
 - [ ] App icon + brand pass (warm, storybook, not childish-clipart)
