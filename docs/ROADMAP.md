@@ -13,6 +13,12 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [x] Content post-check v1 (structural checks + denylist) with silent fallback wiring
 - [x] Model prompt tuning: calmer tone and fuller pages (observed 1-sentence "very excited" pages); deepen content checks (age heuristics, richer patterns)
 - [x] Reader polish: page-turn experience, warm theme, Dynamic Type audit
+- [ ] Review findings 2026-07-22 (owner-requested review of PRs #2–#5, all verified live in simulator):
+  - Model sometimes writes "The End." inside the final page, duplicating the reader's own end marker — forbid in prompt and strip in `repaginated` (or a sibling cleanup pass)
+  - Safety gate's last-page rule is name-presence only; observed a passing story whose ending never winds down ("continued to explore and discover new places"). Enforce a sleep signal (goodnight/sleep-word set) on the last page to match what the prompt already demands
+  - Prompt nudge: stories should live at dusk/evening — observed "One sunny afternoon" opening
+  - Cosmetic: profile-setup scroll collides with the status-bar clock (no scroll-edge treatment)
+  - Hygiene: cancel `SubscriptionStore.updatesTask` in `deinit`; `.storekit` yearly price (39.99) diverges from VISION intent (~29.99) and no intro offer configured — resolve deliberately when creating real SKUs in App Store Connect
 
 ## Milestone 2 — Monetization (v0.5, TestFlight)
 
