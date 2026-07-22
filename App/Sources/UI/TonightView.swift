@@ -66,6 +66,7 @@ struct TonightView: View {
             }
             .padding(.horizontal, 24)
         }
+        .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
