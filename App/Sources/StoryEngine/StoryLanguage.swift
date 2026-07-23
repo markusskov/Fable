@@ -11,6 +11,7 @@ enum StoryLanguage: String, CaseIterable, Sendable, Codable {
     case german = "de"
     case spanish = "es"
     case french = "fr"
+    case italian = "it"
 
     /// The language stories are told in by default: the device's first
     /// preferred language that Fable supports, English otherwise. Mirrors
@@ -71,6 +72,13 @@ enum StoryLanguage: String, CaseIterable, Sendable, Codable {
             parent telling a bedtime story; address the child as "tu". Never \
             use phrasing that reads like translated English.
             """
+        case .italian:
+            """
+            The entire story — title, every page, the moral, and the recap — \
+            is written in Italian, in the natural, warm voice of an Italian \
+            parent telling a bedtime story; address the child as "tu". Never \
+            use phrasing that reads like translated English.
+            """
         }
     }
 
@@ -82,6 +90,7 @@ enum StoryLanguage: String, CaseIterable, Sendable, Codable {
         case .german: "Gute Nacht, \(name)."
         case .spanish: "Buenas noches, \(name)."
         case .french: "Bonne nuit, \(name)."
+        case .italian: "Buonanotte, \(name)."
         }
     }
 }

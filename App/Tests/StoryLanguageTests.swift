@@ -35,6 +35,11 @@ struct StoryLanguageTests {
         #expect(StoryLanguage.preferred(from: ["fr-BE"]) == .french)
     }
 
+    @Test func italianDevicesGetItalianStories() {
+        #expect(StoryLanguage.preferred(from: ["it-IT", "en-US"]) == .italian)
+        #expect(StoryLanguage.preferred(from: ["it-CH"]) == .italian)
+    }
+
     @Test func spanishDevicesGetSpanishStories() {
         #expect(StoryLanguage.preferred(from: ["es-ES", "en-US"]) == .spanish)
         // Language-code matching serves every Spanish region, not just Spain.
@@ -421,5 +426,68 @@ struct FrenchLanguageGateTests {
         #expect(instructions.contains("written in French"))
         #expect(instructions.contains("\"tu\""))
         #expect(instructions.contains("Bonne nuit, Chloé."))
+    }
+}
+
+
+// MARK: - Italian
+
+struct ItalianLanguageGateTests {
+    private var request: StoryRequest {
+        StoryRequest(
+            childName: "Sofia",
+            ageBand: .little,
+            theme: .adventure,
+            companion: "Bruno il cane",
+            comfortObject: "la copertina gialla",
+            language: .italian
+        )
+    }
+
+    private func story(lastPage: String) -> StoryContent {
+        StoryContent(
+            title: "Sofia e il prato della sera",
+            pages: [
+                "Sofia entrò nel prato silenzioso con Bruno, proprio mentre le lucciole si svegliavano.",
+                "Le lucciole salutavano a intermittenza, una alla volta, e le erbe alte ondeggiavano piano.",
+                "Insieme trovarono l'angolo di muschio più morbido e guardarono le stelle accendersi.",
+                lastPage,
+            ],
+            moral: "Le serate dolci fanno le notti belle.",
+            language: .italian
+        )
+    }
+
+    @Test func aCalmItalianStoryPassesTheGate() {
+        let content = story(lastPage: "Sofia sbadigliò, si rannicchiò accanto a Bruno e si addormentò. Buonanotte, Sofia.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == nil)
+    }
+
+    @Test func anItalianStoryMustWindDownInItalian() {
+        let english = story(lastPage: "Sofia guardò le stelle con Bruno. Goodnight, Sofia.")
+        #expect(ContentSafetyCheck.rejection(of: english, for: request) == .endingNotSleepy)
+    }
+
+    @Test func italianDeniedWordsAreCaught() {
+        let content = story(lastPage: "Sofia ebbe tanta paura del bosco scuro, poi si addormentò. Buonanotte, Sofia.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == .deniedWord("paura"))
+    }
+
+    @Test func englishDeniedWordsAreCaughtInsideAnItalianStory() {
+        let content = story(lastPage: "Un monster passò lontano, ma Sofia si addormentò presto. Buonanotte, Sofia.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == .deniedWord("monster"))
+    }
+
+    @Test func italianHomonymsOfHarmfulWordsPass() {
+        // "un brutto sogno che finisce bene" and "non è cattivo" are
+        // everyday mild Italian; malvagio holds the wickedness line.
+        let content = story(lastPage: "Il piccolo riccio non era cattivo, e dopo un brutto sogno finito bene si addormentò accanto a Sofia. Buonanotte, Sofia.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == nil)
+    }
+
+    @Test func italianInstructionsDemandItalianAndAnItalianGoodnight() {
+        let instructions = ModelStoryEngine.instructions(for: request)
+        #expect(instructions.contains("written in Italian"))
+        #expect(instructions.contains("Buonanotte, Sofia."))
     }
 }

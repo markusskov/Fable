@@ -39,6 +39,7 @@ enum TemplateLibrary {
         .german: [lanternPathDe, sleepyVoyageDe, littleLostFriendDe],
         .spanish: [lanternPathEs, sleepyVoyageEs, littleLostFriendEs],
         .french: [lanternPathFr, sleepyVoyageFr, littleLostFriendFr],
+        .italian: [lanternPathIt, sleepyVoyageIt, littleLostFriendIt],
     ]
 
     // MARK: - The Lantern Path (adventure · magic)
@@ -677,6 +678,141 @@ enum TemplateLibrary {
         moralVariants: [
             "Raccompagner quelqu'un chez lui, c'est la plus chaleureuse façon de finir la journée.",
             "Aucune gentillesse n'est petite quand on est petit.",
+        ]
+    )
+
+
+    // MARK: - Il sentiero delle lanterne (it · adventure · magic)
+    //
+    // Italian slot discipline: a/di/da/in/su always contract with articles
+    // (al, del, nel), so {setting} pools bake the article and appear only
+    // behind "verso"/"oltre" or as the object of a transitive verb
+    // ("superarono {setting}"). {companion} and {comfort} appear as
+    // subjects, after "con", or in verbless appositions. Pronoun-referenced
+    // treasure pools are uniformly feminine ("lei/la"); the lost-friend
+    // pool is only ever mentioned, never pronouned.
+
+    static let lanternPathIt = StoryTemplate(
+        id: "lantern-path-it",
+        themes: [.adventure, .magic],
+        titleVariants: [
+            "{name} e il sentiero delle lanterne",
+            "La notte in cui le lucciole vennero a cercare {name}",
+            "{name} e le piccole luci",
+        ],
+        pages: [
+            "Una sera, proprio mentre il cielo prendeva il colore dei mirtilli, {name} notò una piccola luce che danzava fuori dalla finestra. Poi un'altra. E un'altra ancora. Le lucciole! E sembrava proprio che stessero aspettando qualcuno.",
+            "{name} uscì in punta di piedi, stringendo forte {comfort}, e naturalmente venne anche {companion}. Le lucciole disegnavano un sentiero luminoso, come un nastro di piccolissime lanterne, che serpeggiava verso {setting}.",
+            "Il sentiero era morbido sotto i piedi di {name}, e la notte era tiepida e gentile. Da qualche parte, lontano lontano, si sentì {sound}, un suono dolce e assonnato, come se il mondo intero stesse sbadigliando piano piano.",
+            "In fondo al sentiero delle lanterne, nascosta sotto una radice coperta di muschio, eccola lì: {treasure}. Brillava piano, come se avesse aspettato tanto, tanto tempo che qualcuno venisse a trovarla.",
+            "«È caduta dal cielo», sussurrò {companion}. «Deve avere tanta nostalgia di casa.» {name} la raccolse con mille attenzioni. Era tiepida, come un piccolo cuore che batteva piano.",
+            "Allora {name} la sollevò in alto, sempre più in alto, in alto quanto possono arrivare due piccole braccia. E le lucciole si raccolsero lì sotto e la portarono su, su, su, finché non ritrovò il suo posto esatto nel cielo.",
+            "Il cielo scintillò per dire grazie. Le lucciole si inchinarono con le loro piccole luci. E {name} si sentì all'improvviso meravigliosamente stanco, di quella stanchezza buona che viene dopo una giornata piena di meraviglie.",
+            "Tornati a casa, {name} si infilò sotto le coperte, con {comfort} lì vicino, e {companion} si rannicchiò accanto. Fuori, una lucciola rimase alla finestra a fare la guardia. Buonanotte, {name}. Stanotte il cielo ti sorride.",
+        ],
+        settings: [
+            "il vecchio cancello del giardino",
+            "il boschetto di betulle che sussurrano",
+            "il prato dietro la collina",
+            "il ruscello dai sassi lisci e tondi",
+        ],
+        sounds: [
+            "uh-uh",
+            "sci-sci-sciii",
+            "prrrl",
+        ],
+        treasures: [
+            "una piccola stella caduta dal cielo",
+            "una lucina di luna chiusa in un barattolo",
+            "una campanellina d'argento che suona solo per i cuori gentili",
+        ],
+        moralVariants: [
+            "Le mani gentili ritrovano sempre la strada di casa, e ciò che portano la ritrova con loro.",
+            "Anche i piccoli aiutanti possono far brillare un cielo intero.",
+        ]
+    )
+
+    // MARK: - Il viaggio assonnato (it · space · ocean)
+
+    static let sleepyVoyageIt = StoryTemplate(
+        id: "sleepy-voyage-it",
+        themes: [.space, .ocean],
+        titleVariants: [
+            "Il viaggio assonnato di {name}",
+            "La barchetta fatta di luce di luna",
+            "{name} e le stelle che canticchiano",
+        ],
+        pages: [
+            "Quando la casa diventò tutta silenziosa e le luci si fecero piccole piccole, il letto di {name} fece una cosa che i letti non fanno quasi mai: si sollevò, piano piano, e diventò una barchetta.",
+            "La barchetta scivolò fuori dalla finestra, dentro il buio morbido, che non era per niente preoccupante. Era accogliente, come se tutto il cielo ti rimboccasse le coperte. {companion} si mise a prua, e {comfort} fece da cuscino perfetto.",
+            "Navigarono oltre {setting}, dove tutto già dormiva. Le onde, o forse erano nuvole, cullavano la barchetta lentamente. Una… due… una… due…",
+            "Una famiglia di stelle uscì a guardarli passare. La stella più piccina canticchiava {sound}, la canzone che cantano le stelle quando arriva l'ora di riposare. Anche {name} canticchiò, pianissimo.",
+            "«Guarda», sussurrò {companion}. Davanti a loro, brillando piano, galleggiava {treasure}. Quella dolce visitatrice si avvicinò, salutò con garbo, e si unì al viaggio come una vecchia amica che conosceva la strada.",
+            "La barchetta dondolava. Le stelle canticchiavano. Gli occhi di {name} si facevano pesanti, sempre più pesanti, nel modo più piacevole che ci sia, come coperte fatte di silenzio caldo.",
+            "Lentamente, lentamente, la barchetta prese la via di casa, scivolando nel buio morbido, ripassando dalla finestra, fino a posarsi, piano piano, esattamente dove deve stare un letto.",
+            "Ed ecco {name}, ben rimboccato, con {comfort} lì accanto e {companion} che già sognava. Il viaggio sarebbe stato lì anche domani sera. Dormi adesso, piccolo marinaio. Buonanotte, {name}, le stelle canticchiano per te.",
+        ],
+        settings: [
+            "il faro addormentato",
+            "l'isola dalla sabbia soffice come un cuscino",
+            "la baia dove sognano le balene",
+            "il porto delle barchette di carta",
+        ],
+        sounds: [
+            "mmm-hmm-mmm",
+            "lu-lu-lu",
+            "hummm",
+        ],
+        treasures: [
+            "una piccola lampada-pesce dal tenue bagliore",
+            "una barchetta minuscola prestata dalla Luna",
+            "una lucciola di mare dal pancino dorato",
+        ],
+        moralVariants: [
+            "Il buio gentile è un amico che ci porta piano piano fino al mattino.",
+            "Riposare è un viaggio, e chi dorme è un piccolo marinaio coraggioso.",
+        ]
+    )
+
+    // MARK: - Il piccolo amico smarrito (it · animals · friendship)
+
+    static let littleLostFriendIt = StoryTemplate(
+        id: "little-lost-friend-it",
+        themes: [.animals, .friendship],
+        titleVariants: [
+            "{name} e il piccolo amico smarrito",
+            "L'ospite piccolissimo",
+            "La sera in cui {name} accompagnò a casa il piccolino",
+        ],
+        pages: [
+            "Poco prima dell'ora della nanna, {name} sentì il rumore più piccolo del mondo arrivare dalla porta di casa: {sound}. {name} e {companion} andarono a guardare piano piano.",
+            "Lì, non più grande di una tazzina da tè, c'era un esserino dai grandi occhi tondi. Si era smarrito. La sua casa era dall'altra parte, oltre {setting}, e la sera si faceva sempre più profonda.",
+            "«Non preoccuparti», disse {name} con la voce dolce che si usa per le cose piccoline. «Ti accompagniamo noi.» {name} portò con sé {comfort}, perché tutto riesce meglio con {comfort}.",
+            "Il piccolino salì sulla schiena di {companion} e si tenne ben stretto. Per strada tirò su col nasino, allora {name} gli raccontò di {treasure}. Gli occhi del piccolino si fecero tondi di meraviglia, e i suoi pensieri volarono via.",
+            "Superarono {setting}, un passo dopo l'altro, piano piano. L'aria della sera profumava di erba e di stelle. Il piccolino si mise a canticchiare {sound}, ma più allegramente adesso, un canticchiare da ritorno a casa.",
+            "Ed eccola lì: una porticina sotto una collinetta, con una luce calda dentro e una famiglia di piccolini che salutava. L'ospite più piccolo strinse forte il pollice di {name}. Era l'abbraccio più grande che sapesse fare.",
+            "«Grazie», squittì, «di avermi accompagnato fino a casa.» E lasciò un regalo a {name}: una piccolissima carezza di baffi sulla punta del naso. È un grandissimo onore, tra gli esserini.",
+            "{name} e {companion} tornarono a casa sotto la buona vecchia luna, sbadigliando per tutta la strada. E quando {name} si infilò nel letto con {comfort}, la notte sembrava gentile e piena di piccole case felici. Buonanotte, {name}.",
+        ],
+        settings: [
+            "la siepe delle more",
+            "i tre sassi rotondi",
+            "la grande quercia dal ramo storto",
+            "le erbe alte dove cantano i grilli",
+        ],
+        sounds: [
+            "pip-pip",
+            "squit",
+            "miao",
+        ],
+        treasures: [
+            "il lettino di muschio più morbido di tutto il bosco",
+            "una dispensa piena di bacche al miele",
+            "una lucina fatta con un raggio di sole addomesticato",
+        ],
+        moralVariants: [
+            "Accompagnare qualcuno a casa è il modo più caldo di finire la giornata.",
+            "Nessuna gentilezza è piccola quando si è piccoli.",
         ]
     )
 }
