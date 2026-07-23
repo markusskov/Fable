@@ -29,6 +29,13 @@ struct StoryLanguageTests {
         #expect(StoryLanguage.preferred(from: ["de-CH"]) == .german)
     }
 
+    @Test func spanishDevicesGetSpanishStories() {
+        #expect(StoryLanguage.preferred(from: ["es-ES", "en-US"]) == .spanish)
+        // Language-code matching serves every Spanish region, not just Spain.
+        #expect(StoryLanguage.preferred(from: ["es-MX"]) == .spanish)
+        #expect(StoryLanguage.preferred(from: ["es-419"]) == .spanish)
+    }
+
     // MARK: - Model language support (pure matching; the live set varies by device)
 
     @Test func modelSupportMatchesOnLanguageCode() {
@@ -206,6 +213,93 @@ struct StoryLanguageTests {
         #expect(instructions.contains("calm, kind, and reassuring"))
         request.language = .english
         #expect(!ModelStoryEngine.instructions(for: request).contains("written in German"))
+    }
+
+    // MARK: - Safety gate in Spanish
+
+    private var spanishRequest: StoryRequest {
+        StoryRequest(
+            childName: "Lucía",
+            ageBand: .little,
+            theme: .animals,
+            companion: "Bruno el perro",
+            comfortObject: "la manta amarilla",
+            language: .spanish
+        )
+    }
+
+    /// A complete, calm Spanish story that should pass every rule.
+    private var spanishStory: StoryContent {
+        StoryContent(
+            title: "Lucía y el lucero de la tarde",
+            pages: [
+                "Era una tarde tranquila, y el cielo sobre el jardín se iba volviendo azul oscuro mientras Lucía miraba por la ventana cómo despertaban las primeras estrellas.",
+                "Junto con Bruno el perro, Lucía salió de puntillas al jardín, donde la hierba seguía tibia y el aire olía a verano y a tardes silenciosas.",
+                "Siguieron un caminito de luz de luna hasta el manzano, y allí se quedaron un buen rato escuchando al viento, que cantaba su propia canción bajita.",
+                "Después Lucía se metió bajo la manta amarilla, y Bruno se acurrucó a su lado. Pronto se durmieron los dos. Buenas noches, Lucía.",
+            ],
+            moral: "Las tardes más bonitas son las más tranquilas.",
+            language: .spanish
+        )
+    }
+
+    @Test func aCalmSpanishStoryPassesTheGate() {
+        #expect(ContentSafetyCheck.rejection(of: spanishStory, for: spanishRequest) == nil)
+    }
+
+    /// Unlike German ("die", "dies", "war"), the English denylist contains
+    /// no everyday Spanish word — checked word by word when the vocabulary
+    /// landed — so the union applies unfiltered.
+    @Test func theFullEnglishDenylistAppliesToSpanish() {
+        let denied = ContentSafetyCheck.deniedWords(for: .spanish)
+        #expect(denied.contains("die"))
+        #expect(denied.contains("war"))
+        #expect(denied.contains("ghost"))
+        #expect(denied.contains("monster"))
+        // And the Spanish words hold their own line.
+        #expect(denied.contains("guerra"))
+        #expect(denied.contains("monstruo"))
+    }
+
+    @Test func aSpanishStoryMustWindDownInSpanish() {
+        var story = spanishStory
+        story.pages[story.pages.count - 1] =
+            "Bruno se tumbó junto a la manta amarilla, y todo quedó en silencio alrededor de Lucía. Goodnight, Lucía."
+        #expect(ContentSafetyCheck.rejection(of: story, for: spanishRequest) == .endingNotSleepy)
+    }
+
+    @Test func spanishDeniedWordsAreCaught() {
+        var story = spanishStory
+        story.pages[1] =
+            "Junto con Bruno el perro, Lucía salió de puntillas al jardín, aunque la noche anterior había tenido una pesadilla, y el aire olía a verano."
+        #expect(ContentSafetyCheck.rejection(of: story, for: spanishRequest) == .deniedWord("pesadilla"))
+    }
+
+    @Test func englishDeniedWordsAreCaughtInsideASpanishStory() {
+        var story = spanishStory
+        story.pages[2] =
+            "Siguieron un caminito de luz de luna, y Bruno susurró algo sobre un ghost que al parecer vivía detrás del manzano."
+        #expect(ContentSafetyCheck.rejection(of: story, for: spanishRequest) == .deniedWord("ghost"))
+    }
+
+    @Test func spanishHomonymsOfHarmfulWordsPass() {
+        // "de golpe" (suddenly) and "una mata" (a bush) are everyday cozy
+        // prose; the denylist deliberately carries the verb inflections
+        // ("golpear", "matar") instead of these homonym forms.
+        var story = spanishStory
+        story.pages[2] =
+            "De golpe, el viento se quedó quieto junto a una mata de lavanda, y el jardín entero pareció escuchar la canción bajita de la noche."
+        #expect(ContentSafetyCheck.rejection(of: story, for: spanishRequest) == nil)
+    }
+
+    @Test func spanishInstructionsDemandSpanishAndASpanishGoodnight() {
+        var request = spanishRequest
+        let instructions = ModelStoryEngine.instructions(for: request)
+        #expect(instructions.contains("written in Spanish"))
+        #expect(instructions.contains("Buenas noches, Lucía."))
+        #expect(instructions.contains("calm, kind, and reassuring"))
+        request.language = .english
+        #expect(!ModelStoryEngine.instructions(for: request).contains("written in Spanish"))
     }
 
     // MARK: - Curated fallback across languages
