@@ -65,4 +65,9 @@ extension StorySeries {
 enum StoryEngineKind: String, Codable, Sendable {
     case curated
     case model
+    /// The deterministic personalized fallback (curated + emergency were
+    /// indistinguishable before the 2026-07-24 round-two review).
+    case emergency
+    /// The input-free floor: safe by construction, not personalized.
+    case floor
 }

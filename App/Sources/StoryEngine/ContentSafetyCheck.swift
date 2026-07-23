@@ -430,9 +430,30 @@ enum ContentSafetyCheck {
         sleepSignals(for: language).contains { containsWord($0, in: text) }
     }
 
+    /// Canonicalizes text before any vocabulary matching: NFKC compatibility
+    /// mapping folds fullwidth letters ("ｍｏｎｓｔｅｒ") to ASCII, format
+    /// characters (zero-width joiners/spaces) are removed so they cannot
+    /// split a word invisibly, and every whitespace (including NBSP inside
+    /// multiword phrases) becomes a plain space. Closes the round-two
+    /// homoglyph/invisible-separator bypasses.
+    static func normalizedForMatching(_ text: String) -> String {
+        let folded = text.precomposedStringWithCompatibilityMapping
+        var out = String.UnicodeScalarView()
+        for scalar in folded.unicodeScalars {
+            if scalar.properties.generalCategory == .format { continue }
+            if scalar.properties.isWhitespace {
+                out.append(" ")
+            } else {
+                out.append(scalar)
+            }
+        }
+        return String(out)
+    }
+
     private static func containsWord(_ word: String, in text: String) -> Bool {
         let pattern = "\\b\(NSRegularExpression.escapedPattern(for: word))\\b"
-        return text.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
+        return normalizedForMatching(text)
+            .range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
     }
 
     /// A page short enough to be a single tossed-off sentence isn't a bedtime
@@ -459,17 +480,21 @@ enum ContentSafetyCheck {
     }
 
     /// A safe, generic hero name when a parent's own name would inject a
-    /// denied word (a child literally named "Monster"). Only ever used on
-    /// the guaranteed-safe fallback paths, never to rename a normal child.
+    /// denied word (a child literally named "Monster") or is degenerate.
+    /// These are article-free, capitalized endearments that function as
+    /// proper names, because every shelf's grammar discipline (German case
+    /// after "von", Romance contractions after "de"/"di", sentence-initial
+    /// capitalization) assumes {name} behaves like a name — an articled
+    /// phrase such as "das kleine Kind" would break "von {name}" sites.
     static func safeGenericName(for language: StoryLanguage) -> String {
         switch language {
-        case .english: "the little one"
-        case .norwegianBokmal: "den lille"
-        case .german: "das kleine Kind"
-        case .spanish: "el pequeño"
-        case .french: "le petit"
-        case .italian: "il piccolo"
-        case .portugueseBrazilian: "o pequeno"
+        case .english: "Little One"
+        case .norwegianBokmal: "Lillevenn"
+        case .german: "Sternchen"
+        case .spanish: "Peque"
+        case .french: "Loulou"
+        case .italian: "Tesorino"
+        case .portugueseBrazilian: "Anjinho"
         }
     }
 
@@ -478,14 +503,39 @@ enum ContentSafetyCheck {
     /// trips the denylist is swapped for a safe default. Used on the curated
     /// and emergency paths, which have no model guardrail of their own, so
     /// that a hostile or unlucky profile can never reach a child unchecked.
+    /// A name reduced to name-like characters: letters (any script), marks,
+    /// digits, spaces, hyphens and apostrophes. "Nova!!!!" becomes "Nova"
+    /// instead of forcing the floor through the exclamation budget; a
+    /// format-character-only "name" becomes empty and falls to the generic.
+    static func nameSanitized(_ value: String) -> String {
+        let normalized = normalizedForMatching(StoryRequest.bracesStripped(value))
+        let kept = normalized.unicodeScalars.filter { scalar in
+            let cat = scalar.properties.generalCategory
+            switch cat {
+            case .uppercaseLetter, .lowercaseLetter, .titlecaseLetter,
+                 .otherLetter, .modifierLetter, .nonspacingMark,
+                 .spacingMark, .decimalNumber:
+                return true
+            default:
+                return scalar == " " || scalar == "-" || scalar == "'" || scalar == "\u{2019}"
+            }
+        }
+        return String(String.UnicodeScalarView(kept))
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     static func neutralized(_ request: StoryRequest) -> StoryRequest {
         var safe = request
-        // Brace-strip first, so "{}" or "{sound}" can neither leak into the
-        // emergency story nor be re-substituted, then denylist-neutralize.
-        safe.childName = StoryRequest.bracesStripped(request.childName)
+        // Names are reduced to name-like characters; free-text fields are
+        // brace-stripped, then everything is denylist-neutralized.
+        safe.childName = nameSanitized(request.childName)
         safe.companion = StoryRequest.bracesStripped(request.companion)
         safe.comfortObject = StoryRequest.bracesStripped(request.comfortObject)
-        if safe.childName.isEmpty || containsDeniedWord(safe.childName, language: request.language) {
+        // Degenerate lengths are neutralized too: a 500-character "name"
+        // is hostile input that would blow page-length bounds on every
+        // engine (real names fit comfortably in 60).
+        if safe.childName.isEmpty || safe.childName.count > 60
+            || containsDeniedWord(safe.childName, language: request.language) {
             safe.childName = safeGenericName(for: request.language)
         }
         if containsDeniedWord(safe.companion, language: request.language) {
@@ -544,6 +594,26 @@ enum ContentSafetyCheck {
             return .deniedWord(word)
         }
         return nil
+    }
+
+    /// Input-boundary check for the profile form: a value is storable when
+    /// it does not trip any supported language's denylist (names travel —
+    /// the device language can change after the profile is created) and,
+    /// for names, survives sanitation. The UI offers a nickname instead;
+    /// nothing hostile is ever persisted, so chrome (greeting, reader
+    /// dedication) can safely show the stored name. Neutralization remains
+    /// as defense in depth for data that predates this boundary.
+    static func isStorableProfileField(_ value: String) -> Bool {
+        let candidate = normalizedForMatching(value)
+        guard !candidate.isEmpty else { return true } // empties fall to defaults
+        return StoryLanguage.allCases.allSatisfy { language in
+            !containsDeniedWord(candidate, language: language)
+        }
+    }
+
+    static func isStorableName(_ value: String) -> Bool {
+        let sanitized = nameSanitized(value)
+        return !sanitized.isEmpty && sanitized.count <= 60 && isStorableProfileField(sanitized)
     }
 
     /// Whether a final page already fulfils the ending contract (name +

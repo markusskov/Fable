@@ -24,7 +24,33 @@ struct ProfileSetupView: View {
     }
 
     private var canContinue: Bool {
-        !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        nameProblem == nil && companionProblem == nil && comfortProblem == nil
+            && !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    // Input-boundary safety (external review 2026-07-24): nothing that trips
+    // any language's story vocabulary is ever persisted, so every place that
+    // shows the stored name (greeting, reader dedication) is safe without
+    // further checks. The message is gentle — the parent just picks a
+    // nickname and moves on.
+    private var nameProblem: LocalizedStringKey? {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        return ContentSafetyCheck.isStorableName(trimmed)
+            ? nil
+            : "That name can't go into a story. A nickname works great."
+    }
+
+    private var companionProblem: LocalizedStringKey? {
+        ContentSafetyCheck.isStorableProfileField(companion)
+            ? nil
+            : "Stories can't use that word. Try a friendlier sidekick."
+    }
+
+    private var comfortProblem: LocalizedStringKey? {
+        ContentSafetyCheck.isStorableProfileField(comfortObject)
+            ? nil
+            : "Stories can't use that word. Try something cozier."
     }
 
     var body: some View {
@@ -43,7 +69,7 @@ struct ProfileSetupView: View {
                 }
                 .padding(.top, 24)
 
-                field("Their name") {
+                field("Their name", problem: nameProblem) {
                     TextField("", text: $name, prompt: prompt("Nova"))
                         .textContentType(.givenName)
                         .textInputAutocapitalization(.words)
@@ -63,14 +89,14 @@ struct ProfileSetupView: View {
                     .pickerStyle(.segmented)
                 }
 
-                field("A favorite friend or animal — skip it and a small brave fox steps in") {
+                field("A favorite friend or animal — skip it and a small brave fox steps in", problem: companionProblem) {
                     TextField("", text: $companion, prompt: prompt("Bruno the dog"))
                         .focused($focusedField, equals: .companion)
                         .submitLabel(.next)
                         .onSubmit { focusedField = .comfortObject }
                 }
 
-                field("Something cozy they sleep with — optional too") {
+                field("Something cozy they sleep with — optional too", problem: comfortProblem) {
                     TextField("", text: $comfortObject, prompt: prompt("the yellow blanket"))
                         .focused($focusedField, equals: .comfortObject)
                         .submitLabel(.done)
@@ -100,11 +126,19 @@ struct ProfileSetupView: View {
     }
 
     private func save() {
+        // canContinue already blocks unstorable input; this is the belt to
+        // its suspenders, so nothing the chrome later displays is unsafe.
+        let request = StoryRequest(
+            childName: name, ageBand: ageBand, theme: .adventure,
+            companion: companion, comfortObject: comfortObject,
+            language: .deviceDefault
+        )
+        let safe = ContentSafetyCheck.neutralized(request)
         let profile = ChildProfile(
-            name: name.trimmingCharacters(in: .whitespacesAndNewlines),
+            name: safe.childName,
             ageBand: ageBand,
-            companion: companion.trimmingCharacters(in: .whitespacesAndNewlines),
-            comfortObject: comfortObject.trimmingCharacters(in: .whitespacesAndNewlines)
+            companion: safe.companion,
+            comfortObject: safe.comfortObject
         )
         modelContext.insert(profile)
         // The newest child takes the stage right away.
@@ -124,7 +158,11 @@ struct ProfileSetupView: View {
         Text(text).foregroundStyle(FableTheme.cream.opacity(0.25))
     }
 
-    private func field(_ title: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {
+    private func field(
+        _ title: LocalizedStringKey,
+        problem: LocalizedStringKey? = nil,
+        @ViewBuilder content: () -> some View
+    ) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             label(title)
                 .accessibilityHidden(true) // the field itself carries the label
@@ -135,6 +173,11 @@ struct ProfileSetupView: View {
                 // The visible title is a sibling Text, so VoiceOver would
                 // otherwise announce these fields as bare text boxes.
                 .accessibilityLabel(title)
+            if let problem {
+                Text(problem)
+                    .font(.footnote)
+                    .foregroundStyle(FableTheme.gold)
+            }
         }
     }
 }
