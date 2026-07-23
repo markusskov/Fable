@@ -170,6 +170,45 @@ enum ContentSafetyCheck {
     /// dying and war are on the German list instead.
     private static let englishGermanFalseFriends: Set<String> = ["die", "dies", "war"]
 
+
+    /// French denylist, same policy: explicit inflections, err strict.
+    /// Homonyms deliberately absent: "bête" (silly, but also the standard
+    /// cozy word for a little creature — "les petites bêtes"), "nul/nulle"
+    /// ("nulle part" is simply "nowhere"), the battre family (hearts beat:
+    /// "son cœur battait doucement"), and cri/crier (a "cri de joie" is
+    /// standard happy prose; hurler holds the scream line instead). The
+    /// English union needs no exemptions — checked word by word, the only
+    /// overlap is "idiot", denied in both languages anyway.
+    private static let frenchDeniedWords: [String] = [
+        // Violence and harm.
+        "sang", "sanglant", "sanglante", "sanglants", "tuer", "tue", "tua",
+        "tué", "tuée", "tués", "mourir", "meurt", "meurent", "mourut",
+        "mort", "morte", "morts", "mortes", "arme", "armes", "couteau",
+        "couteaux", "pistolet", "pistolets", "fusil", "fusils", "bombe",
+        "bombes", "épée", "épées", "guerre", "guerres", "bagarre",
+        "bagarres", "combat", "combats", "combattre", "attaque", "attaques",
+        "attaquer", "attaqua", "frapper", "frappa", "frappé", "tirer sur",
+        "haïr", "hait", "haïssait", "haine", "détester", "déteste",
+        "détestait",
+        // Fear and dread.
+        "peur", "peurs", "apeuré", "apeurée", "effrayer", "effraie",
+        "effraya", "effrayé", "effrayée", "effrayés", "effrayant",
+        "effrayante", "effrayants", "terrifier", "terrifie", "terrifié",
+        "terrifiée", "terrifiant", "terrifiante", "terreur", "horreur",
+        "horreurs", "horrible", "horribles", "cauchemar", "cauchemars",
+        "hurler", "hurle", "hurla", "hurlement", "hurlements", "monstre",
+        "monstres", "fantôme", "fantômes", "zombie", "zombies", "démon",
+        "démons", "sorcière", "sorcières", "méchant", "méchante",
+        "méchants", "méchantes", "danger", "dangers", "dangereux",
+        "dangereuse", "dangereuses", "hanté", "hantée", "hantés",
+        "effroi", "épouvantable", "épouvantables", "sinistre", "sinistres",
+        "cruel", "cruelle", "cruels", "cruelles", "panique",
+        // Unkindness.
+        "stupide", "stupides", "idiot", "idiote", "idiots", "idiotes",
+        "imbécile", "imbéciles", "moche", "moches", "laid", "laide",
+        "laids", "laides", "tais-toi", "taisez-vous", "ferme-la",
+    ]
+
     static func deniedWords(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishDeniedWords
@@ -178,6 +217,7 @@ enum ContentSafetyCheck {
             englishDeniedWords.filter { !englishGermanFalseFriends.contains($0) }
                 + germanDeniedWords
         case .spanish: englishDeniedWords + spanishDeniedWords
+        case .french: englishDeniedWords + frenchDeniedWords
         }
     }
 
@@ -238,12 +278,36 @@ enum ContentSafetyCheck {
         "párpados", "soñoliento", "somnoliento", "a dormir",
     ]
 
+
+    /// French wind-down vocabulary — like the others, no English union: a
+    /// French story must say goodnight in French. Includes the plural
+    /// preterites the 2026-07-23 measurement taught us to include from the
+    /// start ("se blottirent", "s'endormirent" — child and companion wind
+    /// down together).
+    private static let frenchSleepSignals: [String] = [
+        "bonne nuit", "dormir", "dors", "dort", "dorment", "dormit",
+        "dormirent", "dormi", "endormi", "endormie", "endormis",
+        "endormies", "endort", "endormir", "endormit", "s'endormit",
+        "s'endormirent", "s'endort", "sommeil", "somnolent", "somnolente",
+        "rêve", "rêves", "rêver", "rêva", "rêvait", "rêvant", "rêvèrent",
+        "repos", "se reposer", "reposa", "repose", "reposèrent", "blotti",
+        "blottie", "blottis", "blotties", "se blottit", "se blottirent",
+        "bercer", "berce", "berça", "bercé", "bercée", "bercèrent",
+        "berceuse", "bâiller", "bâille", "bâilla", "bâillèrent",
+        "bâillement", "paupières", "ferma les yeux", "fermèrent les yeux",
+        "yeux fermés", "yeux se ferment", "yeux se fermèrent", "bordé",
+        "bordée", "bien bordé", "bien bordée", "sous la couette",
+        "sous la couverture", "câlin", "câlins", "s'assoupit",
+        "s'assoupirent", "assoupi", "assoupie",
+    ]
+
     static func sleepSignals(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishSleepSignals
         case .norwegianBokmal: norwegianSleepSignals
         case .german: germanSleepSignals
         case .spanish: spanishSleepSignals
+        case .french: frenchSleepSignals
         }
     }
 

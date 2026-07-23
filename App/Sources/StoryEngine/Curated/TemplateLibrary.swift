@@ -38,6 +38,7 @@ enum TemplateLibrary {
         .norwegianBokmal: [lanternPathNb, sleepyVoyageNb, littleLostFriendNb],
         .german: [lanternPathDe, sleepyVoyageDe, littleLostFriendDe],
         .spanish: [lanternPathEs, sleepyVoyageEs, littleLostFriendEs],
+        .french: [lanternPathFr, sleepyVoyageFr, littleLostFriendFr],
     ]
 
     // MARK: - The Lantern Path (adventure · magic)
@@ -541,6 +542,141 @@ enum TemplateLibrary {
         moralVariants: [
             "Acompañar a alguien a casa es la manera más bonita de terminar el día.",
             "Ninguna bondad es pequeña cuando quien la da también es pequeño.",
+        ]
+    )
+
+
+    // MARK: - Le sentier des lanternes (fr · adventure · magic)
+    //
+    // French slot discipline: settings carry their own article and are only
+    // ever reached with "vers" or "devant" (no à/de contractions, which
+    // would demand au/du and read broken). {companion} and {comfort} appear
+    // as subjects, after "avec", or in verbless appositions, so whatever
+    // gender a parent types stays correct. Treasure pools that the prose
+    // refers back to are uniformly feminine ("elle"); the lost-friend pool
+    // is only ever mentioned, never pronouned.
+
+    static let lanternPathFr = StoryTemplate(
+        id: "lantern-path-fr",
+        themes: [.adventure, .magic],
+        titleVariants: [
+            "{name} et le sentier des lanternes",
+            "La nuit où les lucioles vinrent chercher {name}",
+            "{name} et les petites lumières",
+        ],
+        pages: [
+            "Un soir, juste au moment où le ciel prenait la couleur des myrtilles, {name} aperçut une petite lumière qui dansait derrière la fenêtre. Puis une autre. Et encore une autre. Des lucioles ! Et on aurait dit qu'elles attendaient quelqu'un.",
+            "{name} sortit sur la pointe des pieds, serrant {comfort} tout contre soi, et {companion} vint aussi, bien sûr. Les lucioles dessinaient un chemin lumineux, comme un ruban de toutes petites lanternes, qui serpentait vers {setting}.",
+            "Le chemin était doux sous les pieds de {name}, et la nuit était tiède et amicale. Quelque part au loin, on entendit {sound}, un son doux et ensommeillé, comme si le monde entier bâillait tout doucement.",
+            "Au bout du sentier des lanternes, blottie sous une racine couverte de mousse, elle était là : {treasure}. Elle luisait faiblement, comme si elle avait attendu très, très longtemps qu'on vienne la trouver.",
+            "« Elle est tombée du ciel », chuchota {companion}. « Elle doit avoir le mal du pays. » {name} la ramassa avec mille précautions. Elle était tiède, comme un petit cœur qui battait doucement.",
+            "Alors {name} la souleva haut, très haut, aussi haut que peuvent monter de petits bras. Et les lucioles se rassemblèrent dessous et la portèrent, plus haut, encore plus haut, jusqu'à ce qu'elle retrouve sa place exacte dans le ciel.",
+            "Le ciel scintilla pour dire merci. Les lucioles s'inclinèrent avec leurs petites lumières. Et {name} se sentit soudain merveilleusement fatigué, de la bonne fatigue, celle qui vient après une journée pleine de merveilles.",
+            "De retour à la maison, {name} se glissa sous la couette, {comfort} tout près, et {companion} se roula en boule juste à côté. Dehors, une luciole resta près de la fenêtre pour veiller. Bonne nuit, {name}. Cette nuit, le ciel te sourit.",
+        ],
+        settings: [
+            "le vieux portail du jardin",
+            "le petit bois de bouleaux qui chuchotent",
+            "la prairie derrière la colline",
+            "le ruisseau aux pierres lisses et rondes",
+        ],
+        sounds: [
+            "hou-hou",
+            "chuuut-chuuut",
+            "prrrl",
+        ],
+        treasures: [
+            "une petite étoile tombée du ciel",
+            "une lueur de lune enfermée dans un bocal",
+            "une petite clochette d'argent qui ne tinte que pour les cœurs doux",
+        ],
+        moralVariants: [
+            "Les mains douces retrouvent toujours le chemin de la maison, et ce qu'elles portent le retrouve avec elles.",
+            "Même les tout petits peuvent faire briller un ciel tout entier.",
+        ]
+    )
+
+    // MARK: - Le voyage ensommeillé (fr · space · ocean)
+
+    static let sleepyVoyageFr = StoryTemplate(
+        id: "sleepy-voyage-fr",
+        themes: [.space, .ocean],
+        titleVariants: [
+            "Le voyage ensommeillé de {name}",
+            "Le bateau fait de clair de lune",
+            "{name} et les étoiles qui fredonnent",
+        ],
+        pages: [
+            "Quand la maison devint toute silencieuse et que les lumières se firent toutes petites, le lit de {name} fit une chose que les lits ne font presque jamais : il se souleva, tout doucement, et devint un petit bateau.",
+            "Le bateau glissa par la fenêtre et s'en alla dans la douce obscurité, qui n'avait rien d'inquiétant du tout. Elle était douillette, comme si le ciel entier vous bordait. {companion} s'installa à l'avant, et {comfort} fit un oreiller parfait.",
+            "Ils voguèrent devant {setting}, où tout dormait déjà. Les vagues, à moins que ce ne soient des nuages, berçaient le bateau lentement. Une… deux… une… deux…",
+            "Une famille d'étoiles sortit pour les regarder passer. La plus petite des étoiles fredonnait {sound}, la chanson que chantent les étoiles quand vient l'heure de se reposer. {name} fredonna aussi, tout bas.",
+            "« Regarde », chuchota {companion}. Devant eux, brillant doucement, flottait {treasure}. Cette douce visiteuse s'approcha, salua poliment, et fit route avec eux, comme une vieille amie qui connaissait le chemin.",
+            "Le bateau se balançait. Les étoiles fredonnaient. Les yeux de {name} devenaient lourds, de plus en plus lourds, de la plus agréable des façons, comme des couvertures faites de chaud silence.",
+            "Lentement, lentement, le petit bateau prit le chemin du retour, glissant à travers la douce obscurité, repassant par la fenêtre, pour se poser, tout doucement, exactement là où doit se trouver un lit.",
+            "Et voilà {name}, bien bordé, {comfort} tout près, {companion} déjà en train de rêver. Le voyage serait encore là demain soir. Dors maintenant, petit marin. Bonne nuit, {name}, les étoiles fredonnent pour toi.",
+        ],
+        settings: [
+            "le phare endormi",
+            "l'île au sable doux comme un oreiller",
+            "la crique où rêvent les baleines",
+            "le port des bateaux en papier",
+        ],
+        sounds: [
+            "mmm-hmm-mmm",
+            "lou-lou-lou",
+            "hummm",
+        ],
+        treasures: [
+            "une petite lampe-poisson au doux éclat",
+            "une barque minuscule que la Lune avait prêtée",
+            "une luciole de mer au ventre doré",
+        ],
+        moralVariants: [
+            "La douce obscurité est une amie qui nous porte doucement jusqu'au matin.",
+            "Dormir est un voyage, et chaque dormeur est un brave petit marin.",
+        ]
+    )
+
+    // MARK: - Le petit ami perdu (fr · animals · friendship)
+
+    static let littleLostFriendFr = StoryTemplate(
+        id: "little-lost-friend-fr",
+        themes: [.animals, .friendship],
+        titleVariants: [
+            "{name} et le petit ami perdu",
+            "Le tout petit invité",
+            "Le soir où {name} raccompagna le petit perdu",
+        ],
+        pages: [
+            "Juste avant l'heure du coucher, {name} entendit le plus petit bruit du monde venir du pas de la porte : {sound}. {name} et {companion} allèrent regarder tout doucement.",
+            "Là, pas plus grand qu'une tasse à thé, se tenait un petit être aux grands yeux tout ronds. Il était perdu. Sa maison se trouvait de l'autre côté, passé {setting}, et le soir devenait de plus en plus profond.",
+            "« Ne t'en fais pas », dit {name} de la voix douce qu'on garde pour les toutes petites choses. « Nous allons te raccompagner. » {name} emporta {comfort}, parce que tout est plus facile avec {comfort}.",
+            "Le tout petit grimpa sur le dos de {companion} et se tint bien fort. En chemin, il renifla un peu, alors {name} lui parla de {treasure}. Les yeux du petit s'arrondirent d'émerveillement, et ses soucis s'envolèrent.",
+            "Ils passèrent devant {setting}, pas à pas, tout doucement. L'air du soir sentait l'herbe et les étoiles. Le tout petit se mit à fredonner {sound}, mais plus joyeusement maintenant, un fredon de retour à la maison.",
+            "Et la voilà : une porte minuscule sous une colline minuscule, avec une lumière chaude à l'intérieur et une famille de tout-petits qui faisaient coucou. Le plus petit des invités serra le pouce de {name} très fort. C'était le plus grand câlin qu'il pouvait faire.",
+            "« Merci », couina-t-il, « de m'avoir raccompagné jusqu'au bout. » Et il laissa un cadeau à {name} : une toute petite caresse de moustaches sur le bout du nez. C'est un très grand honneur, chez les petits êtres.",
+            "{name} et {companion} rentrèrent à la maison sous la bonne vieille lune, en bâillant tout du long. Et quand {name} se glissa dans son lit avec {comfort}, la nuit semblait amicale et pleine de petites maisons heureuses. Bonne nuit, {name}.",
+        ],
+        settings: [
+            "la haie aux mûres",
+            "les trois pierres rondes",
+            "le grand chêne à la branche tordue",
+            "les herbes hautes où chantent les grillons",
+        ],
+        sounds: [
+            "pip-pip",
+            "couic",
+            "miou",
+        ],
+        treasures: [
+            "le lit de mousse le plus doux de toute la forêt",
+            "un garde-manger rempli de baies au miel",
+            "une veilleuse faite d'un rayon de soleil apprivoisé",
+        ],
+        moralVariants: [
+            "Raccompagner quelqu'un chez lui, c'est la plus chaleureuse façon de finir la journée.",
+            "Aucune gentillesse n'est petite quand on est petit.",
         ]
     )
 }

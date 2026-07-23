@@ -36,6 +36,7 @@ struct StoryRequest: Sendable, Equatable {
         // subject positions, so any case-marked parent input stays correct.
         case .german: "ein kleiner mutiger Fuchs"
         case .spanish: "un pequeño zorro valiente"
+        case .french: "un petit renard courageux"
         }
     }
 
@@ -49,6 +50,7 @@ struct StoryRequest: Sendable, Equatable {
         // correctly ("eine" is both cases).
         case .german: "eine weiche, warme Decke"
         case .spanish: "una manta suave y calentita"
+        case .french: "une petite couverture douce et chaude"
         }
     }
 }
