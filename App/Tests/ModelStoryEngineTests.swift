@@ -187,11 +187,33 @@ struct ModelStoryEngineTests {
         .disabled(if: ProcessInfo.processInfo.environment["CI"] != nil, "Model assets absent on CI runners")
     )
     func generatesAnAcceptableStoryWithinAFewAttempts() async throws {
+        try await expectAcceptableStory(from: request)
+    }
+
+    /// Same acceptance loop in Norwegian. Runs only where the on-device
+    /// model claims Norwegian support — which is exactly the gate production
+    /// uses, so a red run here means Apple's claim and our safety gate
+    /// disagree about nb story quality, and that is worth knowing before a
+    /// Norwegian family finds out.
+    @Test(
+        .enabled(
+            if: ModelStoryEngine.isAvailable && ModelStoryEngine.supportsLanguage(.norwegianBokmal),
+            "Requires Apple Intelligence with Norwegian support"
+        ),
+        .disabled(if: ProcessInfo.processInfo.environment["CI"] != nil, "Model assets absent on CI runners")
+    )
+    func generatesAnAcceptableNorwegianStoryWithinAFewAttempts() async throws {
+        var norwegian = request
+        norwegian.language = .norwegianBokmal
+        try await expectAcceptableStory(from: norwegian)
+    }
+
+    private func expectAcceptableStory(from base: StoryRequest) async throws {
         let engine = ModelStoryEngine()
         var rejections: [String] = []
         let themes = StoryTheme.allCases
         for attempt in 0..<Self.generationAttempts {
-            var themed = request
+            var themed = base
             themed.theme = themes[attempt % themes.count]
             let content = ModelStoryEngine.repaginated(
                 try await engine.rawStory(for: themed),

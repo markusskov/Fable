@@ -7,6 +7,10 @@ struct StoryRequest: Sendable, Equatable {
     var theme: StoryTheme
     var companion: String
     var comfortObject: String
+    /// The language tonight's story should be told in. Engines that cannot
+    /// honor it do the honest thing: the model engine refuses (falling back
+    /// silently), the curated engine serves its English shelf.
+    var language: StoryLanguage = .english
     /// Present when tonight's story continues an adventure (Fable+).
     var series: SeriesContext?
 
@@ -39,6 +43,11 @@ struct StoryContent: Sendable, Equatable {
     /// One narrator's sentence for tomorrow's "previously on". Engines that
     /// cannot author one leave it empty; callers fall back to the moral.
     var recap: String = ""
+    /// The language the text is actually written in — stamped by the engine
+    /// that produced it, which may differ from the request's language when a
+    /// fallback crossed languages. The safety gate judges by this, not by
+    /// what was asked for.
+    var language: StoryLanguage = .english
 }
 
 enum StoryEngineError: Error {
