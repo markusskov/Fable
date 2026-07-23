@@ -4,6 +4,7 @@ options:
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
+  developmentLanguage: en
 settings:
   base:
     SWIFT_VERSION: "6.0"
@@ -20,6 +21,10 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.markusskov.fable
+        # Lets `xcodebuild -exportLocalizations` see LocalizedStringKey /
+        # String(localized:) literals in Swift — the check that keeps
+        # Localizable.xcstrings complete lives on this flag.
+        SWIFT_EMIT_LOC_STRINGS: YES
         # iPhone-only for v1 (roadmap defers a real iPad layout to post-1.0);
         # iPad runs the app in compatibility mode and ASC then needs no iPad
         # screenshots. Flip to "1,2" only alongside actual iPad layout work.

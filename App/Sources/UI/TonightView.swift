@@ -137,14 +137,14 @@ struct TonightView: View {
         guard !subscriptions.isSubscribed else { return nil }
         switch allowance {
         case .starter(let remaining) where remaining < StoryMeter.starterStories:
-            let word = remaining == 1 ? "story" : "stories"
-            return "\(remaining) starter \(word) left — then one free story a week"
+            // Singular/plural lives in the string catalog's plural variations.
+            return String(localized: "\(remaining) starter stories left — then one free story a week")
         case .starter:
             return nil
         case .weeklyReady:
-            return "Your free story of the week is ready"
+            return String(localized: "Your free story of the week is ready")
         case .waiting(let date):
-            return "Next free story \(date.formatted(.relative(presentation: .named)))"
+            return String(localized: "Next free story \(date.formatted(.relative(presentation: .named)))")
         }
     }
 

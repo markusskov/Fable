@@ -96,17 +96,17 @@ final class SubscriptionStore {
               let offer = product(for: plan)?.subscription?.introductoryOffer,
               offer.paymentMode == .freeTrial
         else { return nil }
-        let period = offer.period
-        let unit: String
-        switch period.unit {
-        case .day: unit = "day"
-        case .week: unit = "week"
-        case .month: unit = "month"
-        case .year: unit = "year"
-        @unknown default: unit = "period"
+        // Singular forms ("1 week free") live in the string catalog's plural
+        // variations; one key per unit because unit words decline differently
+        // across languages.
+        let count = offer.period.value
+        switch offer.period.unit {
+        case .day: return String(localized: "\(count) days free")
+        case .week: return String(localized: "\(count) weeks free")
+        case .month: return String(localized: "\(count) months free")
+        case .year: return String(localized: "\(count) years free")
+        @unknown default: return String(localized: "\(count) periods free")
         }
-        let count = period.value
-        return count == 1 ? "1 \(unit) free" : "\(count) \(unit)s free"
     }
 
     func product(for plan: FablePlus.Plan) -> Product? {
