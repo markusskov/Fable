@@ -93,10 +93,51 @@ enum ContentSafetyCheck {
         "hold kjeft", "hold munn", "slem", "slemme", "slemt",
     ]
 
+    /// German denylist, same policy: explicit inflections, err strict.
+    /// Homonyms deliberately absent: "schlägt"/"schlug" (to hit, but hearts
+    /// beat and clocks strike them), "Schloss" (lock/castle). Compounds are
+    /// safe by construction — word-boundary matching never fires inside
+    /// "Weihnachtsgeist" or "allgemein".
+    private static let germanDeniedWords: [String] = [
+        // Violence and harm.
+        "Blut", "blutig", "töten", "tötet", "tötete", "getötet", "sterben",
+        "stirbt", "starb", "gestorben", "tot", "tote", "Tod", "Waffe",
+        "Waffen", "Messer", "Pistole", "Pistolen", "Gewehr", "Gewehre",
+        "Bombe", "Bomben", "Schwert", "Schwerter", "Krieg", "Kriege",
+        "Kampf", "Kämpfe", "kämpfen", "kämpft", "kämpfte", "schießen",
+        "schießt", "schoss", "geschossen", "Angriff", "Angriffe",
+        "angreifen", "hassen", "hasst", "hasste", "Hass",
+        // Fear and dread.
+        "Angst", "Ängste", "ängstlich", "fürchten", "fürchtet", "fürchtete",
+        "Furcht", "furchtbar", "schrecklich", "schreckliche", "Schrecken",
+        "erschrecken", "erschrickt", "erschrak", "erschrocken", "gruselig",
+        "gruselige", "unheimlich", "unheimliche", "schaurig", "schaurige",
+        "Albtraum", "Albträume", "Alptraum", "Alpträume", "schreien",
+        "schreit", "schrie", "geschrien", "Schrei", "Schreie", "Monster",
+        "Ungeheuer", "Gespenst", "Gespenster", "Geist", "Geister", "Zombie",
+        "Zombies", "Dämon", "Dämonen", "Hexe", "Hexen", "böse", "böser",
+        "bösen", "böses", "Bösewicht", "Gefahr", "gefährlich", "gefährliche",
+        "Spuk", "spukt", "spuken", "grausam", "grausame", "Panik", "Horror",
+        "Terror",
+        // Unkindness.
+        "dumm", "dumme", "blöd", "blöde", "doof", "doofe", "hässlich",
+        "hässliche", "Idiot", "halt den Mund", "halt die Klappe", "gemein",
+        "gemeine", "fies", "fiese",
+    ]
+
+    /// English denied words that are everyday harmless German words: "die"
+    /// (the article), "dies" (this), "war" (was). A naive union would
+    /// reject every German sentence ever written; the German words for
+    /// dying and war are on the German list instead.
+    private static let englishGermanFalseFriends: Set<String> = ["die", "dies", "war"]
+
     static func deniedWords(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishDeniedWords
         case .norwegianBokmal: englishDeniedWords + norwegianDeniedWords
+        case .german:
+            englishDeniedWords.filter { !englishGermanFalseFriends.contains($0) }
+                + germanDeniedWords
         }
     }
 
@@ -126,10 +167,25 @@ enum ContentSafetyCheck {
         "lukket øynene", "øynene gled igjen",
     ]
 
+    /// German wind-down vocabulary — like Norwegian, no English union: a
+    /// German story must say goodnight in German.
+    private static let germanSleepSignals: [String] = [
+        "gute Nacht", "schlaf", "schlafe", "schläft", "schlafen", "schlief",
+        "schliefen", "eingeschlafen", "einschlafen", "schläfrig", "müde",
+        "Traum", "Träume", "träum", "träumen", "träumt", "träumte",
+        "träumten", "ausruhen", "ruhen", "ruht", "ruhte", "Ruhe", "kuscheln",
+        "kuschelt", "kuschelte", "kuschelig", "gähnen", "gähnt", "gähnte",
+        "gähnten", "Schlaflied", "Wiegenlied", "wiegen", "wiegt", "wiegte",
+        "zugedeckt", "unter der Decke", "schlummern", "schlummert",
+        "schlummerte", "Schlummer", "dösen", "döst", "döste", "nickte ein",
+        "schloss die Augen", "Augen fielen zu",
+    ]
+
     static func sleepSignals(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishSleepSignals
         case .norwegianBokmal: norwegianSleepSignals
+        case .german: germanSleepSignals
         }
     }
 

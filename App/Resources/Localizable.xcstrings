@@ -7,6 +7,12 @@
     "%@ — that's %@ a month" : {
       "comment" : "Yearly price line: full price, then its monthly equivalent",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ – das sind %@ im Monat"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -18,6 +24,12 @@
     "%@ / %@" : {
       "comment" : "Price line: localized price / billing cadence, e.g. \"39,99 kr / month\"",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / %@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -29,6 +41,12 @@
     "%@, then %@" : {
       "comment" : "Free-trial prefix on a price line, e.g. \"1 week free, then 39,99 kr / year\"",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, danach %@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -39,6 +57,24 @@
     },
     "%lld days free" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 Tag gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Tage gratis"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -79,6 +115,24 @@
     },
     "%lld months free" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 Monat gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Monate gratis"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -120,6 +174,24 @@
     "%lld periods free" : {
       "comment" : "Fallback for an unknown StoreKit period unit — effectively unreachable",
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 Zeitraum gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Zeiträume gratis"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -160,6 +232,24 @@
     },
     "%lld starter stories left — then one free story a week" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 Startgeschichte übrig – danach eine Gratisgeschichte pro Woche"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Startgeschichten übrig – danach eine Gratisgeschichte pro Woche"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -200,6 +290,24 @@
     },
     "%lld weeks free" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 Woche gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Wochen gratis"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -240,6 +348,24 @@
     },
     "%lld years free" : {
       "localizations" : {
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 Jahr gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Jahre gratis"
+                }
+              }
+            }
+          }
+        },
         "en" : {
           "variations" : {
             "plural" : {
@@ -286,6 +412,12 @@
     },
     "2–3 years" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2–3 Jahre"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -296,6 +428,12 @@
     },
     "4–6 years" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4–6 Jahre"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -306,6 +444,12 @@
     },
     "7–9 years" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7–9 Jahre"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -316,6 +460,12 @@
     },
     "A brand-new story every night, whenever you want one" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeden Abend eine ganz neue Geschichte, wann immer du magst"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -326,6 +476,12 @@
     },
     "A favorite friend or animal — skip it and a small brave fox steps in" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Lieblingsfreund oder ein Tier – lässt du es frei, springt ein kleiner mutiger Fuchs ein"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -336,6 +492,12 @@
     },
     "A story for %@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Geschichte für %@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -346,6 +508,12 @@
     },
     "Add a child" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kind hinzufügen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -356,6 +524,12 @@
     },
     "Adventure" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abenteuer"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -366,6 +540,12 @@
     },
     "Animals" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiere"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -376,6 +556,12 @@
     },
     "Another hero\njoins the family" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch ein Held\nfür die Familie"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -386,6 +572,12 @@
     },
     "Begin the first story" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die erste Geschichte beginnen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -397,6 +589,12 @@
     "Bruno the dog" : {
       "comment" : "Placeholder example in the companion text field",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruno der Hund"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -407,6 +605,12 @@
     },
     "Close the storybook" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Geschichtenbuch schließen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -417,6 +621,12 @@
     },
     "Continue" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -427,6 +637,12 @@
     },
     "Episode %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folge %lld"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -437,6 +653,12 @@
     },
     "Episode %lld of “%@”" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folge %lld von „%@“"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -447,6 +669,12 @@
     },
     "Episode %lld tonight" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Heute Abend Folge %lld"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -457,6 +685,12 @@
     },
     "Every night deserves\nits own story" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeder Abend verdient\nseine eigene Geschichte"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -467,6 +701,12 @@
     },
     "Everything stays on this device. No account, ever." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alles bleibt auf diesem Gerät. Kein Konto, niemals."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -477,6 +717,12 @@
     },
     "Fable+ makes story time unlimited, every single night." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Fable+ ist die Geschichtenzeit unbegrenzt, jeden einzelnen Abend."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -487,6 +733,12 @@
     },
     "Friends" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Freunde"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -497,6 +749,12 @@
     },
     "Good evening" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guten Abend"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -507,6 +765,12 @@
     },
     "Magic" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magie"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -517,6 +781,12 @@
     },
     "Make this a continuing adventure" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daraus ein fortlaufendes Abenteuer machen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -527,6 +797,12 @@
     },
     "Maybe later" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vielleicht später"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -538,6 +814,12 @@
     "month" : {
       "comment" : "Billing cadence in a price line: \"39,99 kr / month\"",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monat"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -549,6 +831,12 @@
     "Monthly" : {
       "comment" : "Subscription plan name on the paywall",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monatlich"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -560,6 +848,12 @@
     "Next free story %@" : {
       "comment" : "Followed by a relative date, e.g. \"Next free story in 3 days\"",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächste Gratisgeschichte %@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -570,6 +864,12 @@
     },
     "No stories yet" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noch keine Geschichten"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -581,6 +881,12 @@
     "Nova" : {
       "comment" : "Placeholder example in the name text field",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -591,6 +897,12 @@
     },
     "Ocean" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meer"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -601,6 +913,12 @@
     },
     "Or continue an adventure" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oder ein Abenteuer fortsetzen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -611,6 +929,12 @@
     },
     "Page %lld of %lld" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seite %lld von %lld"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -621,6 +945,12 @@
     },
     "Profiles for every child in the family" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profile für jedes Kind der Familie"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -631,6 +961,12 @@
     },
     "Restore purchases" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Käufe wiederherstellen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -641,6 +977,12 @@
     },
     "Restoring…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wird wiederhergestellt…"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -652,6 +994,12 @@
     "Save %@" : {
       "comment" : "Yearly-plan badge; the argument is an already-formatted percentage, e.g. \"33 %\"",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spare %@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -662,6 +1010,12 @@
     },
     "Saved — continue it from the Tonight screen" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gespeichert – weiter geht es abends auf der Startseite"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -672,6 +1026,12 @@
     },
     "Something cozy they sleep with — optional too" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etwas Kuscheliges zum Einschlafen – auch das ist freiwillig"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -682,6 +1042,12 @@
     },
     "Space" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weltraum"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -692,6 +1058,12 @@
     },
     "Start your free week" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starte deine Gratiswoche"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -702,6 +1074,12 @@
     },
     "Still private: everything stays on this device" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiterhin privat: Alles bleibt auf diesem Gerät"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -712,6 +1090,12 @@
     },
     "Story series — adventures that continue night after night" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschichtenserien – Abenteuer, die Abend für Abend weitergehen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -723,6 +1107,12 @@
     "Storybook" : {
       "comment" : "The library of past stories: toolbar accessibility label and navigation title",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geschichtenbuch"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -733,6 +1123,12 @@
     },
     "Subscriptions renew automatically until cancelled — cancel anytime in Settings. The free tier is yours forever: one new story every week, and every story you've told stays in your library." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Abo verlängert sich automatisch, bis es gekündigt wird – kündbar jederzeit in den Einstellungen. Die Gratisstufe gehört dir für immer: jede Woche eine neue Geschichte, und jede Geschichte, die du erzählt hast, bleibt in deinem Geschichtenbuch."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -743,6 +1139,12 @@
     },
     "Sweet dreams, %@." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Träum süß, %@."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -754,6 +1156,12 @@
     "Switch child. %@ is active." : {
       "comment" : "VoiceOver label on the profile switcher menu",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kind wechseln. %@ ist ausgewählt."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -764,6 +1172,12 @@
     },
     "Tap or swipe to begin" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe oder streiche, um zu beginnen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -774,6 +1188,12 @@
     },
     "Tell tonight's story" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Gutenachtgeschichte erzählen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -784,6 +1204,12 @@
     },
     "The adventure continues another night" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Abenteuer geht an einem anderen Abend weiter"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -794,6 +1220,12 @@
     },
     "The bookshop can't be reached right now.\nPlease try again a little later." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Buchhandlung ist gerade nicht zu erreichen.\nVersuch es später noch einmal."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -805,6 +1237,12 @@
     "The End" : {
       "comment" : "Closing mark on the last page. Norwegian uses the traditional fairy-tale ending.",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ende gut, alles gut"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -816,6 +1254,12 @@
     "the yellow blanket" : {
       "comment" : "Placeholder example in the comfort-object text field",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "die gelbe Decke"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -826,6 +1270,12 @@
     },
     "Their age" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alter des Kindes"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -836,6 +1286,12 @@
     },
     "Their name" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Name des Kindes"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -846,6 +1302,12 @@
     },
     "Time for a story,\n%@" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeit für eine Geschichte,\n%@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -856,6 +1318,12 @@
     },
     "Tonight's story will appear here, ready to read again." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier erscheint die Geschichte von heute Abend, bereit, noch einmal gelesen zu werden."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -866,6 +1334,12 @@
     },
     "Welcome them in" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Willkommen heißen"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -876,6 +1350,12 @@
     },
     "What should tonight feel like?" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wovon soll die Geschichte heute Abend erzählen?"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -886,6 +1366,12 @@
     },
     "Who are tonight's\nstories for?" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für wen sind die\nGeschichten heute Abend?"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -896,6 +1382,12 @@
     },
     "Writing tonight's story…" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Gutenachtgeschichte entsteht…"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -907,6 +1399,12 @@
     "year" : {
       "comment" : "Billing cadence in a price line: \"399 kr / year\"",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jahr"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -918,6 +1416,12 @@
     "Yearly" : {
       "comment" : "Subscription plan name on the paywall",
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jährlich"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -928,6 +1432,12 @@
     },
     "Your free story of the week is ready" : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Gratisgeschichte der Woche ist bereit"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -938,6 +1448,12 @@
     },
     "Your next free story is ready %@ — or make story time unlimited with Fable+." : {
       "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine nächste Gratisgeschichte ist %@ bereit – oder mach die Geschichtenzeit mit Fable+ unbegrenzt."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",

@@ -18,9 +18,15 @@ struct StoryLanguageTests {
     }
 
     @Test func unsupportedLanguagesFallThroughToEnglish() {
-        // Danish and German are not story languages yet (sprint pending).
-        #expect(StoryLanguage.preferred(from: ["da-DK", "de-DE"]) == .english)
+        // Danish is not a story language yet (sprint pending).
+        #expect(StoryLanguage.preferred(from: ["da-DK", "sv-SE"]) == .english)
         #expect(StoryLanguage.preferred(from: []) == .english)
+    }
+
+    @Test func germanDevicesGetGermanStories() {
+        #expect(StoryLanguage.preferred(from: ["de-DE", "en-US"]) == .german)
+        #expect(StoryLanguage.preferred(from: ["de-AT"]) == .german)
+        #expect(StoryLanguage.preferred(from: ["de-CH"]) == .german)
     }
 
     // MARK: - Model language support (pure matching; the live set varies by device)
@@ -120,6 +126,86 @@ struct StoryLanguageTests {
         story.pages[2] =
             "Ved enden av stien sto en gammel grønn dør i muren, og bak den lå en liten hage der alle blomstene allerede hadde lagt seg for kvelden."
         #expect(ContentSafetyCheck.rejection(of: story, for: norwegianRequest) == nil)
+    }
+
+    // MARK: - Safety gate in German
+
+    private var germanRequest: StoryRequest {
+        StoryRequest(
+            childName: "Emil",
+            ageBand: .little,
+            theme: .animals,
+            companion: "Bruno der Hund",
+            comfortObject: "die gelbe Decke",
+            language: .german
+        )
+    }
+
+    /// A complete, calm German story that should pass every rule. It leans
+    /// on "die" and "war" on purpose — see the false-friend test below.
+    private var germanStory: StoryContent {
+        StoryContent(
+            title: "Emil und der Abendstern",
+            pages: [
+                "Es war ein stiller Abend, und der Himmel über dem Garten wurde langsam dunkelblau, während Emil am Fenster saß und den ersten Sternen beim Aufwachen zusah.",
+                "Zusammen mit Bruno dem Hund schlich Emil hinaus in den Garten, wo das Gras noch warm war und die Luft nach Sommer und leisen Abenden roch.",
+                "Sie folgten einer kleinen Spur aus Mondlicht bis zum Apfelbaum, und dort saßen sie lange und lauschten dem Wind, der sein eigenes leises Lied sang.",
+                "Dann kroch Emil unter die gelbe Decke, und Bruno rollte sich dicht daneben zusammen. Bald schliefen beide. Gute Nacht, Emil.",
+            ],
+            moral: "Die schönsten Abende sind die ganz stillen.",
+            language: .german
+        )
+    }
+
+    @Test func aCalmGermanStoryPassesTheGate() {
+        #expect(ContentSafetyCheck.rejection(of: germanStory, for: germanRequest) == nil)
+    }
+
+    /// The English denylist contains "die", "dies", and "war" — the German
+    /// article, "this", and "was". The union must exempt exactly those
+    /// three, or every German sentence ever written would be rejected.
+    @Test func englishFalseFriendsDoNotPoisonGermanStories() {
+        let denied = ContentSafetyCheck.deniedWords(for: .german)
+        #expect(!denied.contains("die"))
+        #expect(!denied.contains("dies"))
+        #expect(!denied.contains("war"))
+        // The German words for those concepts hold the line instead.
+        #expect(denied.contains("sterben"))
+        #expect(denied.contains("Krieg"))
+        // And the rest of the English list still applies.
+        #expect(denied.contains("ghost"))
+        #expect(denied.contains("monster"))
+    }
+
+    @Test func aGermanStoryMustWindDownInGerman() {
+        var story = germanStory
+        story.pages[story.pages.count - 1] =
+            "Bruno rollte sich neben der gelben Decke zusammen, und alles wurde ganz still um Emil herum. Goodnight, Emil."
+        #expect(ContentSafetyCheck.rejection(of: story, for: germanRequest) == .endingNotSleepy)
+    }
+
+    @Test func germanDeniedWordsAreCaught() {
+        var story = germanStory
+        story.pages[1] =
+            "Zusammen mit Bruno dem Hund schlich Emil hinaus in den Garten, obwohl er in der Nacht davor einen Albtraum gehabt hatte, und die Luft roch nach Sommer."
+        #expect(ContentSafetyCheck.rejection(of: story, for: germanRequest) == .deniedWord("Albtraum"))
+    }
+
+    @Test func englishDeniedWordsAreCaughtInsideAGermanStory() {
+        var story = germanStory
+        story.pages[2] =
+            "Sie folgten einer kleinen Spur aus Mondlicht, und Bruno flüsterte etwas über einen ghost, der angeblich hinter dem Apfelbaum wohnte."
+        #expect(ContentSafetyCheck.rejection(of: story, for: germanRequest) == .deniedWord("ghost"))
+    }
+
+    @Test func germanInstructionsDemandGermanAndAGermanGoodnight() {
+        var request = germanRequest
+        let instructions = ModelStoryEngine.instructions(for: request)
+        #expect(instructions.contains("written in German"))
+        #expect(instructions.contains("Gute Nacht, Emil."))
+        #expect(instructions.contains("calm, kind, and reassuring"))
+        request.language = .english
+        #expect(!ModelStoryEngine.instructions(for: request).contains("written in German"))
     }
 
     // MARK: - Curated fallback across languages
