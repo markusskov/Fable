@@ -56,7 +56,8 @@ Three workstreams per language, in honesty-order (never ship a language whose st
   - [ ] Curated templates in Norwegian — editorial translation, owner (native speaker) reviews before merge
   - [ ] ASC metadata: paste docs/appstore/metadata-nb.md (ready) into the nb localization
   - [ ] Store images: English set stays as fallback; owner localizes Figma captions when ready (translations in metadata-nb.md)
-- [ ] **de-DE second**, then evaluate es/fr/others by App Store Connect country analytics
+- [ ] **48-hour language sprint (owner green-lit 2026-07-23), after nb-NO infra lands:** de-DE, es-ES, fr-FR, it-IT, pt-BR. Each gets all three app layers + a store pack (no em dashes, owner reviews nothing except nb; model-language gating protects story quality everywhere)
+- [ ] CJK (ja/ko/zh) deferred deliberately: bedtime idiom and typography deserve more care than a sprint; revisit with country analytics after launch
 - [ ] Model-language honesty check per locale: if Apple Intelligence can't write the language, that locale runs curated-only — same "never break bedtime" rule
 
 ## Milestone 5 — Grow (post-1.0)
