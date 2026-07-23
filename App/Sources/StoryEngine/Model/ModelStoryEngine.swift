@@ -9,6 +9,20 @@ struct ModelStoryEngine: StoryEngine {
         return false
     }
 
+    /// The model-language honesty check: a locale whose language the model
+    /// cannot write runs curated-only. Refusing here surfaces as a silent
+    /// fallback in StoryProvider — never as an error at bedtime.
+    static func supportsLanguage(_ language: StoryLanguage) -> Bool {
+        supports(language, among: SystemLanguageModel.default.supportedLanguages)
+    }
+
+    static func supports(_ language: StoryLanguage, among supported: Set<Locale.Language>) -> Bool {
+        supported.contains { candidate in
+            guard let code = candidate.languageCode?.identifier else { return false }
+            return language.matches(code: code)
+        }
+    }
+
     func makeStory(for request: StoryRequest, seed: UInt64) async throws -> StoryContent {
         let content = Self.repaginated(try await rawStory(for: request), for: request)
         guard ContentSafetyCheck.isAcceptable(content, for: request) else {
@@ -47,7 +61,13 @@ struct ModelStoryEngine: StoryEngine {
             pages[pages.count - 2] += " " + last
             pages.removeLast()
         }
-        return StoryContent(title: content.title, pages: pages, moral: content.moral, recap: content.recap)
+        return StoryContent(
+            title: content.title,
+            pages: pages,
+            moral: content.moral,
+            recap: content.recap,
+            language: content.language
+        )
     }
 
     /// The reader draws its own "The End" marker; a model that writes one
@@ -64,7 +84,9 @@ struct ModelStoryEngine: StoryEngine {
     /// on-device test harness (which inspects rejections) may call this —
     /// unchecked output must never reach the UI.
     func rawStory(for request: StoryRequest) async throws -> StoryContent {
-        guard Self.isAvailable else { throw StoryEngineError.unavailable }
+        guard Self.isAvailable, Self.supportsLanguage(request.language) else {
+            throw StoryEngineError.unavailable
+        }
 
         let session = LanguageModelSession(instructions: Self.instructions(for: request))
         // Low temperature: bedtime stories want steady, predictable prose, not
@@ -79,19 +101,23 @@ struct ModelStoryEngine: StoryEngine {
             title: response.content.title,
             pages: response.content.pages,
             moral: response.content.moral,
-            recap: response.content.recap
+            recap: response.content.recap,
+            language: request.language
         )
     }
 
     // MARK: - Prompt building (deterministic, unit-tested)
 
     static func instructions(for request: StoryRequest) -> String {
-        """
+        // For English the directive is nil and the instructions stay
+        // byte-identical to the tuned base prompt — do not regress it.
+        let languageRule = request.language.modelDirective.map { "- \($0)\n" } ?? ""
+        return """
         You are Fable, a gentle bedtime storyteller for young children. A parent \
         reads your story aloud as the very last thing before their child sleeps.
 
         Rules that always apply:
-        - The story is calm, kind, and reassuring from the first line to the last. \
+        \(languageRule)- The story is calm, kind, and reassuring from the first line to the last. \
         Mild, cozy adventure is welcome; danger, peril, villains, fighting, \
         scary imagery, sadness without comfort, and loud excitement are not.
         - Nobody in the story ever feels fear or worry, not even briefly and \
@@ -111,7 +137,7 @@ struct ModelStoryEngine: StoryEngine {
         - The story slows down as it goes: the final two pages wind toward rest. \
         The last page is a full page like every other — the child settles in \
         snug and sleepy, and its final sentence says goodnight to the child \
-        by name, for example "Goodnight, \(request.childName)." Never put the \
+        by name, for example "\(request.language.goodnightExample(for: request.childName))" Never put the \
         goodnight on a tiny page of its own, and never end without the \
         child's name.
         - No brand names, no pop-culture characters, no morals about obedience. \

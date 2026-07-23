@@ -5,6 +5,15 @@ import Foundation
 enum TemplateLibrary {
     static let all: [StoryTemplate] = [lanternPath, sleepyVoyage, littleLostFriend]
 
+    /// Curated shelves by story language. A shelf stays empty until its
+    /// templates exist as real editorial work — Norwegian awaits the
+    /// owner-reviewed translation (roadmap: Milestone 4); the engine falls
+    /// back to English rather than serve machine-translated prose.
+    static let byLanguage: [StoryLanguage: [StoryTemplate]] = [
+        .english: all,
+        .norwegianBokmal: [],
+    ]
+
     // MARK: - The Lantern Path (adventure · magic)
 
     static let lanternPath = StoryTemplate(

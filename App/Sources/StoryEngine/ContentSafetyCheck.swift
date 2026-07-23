@@ -46,7 +46,9 @@ enum ContentSafetyCheck {
     /// Words that have no place in a bedtime story for small children.
     /// Matched case-insensitively on word boundaries, so each inflection that
     /// matters is listed explicitly ("monster" does not catch "monsters").
-    private static let deniedWords: [String] = [
+    /// A story is always checked against English *plus* its own language —
+    /// a code-switched frightening word is still a frightening word.
+    private static let englishDeniedWords: [String] = [
         // Violence and harm.
         "blood", "bloody", "kill", "killed", "kills", "die", "died", "dies",
         "dead", "death", "gun", "guns", "knife", "knives", "weapon", "weapons",
@@ -65,13 +67,46 @@ enum ContentSafetyCheck {
         "stupid", "dumb", "shut up", "idiot", "ugly",
     ]
 
+    /// Norwegian bokmål denylist, same policy as English: explicit
+    /// inflections, err strict — a false rejection only means the curated
+    /// fallback answers instead. Homonyms that would poison cozy prose are
+    /// deliberately absent: "dør" (dies, but also door), "redde" (scared,
+    /// but also to rescue), "kjempe" (to fight, but also giant / an
+    /// intensifier prefix).
+    private static let norwegianDeniedWords: [String] = [
+        // Violence and harm.
+        "blod", "blodig", "drepe", "dreper", "drepte", "drept", "dø", "død",
+        "døde", "våpen", "kniv", "kniver", "pistol", "pistoler", "gevær",
+        "bombe", "bomber", "sverd", "krig", "kriger", "slåss", "sloss",
+        "angrep", "angriper", "skyte", "skjøt", "skutt", "hat", "hater",
+        "hatet",
+        // Fear and dread.
+        "redd", "redsel", "frykt", "fryktet", "skrekk", "skremt", "skremme",
+        "skremmende", "skummel", "skummelt", "skumle", "nifs", "nifst",
+        "nifse", "uhyggelig", "uhyggelige", "mareritt", "skrik", "skriker",
+        "skrek", "monster", "monstre", "monsteret", "spøkelse", "spøkelser",
+        "spøkelset", "zombie", "zombier", "demon", "demoner", "heks", "heksa",
+        "hekser", "ond", "onde", "ondskap", "farlig", "farlige", "fare",
+        "hjemsøkt", "grusom", "grusomt", "grusomme",
+        // Unkindness.
+        "dum", "dumme", "dumt", "teit", "stygg", "stygt", "stygge", "idiot",
+        "hold kjeft", "hold munn", "slem", "slemme", "slemt",
+    ]
+
+    static func deniedWords(for language: StoryLanguage) -> [String] {
+        switch language {
+        case .english: englishDeniedWords
+        case .norwegianBokmal: englishDeniedWords + norwegianDeniedWords
+        }
+    }
+
     /// A bedtime story ends going to sleep, not mid-adventure. The last page
     /// must carry at least one of these (word-boundary matched, explicit
     /// inflections, same policy as the denylist). The prompt demands a
     /// "Goodnight, <name>" ending; this is the gate that makes it stick —
     /// review 2026-07-22 observed a passing story that ended "continued to
     /// explore and discover new places".
-    private static let sleepSignals: [String] = [
+    private static let englishSleepSignals: [String] = [
         "goodnight", "good night", "sleep", "sleeps", "sleepy", "asleep",
         "sleeping", "dream", "dreams", "dreaming", "rest", "rests", "resting",
         "rested", "snug", "snuggle", "snuggled", "snuggles", "yawn", "yawned",
@@ -79,12 +114,31 @@ enum ContentSafetyCheck {
         "tucked in", "eyes closed", "closed their eyes",
     ]
 
-    private static func firstDeniedWord(in text: String) -> String? {
-        deniedWords.first { containsWord($0, in: text) }
+    /// A Norwegian story must wind down in Norwegian — an English goodnight
+    /// on a bokmål last page means the model broke language, and that story
+    /// should not reach a child. So no union here, unlike the denylist.
+    private static let norwegianSleepSignals: [String] = [
+        "god natt", "godnatt", "sov", "sove", "sover", "sovne", "sovner",
+        "sovnet", "søvn", "søvnen", "søvnig", "trøtt", "trøtte", "trett",
+        "drøm", "drømme", "drømmer", "drømte", "hvile", "hviler", "hvilte",
+        "gjespe", "gjesper", "gjespet", "vugge", "vugger", "vugget",
+        "voggesang", "bysse", "bysser", "bysset", "under dyna",
+        "lukket øynene", "øynene gled igjen",
+    ]
+
+    static func sleepSignals(for language: StoryLanguage) -> [String] {
+        switch language {
+        case .english: englishSleepSignals
+        case .norwegianBokmal: norwegianSleepSignals
+        }
     }
 
-    private static func containsSleepSignal(_ text: String) -> Bool {
-        sleepSignals.contains { containsWord($0, in: text) }
+    private static func firstDeniedWord(in text: String, language: StoryLanguage) -> String? {
+        deniedWords(for: language).first { containsWord($0, in: text) }
+    }
+
+    private static func containsSleepSignal(_ text: String, language: StoryLanguage) -> Bool {
+        sleepSignals(for: language).contains { containsWord($0, in: text) }
     }
 
     private static func containsWord(_ word: String, in text: String) -> Bool {
@@ -139,13 +193,18 @@ enum ContentSafetyCheck {
             if !name.isEmpty, !lastPage.localizedCaseInsensitiveContains(name) {
                 return .childMissingFromLastPage
             }
-            if !containsSleepSignal(lastPage) {
+            if !containsSleepSignal(lastPage, language: content.language) {
                 return .endingNotSleepy
             }
         }
 
-        // Nothing frightening or unkind, anywhere in the text.
-        if let word = firstDeniedWord(in: fullText) { return .deniedWord(word) }
+        // Nothing frightening or unkind, anywhere in the text. Vocabulary
+        // follows the language the content is written in, not the request:
+        // a curated English story served to a Norwegian request is still
+        // English text.
+        if let word = firstDeniedWord(in: fullText, language: content.language) {
+            return .deniedWord(word)
+        }
         return nil
     }
 }

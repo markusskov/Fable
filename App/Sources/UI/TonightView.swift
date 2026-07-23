@@ -252,7 +252,8 @@ struct TonightView: View {
             ageBand: profile.ageBand,
             theme: theme,
             companion: profile.companion,
-            comfortObject: profile.comfortObject
+            comfortObject: profile.comfortObject,
+            language: .deviceDefault
         )
         if let adventure {
             request.series = StoryRequest.SeriesContext(

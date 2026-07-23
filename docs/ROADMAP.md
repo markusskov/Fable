@@ -54,13 +54,15 @@ Three workstreams per language, in honesty-order (never ship a language whose st
   - [x] App UI: String Catalog infrastructure + Norwegian translations (all screens incl. paywall legal text)
     - `App/Resources/Localizable.xcstrings` (en source + nb, plural variations for meter/trial lines); plain-`String` call sites plumbed through `String(localized:)` / `LocalizedStringKey`. `SWIFT_EMIT_LOC_STRINGS` on, so `xcodebuild -exportLocalizations` verifies catalog coverage — rerun that check when adding UI strings. Verified live in simulator (`-AppleLanguages "(nb)"`): setup, Tonight (incl. meter plurals), reader (end page uses "Snipp, snapp, snute"), paywall incl. legal text; English re-verified untouched (screenshot UI tests still pass). Story content stays English until the story-language item lands.
     - Catalog guarded by `LocalizationCatalogTests` (required-language coverage, plural categories, format-specifier parity). Each new locale PR appends its code to `requiredLanguages` — that is the sprint's completeness gate.
-  - [ ] Story language plumbing: `StoryRequest.language`, model instructions in-language, `SystemLanguageModel` language-support gating, curated fallback per language
+  - [x] Story language plumbing: `StoryRequest.language`, model instructions in-language, `SystemLanguageModel` language-support gating, curated fallback per language
+    - `StoryLanguage` (en/nb; sprint languages append as cases) resolved from `Locale.preferredLanguages`; model engine refuses unsupported languages via `SystemLanguageModel.supportedLanguages` (silent curated fallback, never an error); `ContentSafetyCheck` is language-aware — denylist is en ∪ nb (code-switched scary words still caught), sleep signals are nb-only for nb (an English "goodnight" on a bokmål page rejects); curated shelves per language, empty nb shelf falls back to English honestly (`StoryContent.language` stamps what was served). nb safety vocab + directive on the owner skim list (OWNER-ASKS #2).
   - [ ] Curated templates in Norwegian — editorial translation, owner (native speaker) reviews before merge
   - [ ] ASC metadata: paste docs/appstore/metadata-nb.md (ready) into the nb localization
   - [ ] Store images: English set stays as fallback; owner localizes Figma captions when ready (translations in metadata-nb.md)
 - [ ] **48-hour language sprint (owner green-lit 2026-07-23), after nb-NO infra lands:** de-DE, es-ES, fr-FR, it-IT, pt-BR. Each gets all three app layers + a store pack (no em dashes, owner reviews nothing except nb; model-language gating protects story quality everywhere)
 - [ ] CJK (ja/ko/zh) deferred deliberately: bedtime idiom and typography deserve more care than a sprint; revisit with country analytics after launch
-- [ ] Model-language honesty check per locale: if Apple Intelligence can't write the language, that locale runs curated-only — same "never break bedtime" rule
+- [x] Model-language honesty check per locale: if Apple Intelligence can't write the language, that locale runs curated-only — same "never break bedtime" rule
+  - Mechanism shipped with the language plumbing (`ModelStoryEngine.supportsLanguage` gate); each sprint language gets it for free by existing as a `StoryLanguage` case. One nuance: "curated-only" serves the *English* shelf until that language's curated templates land — honest fallback beats machine-translated prose.
 
 ## Milestone 5 — Grow (post-1.0)
 
