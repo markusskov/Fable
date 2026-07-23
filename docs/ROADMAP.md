@@ -43,7 +43,8 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [x] App Store page: description/keywords/subtitle done (docs/appstore/metadata.md); screenshots shipped 2026-07-23
   - 6.9" set (1320×2868) captured by a scripted UI-test lane (`scripts/capture-screenshots.sh` + `FableScreenshots` scheme, outside CI) → `docs/appstore/screenshots/6.9/`; rerun after UI changes
   - App pinned iPhone-only for v1 (`TARGETED_DEVICE_FAMILY = 1`): no iPad screenshot slot, no unpolished stretched layout in review; real iPad layout stays in Milestone 4
-- [ ] Release automation: version/build bump, changelog from conventional commits
+- [x] Release automation: version/build bump, changelog from conventional commits
+  - `scripts/release.sh` (bump major/minor/patch/X.Y.Z, build-only bump, tag) writes project.yml + CHANGELOG.md and commits; pushing the tag triggers `release.yml`, which publishes a GitHub Release with that version's changelog section. CI dry-runs the script so it can't rot. First real run happens at submission time.
 - [ ] Submit for review
 
 ## Milestone 4 — Grow (post-1.0)
