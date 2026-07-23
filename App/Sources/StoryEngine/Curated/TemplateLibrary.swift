@@ -16,9 +16,18 @@ enum TemplateLibrary {
     /// commas and periods instead. Pool phrases are chosen so every slot
     /// agrees grammatically at every call site ({treasure} entries are all
     /// common-gender so «den» can refer to them).
+    /// German shelf discipline (German declines articles, the others don't):
+    /// {companion} and {comfort} appear only where the nominative form a
+    /// parent naturally types stays correct — subject positions, appositions
+    /// like "{comfort} ganz nah" — never after case-governing prepositions.
+    /// {setting} sites all govern the dative, and the pool entries bake the
+    /// dative article in. {treasure} entries are introduced by colon
+    /// apposition (nominative) and referred back to by a fixed epithet or a
+    /// per-template uniform pronoun, so genders never disagree.
     static let byLanguage: [StoryLanguage: [StoryTemplate]] = [
         .english: all,
         .norwegianBokmal: [lanternPathNb, sleepyVoyageNb, littleLostFriendNb],
+        .german: [lanternPathDe, sleepyVoyageDe, littleLostFriendDe],
     ]
 
     // MARK: - The Lantern Path (adventure · magic)
@@ -270,6 +279,132 @@ enum TemplateLibrary {
         moralVariants: [
             "Å følge noen hjem er den varmeste måten å avslutte en dag på.",
             "Ingen snillhet er liten når du selv er liten.",
+        ]
+    )
+
+    // MARK: - Der Laternenpfad (de · adventure · magic)
+
+    static let lanternPathDe = StoryTemplate(
+        id: "lantern-path-de",
+        themes: [.adventure, .magic],
+        titleVariants: [
+            "{name} und der Laternenpfad",
+            "Die Nacht, in der die Glühwürmchen zu {name} kamen",
+            "{name} und die kleinen Lichter",
+        ],
+        pages: [
+            "Eines Abends, gerade als der Himmel die Farbe von Blaubeeren annahm, entdeckte {name} ein winziges Licht, das vor dem Fenster auf und ab tanzte. Dann noch eins. Und noch eins. Glühwürmchen! Und es sah ganz so aus, als warteten sie auf jemanden.",
+            "{name} schlich leise hinaus, {comfort} fest im Arm, und {companion} kam natürlich mit. Die Glühwürmchen bildeten einen leuchtenden Pfad, wie ein Band aus winzigen Laternen, und der Pfad schlängelte sich hinüber zu {setting}.",
+            "Der Weg fühlte sich ganz weich an unter den Füßen von {name}, und die Nacht war lau und freundlich. Irgendwo weit draußen machte es {sound}, ein schläfriger, sanfter Laut, so als würde die ganze Welt einmal tief gähnen.",
+            "Am Ende des Laternenpfads, gut versteckt unter einer moosigen Wurzel, da lag er, still und geduldig: {treasure}. Er glomm ganz leise, als hätte er lange, lange darauf gewartet, endlich gefunden zu werden.",
+            "„Er ist vom Himmel gefallen“, flüsterte {companion}. „Bestimmt hat er Heimweh.“ {name} hob ihn auf, ganz vorsichtig, ganz behutsam. Er war warm, wie ein kleines Herz, das leise klopfte.",
+            "Da hob {name} ihn hoch, höher, so hoch kleine Arme eben reichen. Und die Glühwürmchen sammelten sich darunter und trugen ihn hinauf, hinauf, hinauf, bis er sich wieder an den Himmel schmiegte, genau an seinen Platz.",
+            "Der Himmel funkelte ein Dankeschön. Die Glühwürmchen verneigten sich mit ihren kleinen Lichtern. Und {name} wurde auf einmal wunderbar müde, auf die gute Art, so wie nach einem Tag voller Wunder.",
+            "Zu Hause kuschelte sich {name} unter die Bettdecke, {comfort} ganz nah, und {companion} rollte sich dicht daneben zusammen. Draußen blieb ein einzelnes Glühwürmchen am Fenster und hielt Wache. Gute Nacht, {name}. Der Himmel lächelt dir heute Nacht zu.",
+        ],
+        settings: [
+            "dem alten Gartentor",
+            "dem flüsternden Birkenwäldchen",
+            "der Wiese hinter dem Hügel",
+            "dem kleinen Bach mit den runden, glatten Steinen",
+        ],
+        sounds: [
+            "schuhu",
+            "sch-sch-schhh",
+            "prrrl",
+        ],
+        treasures: [
+            "ein kleiner gefallener Stern",
+            "ein Mondstrahl in einem Marmeladenglas",
+            "ein kleiner Mondkristall, der nur für freundliche Herzen leuchtet",
+        ],
+        moralVariants: [
+            "Freundliche Hände finden den Weg nach Hause, und alles, was sie tragen, findet ihn mit.",
+            "Auch kleine Helfer können einen ganzen Himmel zum Leuchten bringen.",
+        ]
+    )
+
+    // MARK: - Die schläfrige Bootsfahrt (de · space · ocean)
+
+    static let sleepyVoyageDe = StoryTemplate(
+        id: "sleepy-voyage-de",
+        themes: [.space, .ocean],
+        titleVariants: [
+            "{name} und die schläfrige Bootsfahrt",
+            "Das Boot aus Mondlicht",
+            "{name} und die summenden Sterne",
+        ],
+        pages: [
+            "Als das Haus still wurde und die Lichter leise wurden, tat das Bett von {name} etwas, das Betten sonst fast nie tun: Es hob sich, ganz sachte, und wurde ein kleines Boot.",
+            "Das Boot glitt aus dem Fenster hinaus in das weiche Dunkel, das freundlich und behaglich war, so als würde einen der ganze Himmel zudecken. Vorne im Boot saß {companion}, und {comfort} wurde das allerbeste Kissen.",
+            "Sie segelten an {setting} vorbei, wo alles schon schlief. Die Wellen, oder waren es vielleicht Wolken, wiegten das Boot ganz langsam. Eins... zwei... eins... zwei...",
+            "Eine Familie von Sternen kam heraus, um sie vorbeiziehen zu sehen. Der allerkleinste Stern summte {sound}, jene Melodie, die Sterne singen, wenn es Zeit zum Ausruhen ist. {name} summte ganz leise mit.",
+            "„Schau“, flüsterte {companion}. Dort vorn, in einem weichen Licht, schwebte {treasure}. Ganz sacht kam der stille Gast näher, nickte höflich und blieb einfach bei ihnen, wie ein alter Freund, der den Weg kannte.",
+            "Das Boot wiegte sich. Die Sterne summten. Die Augen von {name} wurden schwer und noch ein bisschen schwerer, auf die allerschönste Art, wie Decken aus warmer Stille.",
+            "Langsam, ganz langsam drehte das kleine Boot heimwärts, glitt hinab durch das weiche Dunkel, zurück durch das Fenster, und landete, plumps, ganz sanft, genau dort, wo ein Bett stehen soll.",
+            "Und da lag {name}, warm zugedeckt, {comfort} gleich daneben, während {companion} schon träumte. Die Reise würde morgen Abend wieder dort warten. Schlaf gut, {name}. Die Sterne summen für dich.",
+        ],
+        settings: [
+            "dem schlafenden Leuchtturm",
+            "der Insel mit dem kissenweichen Sand",
+            "der Bucht, in der die Wale träumen",
+            "dem Hafen der Papierboote",
+        ],
+        sounds: [
+            "mmh-mmh-mmh",
+            "lu-lu-lu",
+            "summm",
+        ],
+        treasures: [
+            "ein Laternenfisch mit einem eigenen kleinen Nachtlicht",
+            "eine kleine Wolke, die aussah wie eine Katze",
+            "das Ruderboot des Mondes",
+        ],
+        moralVariants: [
+            "Das stille Dunkel ist ein Freund, der uns sanft bis zum Morgen trägt.",
+            "Schlafen ist eine Reise, und alle, die schlafen, sind mutige kleine Reisende.",
+        ]
+    )
+
+    // MARK: - Der kleine verlorene Freund (de · animals · friendship)
+
+    static let littleLostFriendDe = StoryTemplate(
+        id: "little-lost-friend-de",
+        themes: [.animals, .friendship],
+        titleVariants: [
+            "{name} und der kleine verlorene Freund",
+            "Der allerkleinste Gast",
+            "Wie {name} den kleinen Gast nach Hause brachte",
+        ],
+        pages: [
+            "Kurz vor dem Schlafengehen hörte {name} das allerkleinste Geräusch der Welt, und es kam von der Türschwelle: {sound}. {name} und {companion} schauten vorsichtig nach draußen.",
+            "Dort, nicht größer als eine Teetasse, saß ein kleines Wesen mit großen, runden Augen. Es hatte sich verlaufen. Sein Zuhause lag ein ganzes Stück hinter {setting}, und der Abend wurde tiefer und tiefer.",
+            "„Keine Sorge“, sagte {name} mit der sanften Stimme, die man für sehr kleine Dinge benutzt. „Wir bringen dich nach Hause.“ Und natürlich kam auch {comfort} mit, denn mit etwas Vertrautem an der Seite fühlt sich jeder Weg ein bisschen leichter an.",
+            "Der kleine Gast durfte reiten, denn {companion} trug ihn gern auf dem Rücken, und er hielt sich gut fest. Unterwegs schniefte er ein bisschen, und da erzählte {name} leise, was zu Hause auf kleine Gäste wartet: {treasure}. Die runden Augen wurden noch runder vor Staunen, und alles Schniefen war vergessen.",
+            "An {setting} vorbei gingen sie, Schritt für leisen Schritt. Die Abendluft roch nach Gras und Sternen. Der kleine Gast begann {sound} zu summen, aber fröhlicher jetzt, so wie man eben summt, wenn man auf dem Weg nach Hause ist.",
+            "Und dann war es da: eine winzige Tür unter einem winzigen Hügel, mit warmem Licht dahinter und einer Familie aus lauter Kleinen, die winkten. Der allerkleinste Gast umarmte den Daumen von {name}, und das war die größte Umarmung, die er zustande brachte.",
+            "„Danke“, piepste er, „dass ihr mich den ganzen Weg nach Hause gebracht habt.“ Und er ließ ein Geschenk da: ein winziges Schnurrhaarkitzeln auf der Nasenspitze von {name}. So etwas ist eine große Ehre unter kleinen Wesen.",
+            "{name} und {companion} spazierten unter dem freundlichen alten Mond nach Hause und gähnten den ganzen Weg. Und als {name} ins Bett kroch, {comfort} ganz fest im Arm, da fühlte sich die Nacht freundlich an und voller kleiner, glücklicher Zuhause. Gute Nacht, {name}.",
+        ],
+        settings: [
+            "der Brombeerhecke",
+            "den drei runden Steinen",
+            "der großen Eiche mit dem schiefen Ast",
+            "dem hohen Gras, in dem die Grillen singen",
+        ],
+        sounds: [
+            "piep-piep",
+            "fiep",
+            "miau",
+        ],
+        treasures: [
+            "das weichste Moosbett im ganzen Wald",
+            "eine Speisekammer voller Honigbeeren",
+            "ein Nachtlicht aus einem eingefangenen Sonnenstrahl",
+        ],
+        moralVariants: [
+            "Jemanden nach Hause zu bringen ist der wärmste Abschluss für einen Tag.",
+            "Keine Freundlichkeit ist klein, wenn man selbst klein ist.",
         ]
     )
 }

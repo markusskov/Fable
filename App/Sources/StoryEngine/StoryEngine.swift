@@ -32,6 +32,9 @@ struct StoryRequest: Sendable, Equatable {
         return switch language {
         case .english: "a small brave fox"
         case .norwegianBokmal: "en liten modig rev"
+        // Nominative — German templates only splice {companion} into
+        // subject positions, so any case-marked parent input stays correct.
+        case .german: "ein kleiner mutiger Fuchs"
         }
     }
 
@@ -41,6 +44,9 @@ struct StoryRequest: Sendable, Equatable {
         return switch language {
         case .english: "a soft warm blanket"
         case .norwegianBokmal: "et mykt og varmt teppe"
+        // Feminine, so nominative and accusative splice sites both read
+        // correctly ("eine" is both cases).
+        case .german: "eine weiche, warme Decke"
         }
     }
 }

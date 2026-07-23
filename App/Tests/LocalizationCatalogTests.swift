@@ -14,10 +14,10 @@ import Testing
 /// replaces the raw JSON these tests need.
 struct LocalizationCatalogTests {
     /// Every language the app promises a complete UI translation for.
-    private static let requiredLanguages = ["nb"]
+    private static let requiredLanguages = ["nb", "de"]
 
     /// CLDR plural categories a variation must cover for the languages above
-    /// (English and Norwegian both use exactly one/other for cardinals).
+    /// (English, Norwegian, and German all use exactly one/other for cardinals).
     private static let requiredPluralCategories: Set<String> = ["one", "other"]
 
     private let sourceLanguage: String
