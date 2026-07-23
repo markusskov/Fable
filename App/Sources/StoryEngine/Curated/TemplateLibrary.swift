@@ -6,12 +6,19 @@ enum TemplateLibrary {
     static let all: [StoryTemplate] = [lanternPath, sleepyVoyage, littleLostFriend]
 
     /// Curated shelves by story language. A shelf stays empty until its
-    /// templates exist as real editorial work — Norwegian awaits the
-    /// owner-reviewed translation (roadmap: Milestone 4); the engine falls
-    /// back to English rather than serve machine-translated prose.
+    /// templates exist as real editorial work; the engine falls back to
+    /// English rather than serve machine-translated prose.
+    ///
+    /// The Norwegian shelf is an editorial retelling of the English one, not
+    /// a literal translation: same arcs and slots, prose written to sound
+    /// like a Norwegian parent telling the story. Norwegian typography rule:
+    /// no dashes in story prose (owner copy style) — clauses join with
+    /// commas and periods instead. Pool phrases are chosen so every slot
+    /// agrees grammatically at every call site ({treasure} entries are all
+    /// common-gender so «den» can refer to them).
     static let byLanguage: [StoryLanguage: [StoryTemplate]] = [
         .english: all,
-        .norwegianBokmal: [],
+        .norwegianBokmal: [lanternPathNb, sleepyVoyageNb, littleLostFriendNb],
     ]
 
     // MARK: - The Lantern Path (adventure · magic)
@@ -137,6 +144,132 @@ enum TemplateLibrary {
         moralVariants: [
             "Helping someone home is the warmest way to end a day.",
             "No kindness is small when you are small.",
+        ]
+    )
+
+    // MARK: - Lyktestien (nb · adventure · magic)
+
+    static let lanternPathNb = StoryTemplate(
+        id: "lantern-path-nb",
+        themes: [.adventure, .magic],
+        titleVariants: [
+            "{name} og lyktestien",
+            "Natten ildfluene kom til {name}",
+            "{name} og den lille lysstien",
+        ],
+        pages: [
+            "En kveld, akkurat da himmelen fikk samme farge som blåbær, fikk {name} øye på et bitte lite lys som blafret utenfor vinduet. Så ett til. Og enda ett. Ildfluer! Og det så ut som om de ventet på noen.",
+            "{name} listet seg ut sammen med {companion}, med {comfort} trygt i armene. Ildfluene laget en lysende sti, som et bånd av bitte små lykter, og stien buktet seg bort mot {setting}.",
+            "Stien var myk under føttene til {name}, og natten var lun og vennlig. Et sted langt borte hørtes {sound}, en søvnig, mild lyd, som om hele verden gjespet.",
+            "Ved enden av lyktestien, gjemt under en moserot, fant de den: {treasure}. Den lyste svakt, som om den hadde ventet lenge, lenge på å bli funnet.",
+            "«Den har falt ned fra himmelen», hvisket {companion}. «Den lengter nok hjem.» {name} løftet den opp, forsiktig, forsiktig. Den var varm, som et lite hjerte som banket.",
+            "Så løftet {name} den høyt, høyere, så høyt som armer kan nå. Og ildfluene samlet seg under den og bar den opp, opp, opp, helt til den la seg til rette på himmelen, akkurat der den hørte hjemme.",
+            "Himmelen blunket takk. Ildfluene bukket med de små lysene sine. Og {name} kjente seg med ett riktig søvnig, på den gode måten, slik man blir etter en dag full av undere.",
+            "Hjemme igjen krøp {name} under dyna med {comfort}, og {companion} la seg tett inntil. Utenfor ble én ildflue igjen ved vinduet og holdt vakt. God natt, {name}. I natt smiler himmelen til deg.",
+        ],
+        settings: [
+            "den gamle hageporten",
+            "den hviskende bjørkeskogen",
+            "engen bak haugen",
+            "den lille bekken med de blanke steinene",
+        ],
+        sounds: [
+            "uhu",
+            "sj-sj-sjjj",
+            "prrrl",
+        ],
+        treasures: [
+            "en bitte liten stjerne",
+            "en månestråle i et syltetøyglass",
+            "en sølvbjelle som bare ringer for snille hjerter",
+        ],
+        moralVariants: [
+            "Snille hender finner veien hjem, og det gjør det de bærer på også.",
+            "Selv små hjelpere kan lyse opp en hel himmel.",
+        ]
+    )
+
+    // MARK: - Den søvnige seilasen (nb · space · ocean)
+
+    static let sleepyVoyageNb = StoryTemplate(
+        id: "sleepy-voyage-nb",
+        themes: [.space, .ocean],
+        titleVariants: [
+            "{name} og den søvnige seilasen",
+            "Båten av månelys",
+            "{name} og de nynnende stjernene",
+        ],
+        pages: [
+            "Da huset ble stille og lysene ble dempet, gjorde sengen til {name} noe senger nesten aldri gjør: Den løftet seg, ganske forsiktig, og ble til en liten båt.",
+            "Båten gled ut av vinduet og inn i det myke mørket, som var vennlig og lunt, som å bli tullet godt inn av hele himmelen. Forrest i båten satt {companion}, og {comfort} ble den fineste puten.",
+            "De seilte forbi {setting}, der alt allerede sov. Bølgene, eller var det kanskje skyer, vugget båten sakte. Én... to... én... to...",
+            "En familie av stjerner kom ut for å se dem seile forbi. Den aller minste stjernen nynnet {sound}, den melodien stjerner synger når det er på tide å hvile. {name} nynnet med, helt stille.",
+            "«Se», hvisket {companion}. Der fremme, i et mykt lys, fløt {treasure}. Den kom nærmere, nikket høflig, og ble med dem videre, som en gammel venn som kjente veien.",
+            "Båten vugget. Stjernene nynnet. Øyelokkene til {name} ble tunge, og enda tyngre, på den aller fineste måten, som tepper laget av varm stillhet.",
+            "Sakte, sakte snudde den lille båten hjemover, gled ned gjennom det myke mørket, inn gjennom vinduet igjen, og landet, dump, ganske forsiktig, akkurat der en seng skal stå.",
+            "Og der lå {name}, godt inntullet, med {comfort} like ved, mens {companion} allerede drømte. Seilasen ventet der igjen i morgen kveld. Sov godt nå, lille seiler. Stjernene nynner for deg, {name}.",
+        ],
+        settings: [
+            "det sovende fyrtårnet",
+            "øya med den putemyke sanden",
+            "vika der hvalene drømmer",
+            "havnen med de små papirbåtene",
+        ],
+        sounds: [
+            "so-ro-so-ro",
+            "lu-lu-lu",
+            "mmm-hmm-mmm",
+        ],
+        treasures: [
+            "en lyktefisk med sitt eget lille nattlys",
+            "en liten sky formet som en katt",
+            "månens egen robåt",
+        ],
+        moralVariants: [
+            "Det stille mørket er en venn som bærer oss varsomt til morgenen.",
+            "Søvnen er en seilas, og alle som sover er tapre små seilere.",
+        ]
+    )
+
+    // MARK: - Den lille bortkomne vennen (nb · animals · friendship)
+
+    static let littleLostFriendNb = StoryTemplate(
+        id: "little-lost-friend-nb",
+        themes: [.animals, .friendship],
+        titleVariants: [
+            "{name} og den lille bortkomne vennen",
+            "Den aller minste gjesten",
+            "Da {name} fulgte den lille hjem",
+        ],
+        pages: [
+            "Rett før leggetid hørte {name} den aller minste lyden i verden fra trappen utenfor: {sound}. {name} og {companion} tittet forsiktig ut.",
+            "Der, ikke større enn en tekopp, satt et lite vesen med store, runde øyne. Det hadde gått seg bort. Hjemmet lå helt borte ved {setting}, og kvelden ble dypere og dypere.",
+            "«Bare rolig», sa {name} med den milde stemmen man bruker til veldig små ting. «Vi følger deg hjem.» {name} tok med {comfort}, for alt kjennes litt modigere med {comfort}.",
+            "Den lille fikk ri på ryggen til {companion} og holdt seg godt fast. Underveis snufset den litt, så {name} fortalte om {treasure}. Da ble de runde øynene enda rundere av undring, og den glemte helt at den hadde vært lei seg.",
+            "Forbi {setting} gikk de, skritt for myke skritt. Kveldsluften luktet gress og stjerner. Den lille begynte å nynne {sound}, men gladere nå, slik man nynner når man er på vei hjem.",
+            "Og der var det: en bitte liten dør under en bitte liten haug, med varmt lys innenfor og en familie av små som vinket. Den minste gjesten klemte tommelen til {name}, og det var den største klemmen den fikk til.",
+            "«Takk», pep den, «for at du fulgte meg helt hjem.» Og den ga {name} en gave: en bitte liten kiling på nesetippen med værhårene sine. Slikt er en stor ære blant små vesener.",
+            "{name} og {companion} ruslet hjem under den snille, gamle månen og gjespet hele veien. Og da {name} krøp opp i sengen med {comfort}, kjentes natten vennlig og full av små, glade hjem. God natt, {name}.",
+        ],
+        settings: [
+            "bjørnebærhekken",
+            "de tre runde steinene",
+            "den store eika med den skjeve grenen",
+            "det høye gresset der sirissene synger",
+        ],
+        sounds: [
+            "pip-pip",
+            "piip",
+            "mjau",
+        ],
+        treasures: [
+            "den mykeste mosesengen i hele skogen",
+            "et spiskammer fullt av honningbær",
+            "et nattlys laget av en innfanget solstråle",
+        ],
+        moralVariants: [
+            "Å følge noen hjem er den varmeste måten å avslutte en dag på.",
+            "Ingen snillhet er liten når du selv er liten.",
         ]
     )
 }

@@ -23,15 +23,25 @@ struct StoryRequest: Sendable, Equatable {
         var previously: [String]
     }
 
-    /// Trimmed, display-ready companion with a sensible default.
+    /// Trimmed, display-ready companion with a sensible default. Defaults
+    /// follow the story language: they are spliced into story prose, and
+    /// "a small brave fox" mid-sentence would break a bokmål page.
     var companionOrDefault: String {
         let trimmed = companion.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "a small brave fox" : trimmed
+        guard trimmed.isEmpty else { return trimmed }
+        return switch language {
+        case .english: "a small brave fox"
+        case .norwegianBokmal: "en liten modig rev"
+        }
     }
 
     var comfortObjectOrDefault: String {
         let trimmed = comfortObject.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.isEmpty ? "a soft warm blanket" : trimmed
+        guard trimmed.isEmpty else { return trimmed }
+        return switch language {
+        case .english: "a soft warm blanket"
+        case .norwegianBokmal: "et mykt og varmt teppe"
+        }
     }
 }
 

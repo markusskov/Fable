@@ -124,13 +124,18 @@ struct StoryLanguageTests {
 
     // MARK: - Curated fallback across languages
 
-    @Test func emptyNorwegianShelfFallsBackToEnglishTemplates() async throws {
-        let engine = CuratedStoryEngine()
+    @Test func anEmptyShelfFallsBackToEnglishTemplates() async throws {
+        // Simulates a future sprint language whose shelf has no editorial
+        // work yet (the shipped nb shelf is stocked; see NorwegianShelfTests).
+        let engine = CuratedStoryEngine(libraries: [
+            .english: TemplateLibrary.all,
+            .norwegianBokmal: [],
+        ])
         let norwegian = try await engine.makeStory(for: norwegianRequest, seed: 42)
         var englishRequest = norwegianRequest
         englishRequest.language = .english
         let english = try await engine.makeStory(for: englishRequest, seed: 42)
-        // Same seed, same story — the empty nb shelf changes nothing but honesty.
+        // Same seed, same story — the empty shelf changes nothing but honesty.
         #expect(norwegian == english)
         #expect(norwegian.language == .english)
     }

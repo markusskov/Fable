@@ -79,7 +79,7 @@ struct CuratedStoryEngineTests {
         // Pool values ({setting}, {sound}, {treasure}) carry their own
         // articles ("a small cloud…"), which reads badly mid-title.
         // Regression guard for the "Sails the Quiet a small cloud" bug.
-        for template in TemplateLibrary.all {
+        for template in TemplateLibrary.byLanguage.values.joined() {
             for title in template.titleVariants {
                 #expect(!title.contains("{setting}"))
                 #expect(!title.contains("{sound}"))
