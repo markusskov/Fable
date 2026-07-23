@@ -4,6 +4,7 @@ import SwiftData
 struct RootView: View {
     @Query(sort: \ChildProfile.createdAt) private var profiles: [ChildProfile]
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var path = NavigationPath()
 
     /// The child whose stories are on screen. Falls back to the first
@@ -18,10 +19,15 @@ struct RootView: View {
                 if let profile = activeProfile {
                     TonightView(profile: profile, path: $path)
                         .id(profile.uuid) // rebuild state when switching children
+                        .transition(.opacity)
                 } else {
                     ProfileSetupView()
+                        .transition(.opacity)
                 }
             }
+            // A gentle crossfade when setup hands over to Tonight (and when
+            // switching children) — the hard cut read as a glitch on first run.
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.4), value: activeProfile?.uuid)
             // The single Story destination for the whole stack. Declaring it
             // once at the root is load-bearing: a second declaration deeper
             // in the stack (e.g. in LibraryView) is silently ignored by

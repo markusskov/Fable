@@ -16,7 +16,12 @@ struct ProfileSetupView: View {
     @State private var ageBand: AgeBand = .little
     @State private var companion = ""
     @State private var comfortObject = ""
+    @FocusState private var focusedField: Field?
     @ScaledMetric(relativeTo: .largeTitle) private var sparkleSize = 44
+
+    private enum Field {
+        case name, companion, comfortObject
+    }
 
     private var canContinue: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -41,6 +46,11 @@ struct ProfileSetupView: View {
                 field("Their name") {
                     TextField("", text: $name, prompt: prompt("Nova"))
                         .textContentType(.givenName)
+                        .textInputAutocapitalization(.words)
+                        .autocorrectionDisabled()
+                        .focused($focusedField, equals: .name)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .companion }
                 }
 
                 VStack(alignment: .leading, spacing: 10) {
@@ -53,12 +63,18 @@ struct ProfileSetupView: View {
                     .pickerStyle(.segmented)
                 }
 
-                field("A favorite friend or animal — stories need a sidekick") {
+                field("A favorite friend or animal — skip it and a small brave fox steps in") {
                     TextField("", text: $companion, prompt: prompt("Bruno the dog"))
+                        .focused($focusedField, equals: .companion)
+                        .submitLabel(.next)
+                        .onSubmit { focusedField = .comfortObject }
                 }
 
-                field("Something cozy they sleep with") {
+                field("Something cozy they sleep with — optional too") {
                     TextField("", text: $comfortObject, prompt: prompt("the yellow blanket"))
+                        .focused($focusedField, equals: .comfortObject)
+                        .submitLabel(.done)
+                        .onSubmit { focusedField = nil }
                 }
 
                 Button(action: save) {
@@ -74,6 +90,9 @@ struct ProfileSetupView: View {
             .padding(.horizontal, 24)
         }
         .scrollDismissesKeyboard(.interactively)
+        // Ready to type straight away — the name is the only required step
+        // on the way to the first story.
+        .onAppear { focusedField = .name }
         // Soften scrolled text before it reaches the status bar — review
         // 2026-07-22 saw the title collide with the clock.
         .scrollEdgeEffectStyle(.soft, for: .top)

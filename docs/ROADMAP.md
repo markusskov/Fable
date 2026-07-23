@@ -37,7 +37,8 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [x] Accessibility audit for the ASC declaration (owner asked 2026-07-23): Reduce Motion now respected everywhere animated; VoiceOver pass fixed unlabeled setup fields and hid decorative icons (selection via traits). Declare in ASC: VoiceOver, Voice Control, Larger Text, Dark Interface, Sufficient Contrast, Reduced Motion. Do NOT declare: Differentiate Without Color Alone (theme-card selection is fill-only), Captions/Audio (n/a).
 - [x] Support site + privacy policy page (GitHub Pages) → fills ASC Support URL and the required Privacy Policy URL
   - Static `site/` deployed via `pages.yml` workflow. Support: https://markusskov.github.io/Fable/ · Privacy: https://markusskov.github.io/Fable/privacy.html — owner pastes both into ASC (see OWNER-ASKS).
-- [ ] Onboarding flow (first-run: create profile → first story in under 60 seconds — largely true today; audit and polish)
+- [x] Onboarding flow (first-run: create profile → first story in under 60 seconds — audited 2026-07-23, verified fresh-install in simulator)
+  - Polish shipped: name field auto-focuses with next/done submit chaining; name gets word autocapitalization + no autocorrect; companion/comfort labels now say they're optional (engines default to "a small brave fox" / "a soft warm blanket"); setup → Tonight hands over with a gentle crossfade (skipped under Reduce Motion)
 - [x] Privacy nutrition label prep + App Review notes → docs/appstore/metadata.md
 - [ ] App Store page: description/keywords/subtitle done (docs/appstore/metadata.md); screenshots remain (need final devices + polish pass)
 - [ ] Release automation: version/build bump, changelog from conventional commits
