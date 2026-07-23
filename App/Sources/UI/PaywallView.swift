@@ -130,6 +130,7 @@ struct PaywallView: View {
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
                     .foregroundStyle(isSelected ? FableTheme.gold : FableTheme.creamDim)
+                    .accessibilityHidden(true) // selection is announced via the trait
             }
             .padding(16)
             .background(FableTheme.card, in: RoundedRectangle(cornerRadius: 16))
