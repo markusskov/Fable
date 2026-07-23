@@ -35,7 +35,8 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 ## Milestone 3 — Ship (v1.0, App Store)
 
 - [x] Accessibility audit for the ASC declaration (owner asked 2026-07-23): Reduce Motion now respected everywhere animated; VoiceOver pass fixed unlabeled setup fields and hid decorative icons (selection via traits). Declare in ASC: VoiceOver, Voice Control, Larger Text, Dark Interface, Sufficient Contrast, Reduced Motion. Do NOT declare: Differentiate Without Color Alone (theme-card selection is fill-only), Captions/Audio (n/a).
-- [ ] Support site + privacy policy page (GitHub Pages) → fills ASC Support URL and the required Privacy Policy URL
+- [x] Support site + privacy policy page (GitHub Pages) → fills ASC Support URL and the required Privacy Policy URL
+  - Static `site/` deployed via `pages.yml` workflow. Support: https://markusskov.github.io/Fable/ · Privacy: https://markusskov.github.io/Fable/privacy.html — owner pastes both into ASC (see OWNER-ASKS).
 - [ ] Onboarding flow (first-run: create profile → first story in under 60 seconds — largely true today; audit and polish)
 - [x] Privacy nutrition label prep + App Review notes → docs/appstore/metadata.md
 - [ ] App Store page: description/keywords/subtitle done (docs/appstore/metadata.md); screenshots remain (need final devices + polish pass)

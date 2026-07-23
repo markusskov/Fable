@@ -51,6 +51,12 @@ feature change that alters what the store page promises.
 >
 > Sweet dreams.
 
+## URLs
+
+- **Support URL:** `https://markusskov.github.io/Fable/`
+- **Privacy Policy URL:** `https://markusskov.github.io/Fable/privacy.html`
+- Source lives in `site/`; pushed to `main` it auto-deploys via `.github/workflows/pages.yml`.
+
 ## Keywords (100 chars max)
 
 `bedtime,story,stories,kids,sleep,children,fairy tale,night,calm,toddler,storytime,ai` (84)

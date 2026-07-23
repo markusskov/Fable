@@ -1,0 +1,140 @@
+/* Fable site — mirrors App/Sources/UI/Theme.swift (night / cream / gold). */
+
+:root {
+  --night: #1a1c38;
+  --night-deep: #0d0f24;
+  --ember: #211426;
+  --cream: #f7f0db;
+  --cream-dim: rgba(247, 240, 219, 0.72);
+  --gold: #edc778;
+  --card: rgba(255, 255, 255, 0.07);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--night-deep);
+}
+
+body {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, var(--night), var(--night-deep) 60%, var(--ember));
+  color: var(--cream);
+  font-family: "Iowan Old Style", "Palatino", "Georgia", serif;
+  line-height: 1.65;
+  font-size: 1.0625rem;
+}
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4rem;
+}
+
+header.site {
+  text-align: center;
+  padding: 3.5rem 1.5rem 0;
+}
+
+.moon {
+  font-size: 2.5rem;
+  display: block;
+  filter: drop-shadow(0 0 18px rgba(237, 199, 120, 0.35));
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-top: 0.75rem;
+  letter-spacing: 0.01em;
+}
+
+.tagline {
+  color: var(--cream-dim);
+  font-style: italic;
+  margin-top: 0.35rem;
+}
+
+h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 2.5rem 0 0.75rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--cream);
+  margin: 1.75rem 0 0.4rem;
+}
+
+p + p {
+  margin-top: 0.9rem;
+}
+
+a {
+  color: var(--gold);
+  text-decoration: underline;
+  text-decoration-color: rgba(237, 199, 120, 0.4);
+  text-underline-offset: 3px;
+}
+
+a:hover {
+  text-decoration-color: var(--gold);
+}
+
+ul {
+  padding-left: 1.4rem;
+  margin: 0.6rem 0;
+}
+
+li + li {
+  margin-top: 0.35rem;
+}
+
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  margin: 1.25rem 0;
+}
+
+.muted {
+  color: var(--cream-dim);
+  font-size: 0.95rem;
+}
+
+nav.site {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+}
+
+footer.site {
+  text-align: center;
+  color: var(--cream-dim);
+  font-size: 0.875rem;
+  padding: 0 1.5rem 3rem;
+}
+
+footer.site nav.site {
+  margin-bottom: 1rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .moon {
+    animation: drift 9s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: translateY(0); }
+    to { transform: translateY(-6px); }
+  }
+}
