@@ -30,7 +30,7 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
   - Stable `ChildProfile.uuid` + AppStorage active-profile selection; stories/series scoped per child (nil = legacy, belongs to everyone); switcher menu on Tonight; add-child gated on Fable+ beyond the first.
 - [x] App icon + brand pass (warm, storybook, not childish-clipart)
   - Rendered programmatically from the Theme.swift palette (`scripts/render-app-icon.swift`) — deterministic, re-renderable, code-reviewed. Gold crescent, quiet sparkles, sleeping hills.
-- [ ] **BLOCKED ON OWNER — now the critical path:** App Store Connect app record, bundle ID registration, subscription SKUs, TestFlight (see docs/OWNER-ASKS.md)
+- [x] App Store Connect record, subscription SKUs, TestFlight — owner completed 2026-07-23
 
 ## Milestone 3 — Ship (v1.0, App Store)
 
@@ -78,7 +78,6 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 - [ ] Seasonal collections (premium curated templates)
 - [ ] iPad layout, then Mac Catalyst evaluation
 - [ ] Story audio: AVSpeechSynthesizer narration with parental voice options
-- [ ] Localization: start with **nb-NO** (the founder's family is the first market), then de-DE. Three layers with different effort: UI strings (String Catalog, mechanical), curated templates (real editorial translation — they must read like native bedtime prose, not translations), and model stories (gated on Apple Intelligence language support per device — probe `SystemLanguageModel` language availability and fall back to curated in-language when the model can't write it).
 
 ## Milestone 6 — Launch marketing (starts when 1.0 is approved; no paid spend until LTV data)
 
