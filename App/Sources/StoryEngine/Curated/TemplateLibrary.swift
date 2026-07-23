@@ -40,6 +40,7 @@ enum TemplateLibrary {
         .spanish: [lanternPathEs, sleepyVoyageEs, littleLostFriendEs],
         .french: [lanternPathFr, sleepyVoyageFr, littleLostFriendFr],
         .italian: [lanternPathIt, sleepyVoyageIt, littleLostFriendIt],
+        .portugueseBrazilian: [lanternPathPt, sleepyVoyagePt, littleLostFriendPt],
     ]
 
     // MARK: - The Lantern Path (adventure · magic)
@@ -813,6 +814,142 @@ enum TemplateLibrary {
         moralVariants: [
             "Accompagnare qualcuno a casa è il modo più caldo di finire la giornata.",
             "Nessuna gentilezza è piccola quando si è piccoli.",
+        ]
+    )
+
+
+    // MARK: - A trilha das lanterninhas (pt-BR · adventure · magic)
+    //
+    // Portuguese slot discipline: a/de/em/por contract with articles (ao,
+    // do, na, pela), so {setting} pools bake the article and appear only
+    // behind "até" (which never contracts) or as the object of a transitive
+    // verb ("cruzaram {setting}"). {companion} and {comfort} appear as
+    // subjects, after "com", or in verbless appositions. Pronoun-referenced
+    // treasure pools are uniformly feminine ("ela/a"); the lost-friend pool
+    // is only ever mentioned, never pronouned. Diminutives carry the
+    // Brazilian bedtime register.
+
+    static let lanternPathPt = StoryTemplate(
+        id: "lantern-path-pt",
+        themes: [.adventure, .magic],
+        titleVariants: [
+            "{name} e a trilha das lanterninhas",
+            "A noite em que os vagalumes vieram buscar {name}",
+            "{name} e as luzinhas",
+        ],
+        pages: [
+            "Uma noite, bem na hora em que o céu ficava da cor das amoras, {name} percebeu uma luzinha dançando do lado de fora da janela. Depois outra. E mais outra. Vagalumes! E parecia mesmo que eles estavam esperando alguém.",
+            "{name} saiu na ponta dos pés, abraçando {comfort} bem forte, e é claro que {companion} foi junto. Os vagalumes desenhavam uma trilha iluminada, como uma fita de lanterninhas minúsculas, serpenteando até {setting}.",
+            "A trilha era macia sob os pés de {name}, e a noite estava morna e amiga. Em algum lugar bem longe, ouviu-se {sound}, um som doce e sonolento, como se o mundo inteiro estivesse bocejando devagarinho.",
+            "No fim da trilha das lanterninhas, escondida embaixo de uma raiz coberta de musgo, lá estava ela: {treasure}. Brilhava baixinho, como se tivesse esperado muito, muito tempo para ser encontrada.",
+            "«Ela caiu do céu», sussurrou {companion}. «Deve estar com saudade de casa.» {name} pegou a luzinha com todo o cuidado do mundo. Era morna, como um coração pequenino batendo devagar.",
+            "Então {name} levantou a estrelinha bem alto, cada vez mais alto, tão alto quanto dois bracinhos conseguem chegar. E os vagalumes se juntaram embaixo e a carregaram para cima, para cima, para cima, até que ela encontrou de novo o seu lugar certinho no céu.",
+            "O céu cintilou um obrigado. Os vagalumes fizeram uma reverência com as suas luzinhas. E {name} sentiu de repente um cansaço maravilhoso, daquele cansaço bom que vem depois de um dia cheio de maravilhas.",
+            "De volta em casa, {name} se aconchegou embaixo das cobertas, com {comfort} bem pertinho, e {companion} se enroscou logo ao lado. Lá fora, um vagalume ficou na janela, montando guarda. Boa noite, {name}. Hoje o céu sorri para você.",
+        ],
+        settings: [
+            "o portão velho do jardim",
+            "o bosquezinho de bétulas que sussurram",
+            "o campo atrás da colina",
+            "o riachinho das pedras lisas e redondas",
+        ],
+        sounds: [
+            "uh-uh",
+            "psiu-psiu-psiuuu",
+            "prrrl",
+        ],
+        treasures: [
+            "uma estrelinha caída do céu",
+            "uma luzinha de lua guardada num vidrinho",
+            "uma sinetinha de prata que só toca para corações gentis",
+        ],
+        moralVariants: [
+            "Mãos gentis sempre encontram o caminho de casa, e o que elas carregam encontra junto.",
+            "Até os ajudantes pequenininhos conseguem acender um céu inteiro.",
+        ]
+    )
+
+    // MARK: - A viagem sonolenta (pt-BR · space · ocean)
+
+    static let sleepyVoyagePt = StoryTemplate(
+        id: "sleepy-voyage-pt",
+        themes: [.space, .ocean],
+        titleVariants: [
+            "A viagem sonolenta de {name}",
+            "O barquinho feito de luar",
+            "{name} e as estrelas que cantarolam",
+        ],
+        pages: [
+            "Quando a casa ficou toda silenciosa e as luzes foram ficando pequenininhas, a cama de {name} fez uma coisa que as camas quase nunca fazem: levantou voo, devagarinho, e virou um barquinho.",
+            "O barquinho deslizou pela janela e entrou no escuro macio, que não tinha nada de preocupante. Era aconchegante, como se o céu inteiro estivesse ajeitando as suas cobertas. {companion} sentou na proa, e {comfort} virou o travesseiro perfeito.",
+            "Velejaram cruzando {setting}, onde tudo já dormia. As ondas, ou será que eram nuvens, embalavam o barquinho devagar. Uma… duas… uma… duas…",
+            "Uma família de estrelas saiu para vê-los passar. A estrelinha mais miudinha cantarolava {sound}, a canção que as estrelas cantam quando chega a hora de descansar. {name} cantarolou junto, bem baixinho.",
+            "«Olha», sussurrou {companion}. Lá na frente, brilhando de mansinho, flutuava {treasure}. Aquela doce visitante chegou perto, cumprimentou com jeitinho, e seguiu viagem com eles, como uma velha amiga que conhecia o caminho.",
+            "O barquinho balançava. As estrelas cantarolavam. Os olhos de {name} foram ficando pesados, cada vez mais pesados, do jeitinho mais gostoso que existe, como cobertas feitas de silêncio quente.",
+            "Devagar, devagarinho, o barquinho pegou o caminho de casa, deslizando pelo escuro macio, voltando pela janela, até pousar, de mansinho, exatamente onde uma cama deve ficar.",
+            "E lá estava {name}, bem coberto, com {comfort} pertinho e {companion} já sonhando. A viagem estaria ali de novo amanhã à noite. Durma agora, pequeno marinheiro. Boa noite, {name}, as estrelas cantarolam para você.",
+        ],
+        settings: [
+            "o farol adormecido",
+            "a ilha de areia fofa como travesseiro",
+            "a enseada onde as baleias sonham",
+            "o porto dos barquinhos de papel",
+        ],
+        sounds: [
+            "mmm-hmm-mmm",
+            "lu-lu-lu",
+            "hummm",
+        ],
+        treasures: [
+            "uma lamparina-peixe de brilho suave",
+            "uma barquinha emprestada pela Lua",
+            "uma estrela-do-mar sonolenta",
+        ],
+        moralVariants: [
+            "O escuro gentil é um amigo que nos carrega devagarinho até a manhã.",
+            "Descansar é uma viagem, e quem dorme é um pequeno marinheiro corajoso.",
+        ]
+    )
+
+    // MARK: - O amiguinho perdido (pt-BR · animals · friendship)
+
+    static let littleLostFriendPt = StoryTemplate(
+        id: "little-lost-friend-pt",
+        themes: [.animals, .friendship],
+        titleVariants: [
+            "{name} e o amiguinho perdido",
+            "O visitante pequenininho",
+            "A noite em que {name} levou o pequenino para casa",
+        ],
+        pages: [
+            "Pouco antes da hora de dormir, {name} ouviu o barulhinho mais pequeno do mundo vindo da porta de casa: {sound}. {name} e {companion} foram espiar devagarinho.",
+            "Ali, não maior que uma xícara de chá, estava um serzinho de olhos grandes e redondos. Ele tinha se perdido. A casa dele ficava do outro lado, depois que se cruzava {setting}, e a noite ia ficando cada vez mais funda.",
+            "«Não se preocupe», disse {name} com a voz macia que a gente guarda para as coisas pequenininhas. «A gente leva você.» {name} levou {comfort} junto, porque tudo fica mais fácil com {comfort}.",
+            "O pequenino subiu nas costas de {companion} e se segurou firme. No caminho, ele fungou um pouquinho, então {name} contou para ele sobre {treasure}. Os olhos do pequenino ficaram redondos de encanto, e as preocupações dele voaram para longe.",
+            "Cruzaram {setting}, um passinho de cada vez, devagarinho. O ar da noite cheirava a grama e a estrelas. O pequenino começou a cantarolar {sound}, mas mais alegre agora, um cantarolar de quem está voltando para casa.",
+            "E lá estava ela: uma portinha embaixo de uma colininha, com uma luz quentinha lá dentro e uma família de pequeninos acenando. O visitante mais pequenininho apertou o polegar de {name} com força. Era o maior abraço que ele sabia dar.",
+            "«Obrigado», piou ele, «por me levar até em casa.» E deixou um presente para {name}: um carinho minúsculo de bigodinhos na ponta do nariz. Isso é uma honra enorme, entre os serzinhos.",
+            "{name} e {companion} voltaram para casa embaixo da boa e velha lua, bocejando o caminho inteiro. E quando {name} se enfiou na cama com {comfort}, a noite parecia amiga e cheia de casinhas felizes. Boa noite, {name}.",
+        ],
+        settings: [
+            "a cerca das amoras",
+            "as três pedras redondas",
+            "o carvalho grande do galho torto",
+            "o capim alto onde cantam os grilos",
+        ],
+        sounds: [
+            "piu-piu",
+            "quic",
+            "miau",
+        ],
+        treasures: [
+            "a caminha de musgo mais macia do bosque inteiro",
+            "uma despensa cheia de amoras com mel",
+            "uma luzinha feita de um raio de sol amansado",
+        ],
+        moralVariants: [
+            "Levar alguém para casa é o jeito mais quentinho de terminar o dia.",
+            "Nenhuma gentileza é pequena quando a gente é pequeno.",
         ]
     )
 }

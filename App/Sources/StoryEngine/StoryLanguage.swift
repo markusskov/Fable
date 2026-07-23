@@ -12,6 +12,9 @@ enum StoryLanguage: String, CaseIterable, Sendable, Codable {
     case spanish = "es"
     case french = "fr"
     case italian = "it"
+    /// Brazilian register ("você", diminutives); the "pt" code serves all
+    /// Portuguese devices until a pt-PT edition earns its own shelf.
+    case portugueseBrazilian = "pt"
 
     /// The language stories are told in by default: the device's first
     /// preferred language that Fable supports, English otherwise. Mirrors
@@ -79,6 +82,14 @@ enum StoryLanguage: String, CaseIterable, Sendable, Codable {
             parent telling a bedtime story; address the child as "tu". Never \
             use phrasing that reads like translated English.
             """
+        case .portugueseBrazilian:
+            """
+            The entire story — title, every page, the moral, and the recap — \
+            is written in Brazilian Portuguese, in the natural, warm voice of \
+            a Brazilian parent telling a bedtime story; address the child as \
+            "você" and let gentle diminutives carry the coziness. Never use \
+            phrasing that reads like translated English.
+            """
         }
     }
 
@@ -91,6 +102,7 @@ enum StoryLanguage: String, CaseIterable, Sendable, Codable {
         case .spanish: "Buenas noches, \(name)."
         case .french: "Bonne nuit, \(name)."
         case .italian: "Buonanotte, \(name)."
+        case .portugueseBrazilian: "Boa noite, \(name)."
         }
     }
 }

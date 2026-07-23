@@ -38,6 +38,7 @@ struct StoryRequest: Sendable, Equatable {
         case .spanish: "un pequeño zorro valiente"
         case .french: "un petit renard courageux"
         case .italian: "una piccola volpe coraggiosa"
+        case .portugueseBrazilian: "uma raposinha corajosa"
         }
     }
 
@@ -53,6 +54,7 @@ struct StoryRequest: Sendable, Equatable {
         case .spanish: "una manta suave y calentita"
         case .french: "une petite couverture douce et chaude"
         case .italian: "una copertina morbida e calda"
+        case .portugueseBrazilian: "uma cobertinha macia e quentinha"
         }
     }
 }

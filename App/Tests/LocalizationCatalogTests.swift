@@ -14,7 +14,7 @@ import Testing
 /// replaces the raw JSON these tests need.
 struct LocalizationCatalogTests {
     /// Every language the app promises a complete UI translation for.
-    private static let requiredLanguages = ["nb", "de", "es", "fr", "it"]
+    private static let requiredLanguages = ["nb", "de", "es", "fr", "it", "pt-BR"]
 
     /// CLDR plural categories a variation must cover for the languages above
     /// (English, Norwegian, German, and Spanish all use one/other for the
