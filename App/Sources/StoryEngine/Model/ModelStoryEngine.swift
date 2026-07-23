@@ -97,9 +97,24 @@ struct ModelStoryEngine: StoryEngine {
             generating: GeneratedStory.self,
             options: GenerationOptions(temperature: 0.7)
         )
+        var pages = response.content.pages
+        // The goodnight sentence is a dedicated guided field because prose
+        // instructions alone under-delivered it in non-English languages
+        // (2026-07-23 yield measurement: "child missing from last page" was
+        // the dominant rejection in de/es). Appended only when the model's
+        // own last page doesn't already satisfy the gate's ending contract —
+        // placement of model-authored text, never invention.
+        let goodnight = response.content.goodnight.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let last = pages.last, !goodnight.isEmpty,
+           !ContentSafetyCheck.endingSatisfied(
+               lastPage: last, childName: request.childName, language: request.language
+           ),
+           !last.localizedCaseInsensitiveContains(goodnight) {
+            pages[pages.count - 1] = last + " " + goodnight
+        }
         return StoryContent(
             title: response.content.title,
-            pages: response.content.pages,
+            pages: pages,
             moral: response.content.moral,
             recap: response.content.recap,
             language: request.language

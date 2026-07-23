@@ -200,8 +200,8 @@ enum ContentSafetyCheck {
     /// should not reach a child. So no union here, unlike the denylist.
     private static let norwegianSleepSignals: [String] = [
         "god natt", "godnatt", "sov", "sove", "sover", "sovne", "sovner",
-        "sovnet", "søvn", "søvnen", "søvnig", "trøtt", "trøtte", "trett",
-        "drøm", "drømme", "drømmer", "drømte", "hvile", "hviler", "hvilte",
+        "sovnet", "sovet", "søvn", "søvnen", "søvnig", "trøtt", "trøtte", "trett",
+        "drøm", "drømme", "drømmer", "drømte", "hvile", "hviler", "hvilte", "hvilet",
         "gjespe", "gjesper", "gjespet", "vugge", "vugger", "vugget",
         "voggesang", "bysse", "bysser", "bysset", "under dyna",
         "lukket øynene", "øynene gled igjen",
@@ -228,13 +228,13 @@ enum ContentSafetyCheck {
         "buenas noches", "dormir", "duerme", "duermen", "durmió",
         "durmieron", "dormido", "dormida", "dormidos", "dormidas",
         "durmiendo", "dormirse", "duérmete", "sueño", "sueños", "soñar",
-        "sueña", "soñaba", "soñando", "soñó", "adormilado", "adormilada",
-        "descansar", "descansa", "descansó", "descanso", "arrullo",
+        "sueña", "soñaba", "soñando", "soñó", "soñaron", "adormilado", "adormilada",
+        "descansar", "descansa", "descansó", "descansaron", "descanso", "arrullo",
         "arrullar", "arrulla", "arrulló", "nana", "nanas", "canción de cuna",
         "bostezo", "bostezos", "bostezar", "bosteza", "bostezó",
-        "bostezando", "acurrucó", "acurruca", "acurrucado", "acurrucada",
-        "acurrucados", "arropó", "arropa", "arropado", "arropada",
-        "arropadita", "arropadito", "cerró los ojos", "los ojos se le cerraron",
+        "bostezando", "acurrucó", "acurruca", "acurrucaron", "acurrucado", "acurrucada",
+        "acurrucados", "arropó", "arropa", "arroparon", "arropado", "arropada",
+        "arropadita", "arropadito", "cerró los ojos", "cerraron los ojos", "los ojos se le cerraron",
         "párpados", "soñoliento", "somnoliento", "a dormir",
     ]
 
@@ -320,5 +320,15 @@ enum ContentSafetyCheck {
             return .deniedWord(word)
         }
         return nil
+    }
+
+    /// Whether a final page already fulfils the ending contract (name +
+    /// wind-down signal). The model engine uses this to decide if the
+    /// separately-generated goodnight sentence needs appending; the rules
+    /// here are the gate's own, so engine and gate can never disagree.
+    static func endingSatisfied(lastPage: String, childName: String, language: StoryLanguage) -> Bool {
+        let name = childName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let hasName = name.isEmpty || lastPage.localizedCaseInsensitiveContains(name)
+        return hasName && containsSleepSignal(lastPage, language: language)
     }
 }
