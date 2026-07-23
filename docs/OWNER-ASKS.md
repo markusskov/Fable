@@ -4,10 +4,12 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 
 ## Open
 
-1. **App Accessibility declaration** (only owner item left): in App Store Connect → App Accessibility, declare **VoiceOver, Voice Control, Larger Text, Dark Interface, Sufficient Contrast, Reduced Motion**; do NOT declare Differentiate Without Color Alone or Captions/Audio Descriptions. (Audit shipped 2026-07-23.)
-2. **Submission day** (after Claude's first build upload): attach the build to version 1.0, include both Fable+ subscriptions in the review submission, press Add for Review. Claude will say when the build is up.
+1. **Submission day — everything else is done.** Attach build 3 to version 1.0, ensure the submission's item list includes BOTH Fable+ subscriptions (stage them via Add for Review on the group page first), set release to **Manual**, press Add for Review. Trial verified live on TestFlight (yearly-only, 7 days) 2026-07-23.
 
 ## Done
+
+- **App Accessibility declaration** — completed by owner 2026-07-23 (six features per the audit). ✅
+- **Free trial strategy** — yearly-only per owner (research-backed); verified live in build 3: "7 days free, then 499 kr/år", monthly plain. ✅
 
 - **TestFlight live** — 2026-07-23: v1.0 (build 2) built by Xcode Cloud from `main`, processed, installable on the owner's device. ✅
 - **App Store Small Business Program** — owner enrolled 2026-07-23: 15% commission on Fable+ instead of 30%. ✅
