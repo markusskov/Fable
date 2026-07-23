@@ -47,7 +47,19 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
   - `scripts/release.sh` (bump major/minor/patch/X.Y.Z, build-only bump, tag) writes project.yml + CHANGELOG.md and commits; pushing the tag triggers `release.yml`, which publishes a GitHub Release with that version's changelog section. CI dry-runs the script so it can't rot. First real run happens at submission time.
 - [x] Submit for review — **submitted 2026-07-23 ~18:00**: iOS App 1.0 (build 3) + Fable Plus group + both subscriptions, all Waiting for Review. Manual release. While in review: no metadata edits, no new submissions; dev work continues on branches as usual.
 
-## Milestone 4 — Grow (post-1.0)
+## Milestone 4 — Localization (active — 1.0 in review with ALL countries selected for availability, so launch is worldwide-in-English from day one)
+
+Three workstreams per language, in honesty-order (never ship a language whose stories read like translations):
+- [ ] **nb-NO (first — the founder's market):**
+  - [ ] App UI: String Catalog infrastructure + Norwegian translations (all screens incl. paywall legal text)
+  - [ ] Story language plumbing: `StoryRequest.language`, model instructions in-language, `SystemLanguageModel` language-support gating, curated fallback per language
+  - [ ] Curated templates in Norwegian — editorial translation, owner (native speaker) reviews before merge
+  - [ ] ASC metadata: paste docs/appstore/metadata-nb.md (ready) into the nb localization
+  - [ ] Store images: English set stays as fallback; owner localizes Figma captions when ready (translations in metadata-nb.md)
+- [ ] **de-DE second**, then evaluate es/fr/others by App Store Connect country analytics
+- [ ] Model-language honesty check per locale: if Apple Intelligence can't write the language, that locale runs curated-only — same "never break bedtime" rule
+
+## Milestone 5 — Grow (post-1.0)
 
 - [ ] Illustrations via ImagePlayground (cover art per story)
 - [ ] Seasonal collections (premium curated templates)
