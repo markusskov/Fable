@@ -29,6 +29,12 @@ struct StoryLanguageTests {
         #expect(StoryLanguage.preferred(from: ["de-CH"]) == .german)
     }
 
+    @Test func frenchDevicesGetFrenchStories() {
+        #expect(StoryLanguage.preferred(from: ["fr-FR", "en-US"]) == .french)
+        #expect(StoryLanguage.preferred(from: ["fr-CA"]) == .french)
+        #expect(StoryLanguage.preferred(from: ["fr-BE"]) == .french)
+    }
+
     @Test func spanishDevicesGetSpanishStories() {
         #expect(StoryLanguage.preferred(from: ["es-ES", "en-US"]) == .spanish)
         // Language-code matching serves every Spanish region, not just Spain.
@@ -345,5 +351,75 @@ struct StoryLanguageTests {
         #expect(story.pages.joined().contains("Astrid"))
         // The rendered Norwegian story satisfies the gate it will be held to.
         #expect(ContentSafetyCheck.rejection(of: story, for: norwegianRequest) == nil)
+    }
+}
+
+// MARK: - French
+
+struct FrenchLanguageGateTests {
+    private var request: StoryRequest {
+        StoryRequest(
+            childName: "Chloé",
+            ageBand: .little,
+            theme: .adventure,
+            companion: "Bruno le chien",
+            comfortObject: "la couverture jaune",
+            language: .french
+        )
+    }
+
+    private func story(lastPage: String, language: StoryLanguage = .french) -> StoryContent {
+        StoryContent(
+            title: "Chloé et la prairie du soir",
+            pages: [
+                "Chloé entra dans la prairie silencieuse avec Bruno, juste quand les lucioles se réveillaient.",
+                "Les lucioles clignotaient bonjour, une par une, et les herbes hautes se balançaient doucement.",
+                "Ensemble, ils trouvèrent le coin de mousse le plus doux et regardèrent les étoiles s'allumer.",
+                lastPage,
+            ],
+            moral: "Les soirées douces font les belles nuits.",
+            language: language
+        )
+    }
+
+    @Test func aCalmFrenchStoryPassesTheGate() {
+        let content = story(lastPage: "Chloé bâilla, se blottit contre Bruno et s'endormit. Bonne nuit, Chloé.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == nil)
+    }
+
+    @Test func aFrenchStoryMustWindDownInFrench() {
+        // An English goodnight on a French last page means the model broke
+        // language mid-story; that story never reaches a child.
+        let content = story(lastPage: "Chloé se blottit tout contre Bruno. Goodnight and sleep tight, Chloé.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == nil)
+        // "se blottit" is a genuine French wind-down, so this passes; strip
+        // it and only the English signal remains, which must not count.
+        let english = story(lastPage: "Chloé regarda les étoiles avec Bruno. Goodnight, Chloé.")
+        #expect(ContentSafetyCheck.rejection(of: english, for: request) == .endingNotSleepy)
+    }
+
+    @Test func frenchDeniedWordsAreCaught() {
+        let content = story(lastPage: "Chloé eut très peur du grand bois sombre, puis se blottit et s'endormit. Bonne nuit, Chloé.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == .deniedWord("peur"))
+    }
+
+    @Test func englishDeniedWordsAreCaughtInsideAFrenchStory() {
+        let content = story(lastPage: "Un monster passa au loin, mais Chloé s'endormit vite. Bonne nuit, Chloé.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == .deniedWord("monster"))
+    }
+
+    @Test func frenchHomonymsOfHarmfulWordsPass() {
+        // "bête" is the standard cozy word for a little creature, "nulle
+        // part" is plain "nowhere", and hearts beat with "battre" — none of
+        // these may trip the denylist.
+        let content = story(lastPage: "La petite bête ne trouvait sa maison nulle part, alors son cœur battait doucement contre Chloé, et elles s'endormirent ensemble. Bonne nuit, Chloé.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == nil)
+    }
+
+    @Test func frenchInstructionsDemandFrenchAndAFrenchGoodnight() {
+        let instructions = ModelStoryEngine.instructions(for: request)
+        #expect(instructions.contains("written in French"))
+        #expect(instructions.contains("\"tu\""))
+        #expect(instructions.contains("Bonne nuit, Chloé."))
     }
 }
