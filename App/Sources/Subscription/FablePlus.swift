@@ -11,9 +11,13 @@ enum FablePlus {
     static let subscriptionGroupID = "21654001"
 
     /// The two ways to subscribe. Raw values are the App Store product IDs.
+    ///
+    /// Yes, "monthlyy"/"annualy" — the original IDs were created and deleted
+    /// in App Store Connect on 2026-07-23, and deleted product IDs can never
+    /// be reused. These are the live IDs; do NOT "fix" the spelling.
     enum Plan: String, CaseIterable, Sendable, Identifiable {
-        case monthly = "com.markusskov.fable.plus.monthly"
-        case annual = "com.markusskov.fable.plus.annual"
+        case monthly = "com.markusskov.fable.plus.monthlyy"
+        case annual = "com.markusskov.fable.plus.annualy"
 
         var id: String { rawValue }
         var productID: String { rawValue }

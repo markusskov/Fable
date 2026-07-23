@@ -88,7 +88,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.markusskov.fable.plus.monthly",
+          "productID" : "com.markusskov.fable.plus.monthlyy",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Fable Plus Monthly",
           "subscriptionGroupID" : "21654001",
@@ -113,7 +113,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "com.markusskov.fable.plus.annual",
+          "productID" : "com.markusskov.fable.plus.annualy",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Fable Plus Yearly",
           "subscriptionGroupID" : "21654001",
