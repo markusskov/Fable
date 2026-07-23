@@ -315,7 +315,6 @@
       }
     },
     "A brand-new story every night, whenever you want one" : {
-      "extractionState" : "stale",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
@@ -621,7 +620,6 @@
       }
     },
     "Profiles for every child in the family" : {
-      "extractionState" : "stale",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
@@ -703,7 +701,6 @@
       }
     },
     "Still private: everything stays on this device" : {
-      "extractionState" : "stale",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
@@ -714,7 +711,6 @@
       }
     },
     "Story series — adventures that continue night after night" : {
-      "extractionState" : "stale",
       "localizations" : {
         "nb" : {
           "stringUnit" : {
