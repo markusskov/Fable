@@ -92,12 +92,15 @@ feature change that alters what the store page promises.
 
 ## Screenshots
 
-- **Store set (primary): `docs/appstore/store-ready/01..06-store.png`** —
-  the owner's framed Figma compositions (light canvas, captions, celestial
-  motifs), converted to 1320×2868 by `scripts/prepare-store-images.sh` from
-  the 4x exports in `docs/appstore/AppstoreImages/`. Upload to the **6.9"
-  iPhone** slot in numbered order. Store order: title page → reader ending
-  panorama (2+3) → tonight/mood → setup with privacy caption → library.
+- **Store set (primary): `docs/appstore/store-ready/6.7/01..06-store.png`
+  (1284×2778)** — the owner's framed Figma compositions (light canvas,
+  captions, celestial motifs), converted by `scripts/prepare-store-images.sh`
+  from the 4x exports in `docs/appstore/AppstoreImages/`. The Fable Bedtime
+  record's iPhone slot accepts 1242×2688/1284×2778 (ASC's own validation,
+  2026-07-23) — upload the 6.7 set in numbered order. A 1320×2868 set sits in
+  `store-ready/6.9/` for when the slot upgrades. Store order: title page →
+  reader ending panorama (2+3) → tonight/mood → setup with privacy caption →
+  library.
 - Fallback plain set: `docs/appstore/screenshots/6.9/` — 1320×2868 portrait,
   raw UI captures, same slot. The app is iPhone-only for v1
   (`TARGETED_DEVICE_FAMILY = 1`), so no iPad set is required and ASC reuses
