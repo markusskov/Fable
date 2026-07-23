@@ -17,10 +17,19 @@ struct StoryTemplate: Identifiable, Sendable {
     let moralVariants: [String]
 
     func render(for request: StoryRequest, rng: inout some RandomNumberGenerator) -> StoryContent {
+        // Parent-typed values are brace-stripped: a child "named" {sound}
+        // must never be re-substituted by a later dictionary pass (iteration
+        // order is random, so the old behavior was nondeterministic), and no
+        // parent input may masquerade as a template token.
+        func sanitized(_ value: String) -> String {
+            value.replacingOccurrences(of: "{", with: "")
+                .replacingOccurrences(of: "}", with: "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
         let substitutions: [String: String] = [
-            "{name}": request.childName.trimmingCharacters(in: .whitespacesAndNewlines),
-            "{companion}": request.companionOrDefault,
-            "{comfort}": request.comfortObjectOrDefault,
+            "{name}": sanitized(request.childName),
+            "{companion}": sanitized(request.companionOrDefault),
+            "{comfort}": sanitized(request.comfortObjectOrDefault),
             "{setting}": settings.pick(using: &rng),
             "{sound}": sounds.pick(using: &rng),
             "{treasure}": treasures.pick(using: &rng),
