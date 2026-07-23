@@ -37,6 +37,12 @@
             "state": "translated",
             "value": "%@ / %@"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ / %@"
+          }
         }
       }
     },
@@ -72,6 +78,12 @@
             "state": "translated",
             "value": "%@ – det er %@ i måneden"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, ou seja, %@ por mês"
+          }
         }
       }
     },
@@ -106,6 +118,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@, deretter %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, depois %@"
           }
         }
       }
@@ -219,6 +237,24 @@
               }
             }
           }
+        },
+        "pt-BR": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 dia grátis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld dias grátis"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -327,6 +363,24 @@
                 "stringUnit": {
                   "state": "translated",
                   "value": "%lld måneder gratis"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 mês grátis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld meses grátis"
                 }
               }
             }
@@ -444,6 +498,24 @@
               }
             }
           }
+        },
+        "pt-BR": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 período grátis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld períodos grátis"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -552,6 +624,24 @@
                 "stringUnit": {
                   "state": "translated",
                   "value": "%lld starthistorier igjen – så én gratis historie i uken"
+                }
+              }
+            }
+          }
+        },
+        "pt-BR": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Falta 1 história de boas-vindas, depois uma história grátis por semana"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Faltam %lld histórias de boas-vindas, depois uma história grátis por semana"
                 }
               }
             }
@@ -668,6 +758,24 @@
               }
             }
           }
+        },
+        "pt-BR": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 semana grátis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld semanas grátis"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -780,6 +888,24 @@
               }
             }
           }
+        },
+        "pt-BR": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 ano grátis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld anos grátis"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -813,6 +939,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "2–3 år"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–3 anos"
           }
         }
       }
@@ -848,6 +980,12 @@
             "state": "translated",
             "value": "4–6 år"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4–6 anos"
+          }
         }
       }
     },
@@ -881,6 +1019,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "7–9 år"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7–9 anos"
           }
         }
       }
@@ -916,6 +1060,12 @@
             "state": "translated",
             "value": "En splitter ny historie hver kveld, når du vil"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma história novinha toda noite, na hora que você quiser"
+          }
         }
       }
     },
@@ -949,6 +1099,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "En yndlingsvenn eller et dyr – hopper du over, stiller en liten modig rev opp"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um amigo preferido ou um bichinho, senão uma raposinha corajosa entra no lugar"
           }
         }
       }
@@ -984,6 +1140,12 @@
             "state": "translated",
             "value": "En historie til %@"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uma história para %@"
+          }
         }
       }
     },
@@ -1017,6 +1179,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Legg til et barn"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adicionar uma criança"
           }
         }
       }
@@ -1052,6 +1220,12 @@
             "state": "translated",
             "value": "Eventyr"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aventura"
+          }
         }
       }
     },
@@ -1085,6 +1259,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dyr"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bichos"
           }
         }
       }
@@ -1120,6 +1300,12 @@
             "state": "translated",
             "value": "En ny helt\nblir med i familien"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mais um herói\nchega à família"
+          }
         }
       }
     },
@@ -1153,6 +1339,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Begynn på den første historien"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Começar a primeira história"
           }
         }
       }
@@ -1189,6 +1381,12 @@
             "state": "translated",
             "value": "hunden Bruno"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruno, o cachorro"
+          }
         }
       }
     },
@@ -1222,6 +1420,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lukk eventyrboken"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fechar o livro de histórias"
           }
         }
       }
@@ -1257,6 +1461,12 @@
             "state": "translated",
             "value": "Fortsett"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar"
+          }
         }
       }
     },
@@ -1290,6 +1500,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Episode %lld"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Episódio %lld"
           }
         }
       }
@@ -1325,6 +1541,12 @@
             "state": "translated",
             "value": "Episode %lld av «%@»"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Episódio %lld de “%@”"
+          }
         }
       }
     },
@@ -1358,6 +1580,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Episode %lld i kveld"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoje à noite, episódio %lld"
           }
         }
       }
@@ -1393,6 +1621,12 @@
             "state": "translated",
             "value": "Hver kveld fortjener\nsin egen historie"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toda noite merece\numa história só sua"
+          }
         }
       }
     },
@@ -1426,6 +1660,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alt blir værende på denne enheten. Ingen konto, aldri."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tudo fica neste aparelho. Sem conta, nunca."
           }
         }
       }
@@ -1461,6 +1701,12 @@
             "state": "translated",
             "value": "Fable+ gjør eventyrstunden ubegrenset, hver eneste kveld."
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Com o Fable+, a hora da história não tem limite, toda santa noite."
+          }
         }
       }
     },
@@ -1494,6 +1740,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Venner"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amigos"
           }
         }
       }
@@ -1529,6 +1781,12 @@
             "state": "translated",
             "value": "God kveld"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boa noite"
+          }
         }
       }
     },
@@ -1562,6 +1820,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Magi"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magia"
           }
         }
       }
@@ -1597,6 +1861,12 @@
             "state": "translated",
             "value": "La eventyret fortsette"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transformar em uma aventura em capítulos"
+          }
         }
       }
     },
@@ -1630,6 +1900,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kanskje senere"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talvez mais tarde"
           }
         }
       }
@@ -1666,6 +1942,12 @@
             "state": "translated",
             "value": "Månedlig"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensal"
+          }
         }
       }
     },
@@ -1701,6 +1983,12 @@
             "state": "translated",
             "value": "Neste gratishistorie %@"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próxima história grátis %@"
+          }
         }
       }
     },
@@ -1735,6 +2023,12 @@
             "state": "translated",
             "value": "Ingen historier ennå"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ainda não há histórias"
+          }
         }
       }
     },
@@ -1766,6 +2060,12 @@
           }
         },
         "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nova"
+          }
+        },
+        "pt-BR": {
           "stringUnit": {
             "state": "translated",
             "value": "Nova"
@@ -1804,6 +2104,12 @@
             "state": "translated",
             "value": "Havet"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oceano"
+          }
         }
       }
     },
@@ -1837,6 +2143,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eller fortsett et eventyr"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ou continuar uma aventura"
           }
         }
       }
@@ -1872,6 +2184,12 @@
             "state": "translated",
             "value": "Side %lld av %lld"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Página %lld de %lld"
+          }
         }
       }
     },
@@ -1905,6 +2223,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Profiler til alle barna i familien"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um perfil para cada criança da família"
           }
         }
       }
@@ -1940,6 +2264,12 @@
             "state": "translated",
             "value": "Gjenopprett kjøp"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compras"
+          }
         }
       }
     },
@@ -1973,6 +2303,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gjenoppretter…"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurando…"
           }
         }
       }
@@ -2009,6 +2345,12 @@
             "state": "translated",
             "value": "Spar %@"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Economize %@"
+          }
         }
       }
     },
@@ -2042,6 +2384,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lagret – fortsett fra forsiden en annen kveld"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salva! Continue pela tela da noite"
           }
         }
       }
@@ -2077,6 +2425,12 @@
             "state": "translated",
             "value": "Noe koselig de sover med – også valgfritt"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algo fofinho de dormir, também opcional"
+          }
         }
       }
     },
@@ -2110,6 +2464,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Verdensrommet"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espaço"
           }
         }
       }
@@ -2145,6 +2505,12 @@
             "state": "translated",
             "value": "Start gratisuken din"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comece sua semana grátis"
+          }
         }
       }
     },
@@ -2179,6 +2545,12 @@
             "state": "translated",
             "value": "Fortsatt privat: alt blir på denne enheten"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continua privado: tudo fica neste aparelho"
+          }
         }
       }
     },
@@ -2212,6 +2584,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Historieserier – eventyr som fortsetter kveld etter kveld"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Histórias em capítulos: aventuras que continuam noite após noite"
           }
         }
       }
@@ -2248,6 +2626,12 @@
             "state": "translated",
             "value": "Eventyrbok"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Livro de histórias"
+          }
         }
       }
     },
@@ -2282,6 +2666,12 @@
             "state": "translated",
             "value": "Abonnementet fornyes automatisk til det sies opp – si opp når som helst i Innstillinger. Gratisnivået er ditt for alltid: én ny historie hver uke, og hver historie du har fortalt, blir stående i biblioteket."
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A assinatura se renova automaticamente até ser cancelada, a qualquer momento nos Ajustes. O plano grátis é seu para sempre: uma história nova por semana, e toda história contada fica na sua biblioteca."
+          }
         }
       }
     },
@@ -2315,6 +2705,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sov godt, %@."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bons sonhos, %@."
           }
         }
       }
@@ -2351,6 +2747,12 @@
             "state": "translated",
             "value": "Bytt barn. %@ er valgt."
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trocar de criança. %@ está em uso."
+          }
         }
       }
     },
@@ -2385,6 +2787,12 @@
             "state": "translated",
             "value": "Trykk eller sveip for å begynne"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque ou deslize para começar"
+          }
         }
       }
     },
@@ -2418,6 +2826,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fortell kveldens historie"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contar a história de hoje"
           }
         }
       }
@@ -2454,6 +2868,12 @@
             "state": "translated",
             "value": "Snipp, snapp, snute"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E aqui a história vai dormir"
+          }
         }
       }
     },
@@ -2487,6 +2907,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eventyret fortsetter en annen kveld"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A aventura continua outra noite"
           }
         }
       }
@@ -2522,6 +2948,12 @@
             "state": "translated",
             "value": "Vi når ikke bokhandelen akkurat nå.\nPrøv igjen litt senere."
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A livraria está fora de alcance agora.\nTente de novo daqui a pouco."
+          }
         }
       }
     },
@@ -2555,6 +2987,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Barnets alder"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idade da criança"
           }
         }
       }
@@ -2590,6 +3028,12 @@
             "state": "translated",
             "value": "Barnets navn"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nome da criança"
+          }
         }
       }
     },
@@ -2623,6 +3067,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tid for en historie,\n%@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hora da história,\n%@"
           }
         }
       }
@@ -2658,6 +3108,12 @@
             "state": "translated",
             "value": "Kveldens historie dukker opp her, klar til å bli lest igjen."
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A história de hoje vai aparecer aqui, prontinha para ser relida."
+          }
         }
       }
     },
@@ -2691,6 +3147,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ønsk dem velkommen"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dar as boas-vindas"
           }
         }
       }
@@ -2726,6 +3188,12 @@
             "state": "translated",
             "value": "Hva skal kveldens historie handle om?"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobre o que vai ser a história de hoje?"
+          }
         }
       }
     },
@@ -2760,6 +3228,12 @@
             "state": "translated",
             "value": "Hvem er kveldens\nhistorier til?"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para quem são as histórias\nde hoje à noite?"
+          }
         }
       }
     },
@@ -2793,6 +3267,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skriver kveldens historie…"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A história de hoje está nascendo…"
           }
         }
       }
@@ -2829,6 +3309,12 @@
             "state": "translated",
             "value": "Årlig"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anual"
+          }
         }
       }
     },
@@ -2863,6 +3349,12 @@
             "state": "translated",
             "value": "Ukens gratishistorie er klar"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sua história grátis da semana está pronta"
+          }
         }
       }
     },
@@ -2896,6 +3388,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Din neste gratishistorie er klar %@ – eller gjør eventyrstunden ubegrenset med Fable+."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sua próxima história grátis fica pronta %@, ou deixe a hora da história sem limite com o Fable+."
           }
         }
       }
@@ -2932,6 +3430,12 @@
             "state": "translated",
             "value": "måned"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mês"
+          }
         }
       }
     },
@@ -2967,6 +3471,12 @@
             "state": "translated",
             "value": "det gule teppet"
           }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "a cobertinha amarela"
+          }
         }
       }
     },
@@ -3001,6 +3511,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "år"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ano"
           }
         }
       }

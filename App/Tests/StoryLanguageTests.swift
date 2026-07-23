@@ -40,6 +40,13 @@ struct StoryLanguageTests {
         #expect(StoryLanguage.preferred(from: ["it-CH"]) == .italian)
     }
 
+    @Test func portugueseDevicesGetBrazilianStories() {
+        #expect(StoryLanguage.preferred(from: ["pt-BR", "en-US"]) == .portugueseBrazilian)
+        // European Portuguese devices get the pt shelf too, until pt-PT
+        // earns its own edition.
+        #expect(StoryLanguage.preferred(from: ["pt-PT"]) == .portugueseBrazilian)
+    }
+
     @Test func spanishDevicesGetSpanishStories() {
         #expect(StoryLanguage.preferred(from: ["es-ES", "en-US"]) == .spanish)
         // Language-code matching serves every Spanish region, not just Spain.
@@ -489,5 +496,68 @@ struct ItalianLanguageGateTests {
         let instructions = ModelStoryEngine.instructions(for: request)
         #expect(instructions.contains("written in Italian"))
         #expect(instructions.contains("Buonanotte, Sofia."))
+    }
+}
+
+
+// MARK: - Brazilian Portuguese
+
+struct PortugueseLanguageGateTests {
+    private var request: StoryRequest {
+        StoryRequest(
+            childName: "Alice",
+            ageBand: .little,
+            theme: .adventure,
+            companion: "Bruno, o cachorro",
+            comfortObject: "a cobertinha amarela",
+            language: .portugueseBrazilian
+        )
+    }
+
+    private func story(lastPage: String) -> StoryContent {
+        StoryContent(
+            title: "Alice e o campo da noite",
+            pages: [
+                "Alice entrou no campo silencioso com Bruno, bem na hora em que os vagalumes acordavam.",
+                "Os vagalumes piscavam um oi, um de cada vez, e o capim alto balançava devagarinho.",
+                "Juntos, encontraram o cantinho de musgo mais macio e viram as estrelas se acenderem.",
+                lastPage,
+            ],
+            moral: "Noites mansas nascem de finais gentis.",
+            language: .portugueseBrazilian
+        )
+    }
+
+    @Test func aCalmPortugueseStoryPassesTheGate() {
+        let content = story(lastPage: "Alice bocejou, se aconchegou no Bruno e adormeceu. Boa noite, Alice.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == nil)
+    }
+
+    @Test func aPortugueseStoryMustWindDownInPortuguese() {
+        let english = story(lastPage: "Alice olhou as estrelas com Bruno. Goodnight, Alice.")
+        #expect(ContentSafetyCheck.rejection(of: english, for: request) == .endingNotSleepy)
+    }
+
+    @Test func portugueseDeniedWordsAreCaught() {
+        let content = story(lastPage: "Alice sentiu muito medo do bosque escuro, depois adormeceu. Boa noite, Alice.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == .deniedWord("medo"))
+    }
+
+    @Test func englishDeniedWordsAreCaughtInsideAPortugueseStory() {
+        let content = story(lastPage: "Um monster passou bem longe, mas Alice adormeceu rapidinho. Boa noite, Alice.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == .deniedWord("monster"))
+    }
+
+    @Test func portugueseHomonymsOfHarmfulWordsPass() {
+        // "pela mata" is a walk in the woods, "o burro" is the donkey, and
+        // "atirou a bolinha" is throwing a ball — none may trip the list.
+        let content = story(lastPage: "O burro simpático atirou a bolinha pela mata uma última vez, e depois todos se aconchegaram com Alice e adormeceram. Boa noite, Alice.")
+        #expect(ContentSafetyCheck.rejection(of: content, for: request) == nil)
+    }
+
+    @Test func portugueseInstructionsDemandPortugueseAndAPortugueseGoodnight() {
+        let instructions = ModelStoryEngine.instructions(for: request)
+        #expect(instructions.contains("written in Brazilian Portuguese"))
+        #expect(instructions.contains("Boa noite, Alice."))
     }
 }

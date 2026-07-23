@@ -244,6 +244,40 @@ enum ContentSafetyCheck {
         "cretino", "cretina",
     ]
 
+
+    /// Brazilian Portuguese denylist, same policy: explicit inflections,
+    /// err strict. Homonyms deliberately absent: "mata" (kills, but also a
+    /// forest — cozy prose walks "pela mata"), "tiro"/"atirar" (a shot, but
+    /// also plain "I take out" / "to throw the ball"), "burro" (dumb, but
+    /// also the donkey every barnyard tale needs), "bobo" (affectionately
+    /// silly), and "mau/má" (too short and too mild — malvado holds the
+    /// wickedness line). Grito/gritar stay legal for squeals of joy.
+    private static let portugueseDeniedWords: [String] = [
+        // Violence and harm.
+        "sangue", "sangrento", "sangrenta", "matar", "matou", "mataram",
+        "morrer", "morre", "morrem", "morreu", "morto", "morta", "mortos",
+        "mortas", "morte", "arma", "armas", "faca", "facas", "pistola",
+        "pistolas", "espingarda", "espingardas", "bomba", "bombas",
+        "espada", "espadas", "guerra", "guerras", "briga", "brigas",
+        "brigar", "brigou", "brigaram", "atacar", "ataque", "ataques",
+        "atacou", "atacaram", "ódio", "odiar", "odeia", "odiava",
+        // Fear and dread.
+        "medo", "medos", "medroso", "medrosa", "susto", "sustos",
+        "assustado", "assustada", "assustados", "assustar", "assustou",
+        "assustadora", "assustador", "terror", "aterrorizante",
+        "aterrorizado", "aterrorizada", "horror", "horrores", "horrível",
+        "horríveis", "pesadelo", "pesadelos", "monstro", "monstros",
+        "fantasma", "fantasmas", "zumbi", "zumbis", "demônio", "demônios",
+        "bruxa", "bruxas", "malvado", "malvada", "malvados", "malvadas",
+        "perigo", "perigos", "perigoso", "perigosa", "perigosos",
+        "assombrado", "assombrada", "assombrados", "cruel", "cruéis",
+        "pânico", "sombrio", "sombria", "sombrios", "tenebroso",
+        "tenebrosa",
+        // Unkindness.
+        "estúpido", "estúpida", "estúpidos", "idiota", "idiotas", "feio",
+        "feia", "feios", "feias", "cala a boca", "calem a boca",
+    ]
+
     static func deniedWords(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishDeniedWords
@@ -254,6 +288,7 @@ enum ContentSafetyCheck {
         case .spanish: englishDeniedWords + spanishDeniedWords
         case .french: englishDeniedWords + frenchDeniedWords
         case .italian: englishDeniedWords + italianDeniedWords
+        case .portugueseBrazilian: englishDeniedWords + portugueseDeniedWords
         }
     }
 
@@ -356,6 +391,25 @@ enum ContentSafetyCheck {
         "si assopirono", "assopito", "assopita",
     ]
 
+
+    /// Brazilian Portuguese wind-down vocabulary — no English union, plural
+    /// preterites included from the start, and "soninho" because Brazilian
+    /// bedtime prose without a diminutive is barely Brazilian.
+    private static let portugueseSleepSignals: [String] = [
+        "boa noite", "dormir", "dorme", "dormem", "dormiu", "dormiram",
+        "dormindo", "dormidinho", "adormece", "adormeceu", "adormeceram",
+        "adormecido", "adormecida", "sono", "soninho", "sonolento",
+        "sonolenta", "sonho", "sonhos", "sonhar", "sonhou", "sonharam",
+        "sonhando", "descansar", "descansa", "descansou", "descansaram",
+        "descanso", "aconchegou", "aconchegaram", "aconchegado",
+        "aconchegada", "aconchegante", "ninar", "ninou", "acalanto",
+        "canção de ninar", "bocejo", "bocejos", "bocejou", "bocejaram",
+        "bocejando", "pálpebras", "fechou os olhos", "fecharam os olhos",
+        "olhos se fecharam", "olhos foram se fechando",
+        "embaixo das cobertas", "debaixo das cobertas", "cochilou",
+        "cochilaram",
+    ]
+
     static func sleepSignals(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishSleepSignals
@@ -364,6 +418,7 @@ enum ContentSafetyCheck {
         case .spanish: spanishSleepSignals
         case .french: frenchSleepSignals
         case .italian: italianSleepSignals
+        case .portugueseBrazilian: portugueseSleepSignals
         }
     }
 
