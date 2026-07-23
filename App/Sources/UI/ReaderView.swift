@@ -10,6 +10,7 @@ struct ReaderView: View {
     @State private var pageIndex = 0
     @State private var didStartSeries = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(SubscriptionStore.self) private var subscriptions
     @Environment(\.modelContext) private var modelContext
     @ScaledMetric(relativeTo: .largeTitle) private var emblemSize = 52
@@ -52,7 +53,7 @@ struct ReaderView: View {
                     totalPages: totalPages
                 )
                 guard destination != pageIndex else { return }
-                withAnimation(.easeInOut(duration: 0.35)) {
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.35)) {
                     pageIndex = destination
                 }
             }
@@ -158,7 +159,7 @@ struct ReaderView: View {
         modelContext.insert(series)
         story.episodeNumber = 1
         story.series = series
-        withAnimation(.snappy(duration: 0.25)) {
+        withAnimation(reduceMotion ? nil : .snappy(duration: 0.25)) {
             didStartSeries = true
         }
     }
@@ -180,7 +181,7 @@ struct ReaderView: View {
                             .frame(width: 6, height: 6)
                     }
                 }
-                .animation(.snappy(duration: 0.2), value: pageIndex)
+                .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: pageIndex)
             }
         }
         .accessibilityElement(children: .ignore)

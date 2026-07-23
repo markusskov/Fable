@@ -108,10 +108,14 @@ struct ProfileSetupView: View {
     private func field(_ title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             label(title)
+                .accessibilityHidden(true) // the field itself carries the label
             content()
                 .padding(14)
                 .foregroundStyle(FableTheme.cream)
                 .background(FableTheme.card, in: RoundedRectangle(cornerRadius: 14))
+                // The visible title is a sibling Text, so VoiceOver would
+                // otherwise announce these fields as bare text boxes.
+                .accessibilityLabel(title)
         }
     }
 }

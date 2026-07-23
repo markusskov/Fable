@@ -9,6 +9,7 @@ struct TonightView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(SubscriptionStore.self) private var subscriptions
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
     @Query private var stories: [Story]
@@ -166,7 +167,7 @@ struct TonightView: View {
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
-        .animation(.snappy(duration: 0.2), value: selectedTheme)
+        .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: selectedTheme)
     }
 
     /// Switch children, or bring a new one into the family (Fable+ beyond

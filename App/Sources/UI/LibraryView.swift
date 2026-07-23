@@ -52,6 +52,7 @@ struct LibraryView: View {
                             Image(systemName: "chevron.right")
                                 .font(.footnote.weight(.semibold))
                                 .foregroundStyle(FableTheme.creamDim)
+                                .accessibilityHidden(true)
                         }
                         .padding(.vertical, 4)
                     }
