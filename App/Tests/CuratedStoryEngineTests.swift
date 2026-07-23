@@ -88,6 +88,21 @@ struct CuratedStoryEngineTests {
         }
     }
 
+    @Test func aChildNamedLikeATokenCannotHijackTheTemplate() async throws {
+        // "{sound}" as a name must neither re-substitute into a sound-word
+        // (old behavior, nondeterministic by dictionary order) nor leave
+        // braces in the prose; brace-stripping makes it the literal "sound".
+        var mischief = request()
+        mischief.childName = "{sound}"
+        mischief.companion = "{treasure}"
+        for seed: UInt64 in 0..<10 {
+            let story = try await engine.makeStory(for: mischief, seed: seed)
+            let fullText = ([story.title, story.moral] + story.pages).joined()
+            #expect(!fullText.contains("{"), "brace leaked: \(fullText.prefix(120))")
+            #expect(story.pages.joined().contains("sound"), "sanitized name should appear literally")
+        }
+    }
+
     @Test func providerNeverFails() async {
         let provider = StoryProvider()
         let result = await provider.makeStory(for: request())
