@@ -20,16 +20,14 @@ struct StoryTemplate: Identifiable, Sendable {
         // Parent-typed values are brace-stripped: a child "named" {sound}
         // must never be re-substituted by a later dictionary pass (iteration
         // order is random, so the old behavior was nondeterministic), and no
-        // parent input may masquerade as a template token.
-        func sanitized(_ value: String) -> String {
-            value.replacingOccurrences(of: "{", with: "")
-                .replacingOccurrences(of: "}", with: "")
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-        }
+        // parent input may masquerade as a template token. The name falls
+        // back to a generic if brace-stripping leaves it empty, so a child
+        // "named" "{}" is never nameless.
+        let strippedName = StoryRequest.bracesStripped(request.childName)
         let substitutions: [String: String] = [
-            "{name}": sanitized(request.childName),
-            "{companion}": sanitized(request.companionOrDefault),
-            "{comfort}": sanitized(request.comfortObjectOrDefault),
+            "{name}": strippedName.isEmpty ? ContentSafetyCheck.safeGenericName(for: request.language) : strippedName,
+            "{companion}": StoryRequest.bracesStripped(request.companionOrDefault),
+            "{comfort}": StoryRequest.bracesStripped(request.comfortObjectOrDefault),
             "{setting}": settings.pick(using: &rng),
             "{sound}": sounds.pick(using: &rng),
             "{treasure}": treasures.pick(using: &rng),

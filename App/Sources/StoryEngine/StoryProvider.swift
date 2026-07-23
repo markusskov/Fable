@@ -17,10 +17,18 @@ struct StoryProvider: Sendable {
     private let model = ModelStoryEngine()
 
     func makeStory(for request: StoryRequest) async -> (content: StoryContent, engine: StoryEngineKind) {
+        // Neutralize once, at the single chokepoint, so EVERY path — model,
+        // curated, emergency — is fed input that cannot inject a denied word
+        // or a template brace. Normal profiles pass through untouched; only a
+        // hostile one (child named "Monster", a "{}" companion) is rewritten.
+        // This is the boundary the 2026-07-24 external review asked for: parent
+        // values validated before they reach any generator, and every returned
+        // story re-checked by the gate.
+        let safe = ContentSafetyCheck.neutralized(request)
         let seed = UInt64.random(in: UInt64.min...UInt64.max)
         for _ in 0..<Self.modelAttempts {
             do {
-                let content = try await model.makeStory(for: request, seed: seed)
+                let content = try await model.makeStory(for: safe, seed: seed)
                 return (content, .model)
             } catch StoryEngineError.unavailable {
                 break
@@ -28,13 +36,25 @@ struct StoryProvider: Sendable {
                 continue
             }
         }
-        if let content = try? await curated.makeStory(for: request, seed: seed) {
+
+        if let content = try? await curated.makeStory(for: safe, seed: seed),
+           ContentSafetyCheck.isAcceptable(content, for: safe) {
             return (content, .curated)
         }
-        // Unreachable with a valid library, but bedtime gets a story no matter what.
-        return (Self.emergencyStory(for: request), .curated)
+        // The emergency story is deterministic and built from neutralized
+        // values, so it is guaranteed to pass; the gate here is belt and
+        // suspenders, and if it somehow fails we serve the input-free story.
+        let emergency = Self.emergencyStory(for: safe)
+        if ContentSafetyCheck.isAcceptable(emergency, for: safe) {
+            return (emergency, .curated)
+        }
+        return (Self.inputFreeStory(for: safe.language), .curated)
     }
 
+    /// Deterministic English safe story that still stars the child. Built
+    /// only from a neutralized request, so its interpolated values cannot be
+    /// unsafe. Marked English because its prose is English (the gate judges
+    /// by the text's actual language).
     private static func emergencyStory(for request: StoryRequest) -> StoryContent {
         StoryContent(
             title: "Goodnight, \(request.childName)",
@@ -44,7 +64,27 @@ struct StoryProvider: Sendable {
                 "So \(request.childName) snuggled in close with \(request.comfortObjectOrDefault), took one deep cozy breath, and let the day drift off like a little boat.",
                 "Goodnight, \(request.childName). Tomorrow is already on its way, full of new stories.",
             ],
-            moral: "Every day ends softly when you let it."
+            moral: "Every day ends softly when you let it.",
+            language: .english
+        )
+    }
+
+    /// The absolute floor: a fixed, parent-input-free goodnight story that
+    /// cannot contain anything unsafe because it contains no variable text at
+    /// all. Only reached if even the neutralized emergency story somehow
+    /// failed the gate — a state that should be impossible, but bedtime never
+    /// breaks and a child never sees a rejected story.
+    private static func inputFreeStory(for language: StoryLanguage) -> StoryContent {
+        StoryContent(
+            title: "A Quiet Goodnight",
+            pages: [
+                "The evening grew soft and dim, and the whole town began to yawn. Rooftops settled, windows glowed, and the streetlamps hummed their lowest, sleepiest song.",
+                "The moon rose slowly over the hills, spreading a silver blanket of light across every garden, every path, and every warm little bed.",
+                "One by one, the stars came out to keep watch, blinking gently, the way friends do when they are glad to see you resting.",
+                "And so the night wrapped the world in quiet. Sleep now, little one. Goodnight, and sweet dreams until the morning.",
+            ],
+            moral: "Every day ends softly when you let it.",
+            language: .english
         )
     }
 }

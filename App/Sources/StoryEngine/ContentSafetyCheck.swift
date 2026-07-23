@@ -451,6 +451,52 @@ enum ContentSafetyCheck {
         rejection(of: content, for: request) == nil
     }
 
+    /// True when the text contains a word denied in the given language (or in
+    /// English, which is always checked). Public so callers can vet parent
+    /// input before it is ever spliced into a story.
+    static func containsDeniedWord(_ text: String, language: StoryLanguage) -> Bool {
+        firstDeniedWord(in: text, language: language) != nil
+    }
+
+    /// A safe, generic hero name when a parent's own name would inject a
+    /// denied word (a child literally named "Monster"). Only ever used on
+    /// the guaranteed-safe fallback paths, never to rename a normal child.
+    static func safeGenericName(for language: StoryLanguage) -> String {
+        switch language {
+        case .english: "the little one"
+        case .norwegianBokmal: "den lille"
+        case .german: "das kleine Kind"
+        case .spanish: "el pequeño"
+        case .french: "le petit"
+        case .italian: "il piccolo"
+        case .portugueseBrazilian: "o pequeno"
+        }
+    }
+
+    /// Returns a request whose free-text fields cannot inject a denied word.
+    /// Normal input passes through untouched; only a value that actually
+    /// trips the denylist is swapped for a safe default. Used on the curated
+    /// and emergency paths, which have no model guardrail of their own, so
+    /// that a hostile or unlucky profile can never reach a child unchecked.
+    static func neutralized(_ request: StoryRequest) -> StoryRequest {
+        var safe = request
+        // Brace-strip first, so "{}" or "{sound}" can neither leak into the
+        // emergency story nor be re-substituted, then denylist-neutralize.
+        safe.childName = StoryRequest.bracesStripped(request.childName)
+        safe.companion = StoryRequest.bracesStripped(request.companion)
+        safe.comfortObject = StoryRequest.bracesStripped(request.comfortObject)
+        if safe.childName.isEmpty || containsDeniedWord(safe.childName, language: request.language) {
+            safe.childName = safeGenericName(for: request.language)
+        }
+        if containsDeniedWord(safe.companion, language: request.language) {
+            safe.companion = "" // falls back to companionOrDefault
+        }
+        if containsDeniedWord(safe.comfortObject, language: request.language) {
+            safe.comfortObject = ""
+        }
+        return safe
+    }
+
     /// The first rule the story breaks, or nil when it is safe to show.
     static func rejection(of content: StoryContent, for request: StoryRequest) -> Rejection? {
         // Structure: a real story arc with full, readable pages.
@@ -469,8 +515,11 @@ enum ContentSafetyCheck {
             }
         }
 
-        // Calm: an excited story announces itself in punctuation.
-        let fullText = ([content.title, content.moral] + content.pages).joined(separator: "\n")
+        // Calm: an excited story announces itself in punctuation. The recap
+        // is checked too — it is model-authored and is injected verbatim into
+        // the next episode's prompt, so an unsafe recap must never survive.
+        let fullText = ([content.title, content.moral, content.recap] + content.pages)
+            .joined(separator: "\n")
         let exclamations = fullText.count(where: { $0 == "!" })
         guard exclamations <= 3 else { return .tooExcited(exclamationCount: exclamations) }
 
