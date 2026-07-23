@@ -8,8 +8,10 @@ Things only the repository owner can provide. Items move to *Done* when confirme
    - Support URL empty (required for review) — Claude will stand up a support page unless you have a domain preference
    - Copyright field empty → `2026 Markus Skov`
    - DSA trader status is "non-trader" — with paid subscriptions the EU requires trader compliance (published contact info); either complete it or we exclude EU territories at launch. Owner decision.
-   - **Confirm subscriptions**: Monetization → Subscriptions needs group "Fable Plus" with `com.markusskov.fable.plus.monthly` ($4.99/mo) and `com.markusskov.fable.plus.annual` ($39.99/yr), both Family Shareable, 7-day free intro offer each — not visible in the shared captures
-   - App Privacy questionnaire: answer "Data Not Collected" everywhere (docs/appstore/metadata.md)
+   - ~~Confirm subscriptions~~ ✅ verified 2026-07-23: both SKUs (`…monthlyy`/`…annualy`), $4.99/$39.99, Family Sharing on both, free 1-week intro offers, reference names cleaned up
+   - ~~App Privacy questionnaire~~ ✅ "Data Not Collected" set — remember to hit **Publish** on the App Privacy page
+   - Privacy Policy URL (required before submission) — waits on Claude's support-site task
+   - App Accessibility section: leave empty until Claude's accessibility audit reports which features to declare (owner asked 2026-07-23)
    - Screenshots + build upload are Claude's side (TestFlight lane next)
 
 ## Done

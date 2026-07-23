@@ -34,6 +34,8 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 
 ## Milestone 3 — Ship (v1.0, App Store)
 
+- [ ] Accessibility audit for the ASC declaration (owner asked 2026-07-23): respect Reduce Motion (page-turn + card animations), full VoiceOver pass (reader, paywall, onboarding, profile menu), Voice Control naming check — then hand the owner the exact feature list to declare (Larger Text, Dark Interface, Sufficient Contrast already earned)
+- [ ] Support site + privacy policy page (GitHub Pages) → fills ASC Support URL and the required Privacy Policy URL
 - [ ] Onboarding flow (first-run: create profile → first story in under 60 seconds — largely true today; audit and polish)
 - [x] Privacy nutrition label prep + App Review notes → docs/appstore/metadata.md
 - [ ] App Store page: description/keywords/subtitle done (docs/appstore/metadata.md); screenshots remain (need final devices + polish pass)
