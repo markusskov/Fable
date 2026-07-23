@@ -12,8 +12,9 @@ Things only the repository owner can provide. Items move to *Done* when confirme
    - ~~Confirm subscriptions~~ ✅ verified 2026-07-23: both SKUs (`…monthlyy`/`…annualy`), $4.99/$39.99, Family Sharing on both, free 1-week intro offers, reference names cleaned up
    - ~~App Privacy questionnaire~~ ✅ "Data Not Collected" set — remember to hit **Publish** on the App Privacy page
    - Privacy Policy URL (required before submission) → paste `https://markusskov.github.io/Fable/privacy.html` (live as of 2026-07-23)
-   - App Accessibility section: leave empty until Claude's accessibility audit reports which features to declare (owner asked 2026-07-23)
-   - Screenshots + build upload are Claude's side (TestFlight lane next)
+   - App Accessibility section (audit shipped 2026-07-23): declare **VoiceOver, Voice Control, Larger Text, Dark Interface, Sufficient Contrast, Reduced Motion**; do NOT declare Differentiate Without Color Alone or Captions/Audio Descriptions
+   - Screenshots ready in `docs/appstore/screenshots/6.9/` (upload order in docs/appstore/metadata.md → Screenshots). Claude will upload them with the TestFlight/ASC-API lane; if you're in ASC sooner, drag the six PNGs into the 6.9" iPhone slot in numbered order
+   - Build upload is Claude's side (TestFlight lane next)
 
 ## Done
 
