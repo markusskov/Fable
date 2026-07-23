@@ -53,7 +53,7 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [ ] Seasonal collections (premium curated templates)
 - [ ] iPad layout, then Mac Catalyst evaluation
 - [ ] Story audio: AVSpeechSynthesizer narration with parental voice options
-- [ ] Localization: start with da-DK + de-DE (small markets, low competition, owner locale advantage)
+- [ ] Localization: start with **nb-NO** (the founder's family is the first market), then de-DE. Three layers with different effort: UI strings (String Catalog, mechanical), curated templates (real editorial translation — they must read like native bedtime prose, not translations), and model stories (gated on Apple Intelligence language support per device — probe `SystemLanguageModel` language availability and fall back to curated in-language when the model can't write it).
 
 ## Icebox / ideas
 
