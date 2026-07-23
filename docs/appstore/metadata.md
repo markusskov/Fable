@@ -92,8 +92,14 @@ feature change that alters what the store page promises.
 
 ## Screenshots
 
-- Files: `docs/appstore/screenshots/6.9/` — 1320×2868 portrait, upload to the
-  **6.9" iPhone** slot in numbered order. The app is iPhone-only for v1
+- **Store set (primary): `docs/appstore/store-ready/01..06-store.png`** —
+  the owner's framed Figma compositions (light canvas, captions, celestial
+  motifs), converted to 1320×2868 by `scripts/prepare-store-images.sh` from
+  the 4x exports in `docs/appstore/AppstoreImages/`. Upload to the **6.9"
+  iPhone** slot in numbered order. Store order: title page → reader ending
+  panorama (2+3) → tonight/mood → setup with privacy caption → library.
+- Fallback plain set: `docs/appstore/screenshots/6.9/` — 1320×2868 portrait,
+  raw UI captures, same slot. The app is iPhone-only for v1
   (`TARGETED_DEVICE_FAMILY = 1`), so no iPad set is required and ASC reuses
   this set for smaller sizes.
 - The set, in store-page order:
