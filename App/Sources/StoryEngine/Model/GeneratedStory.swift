@@ -10,6 +10,9 @@ struct GeneratedStory {
     @Guide(description: "The story told in 6 to 9 pages. Each page, including the final one, is a complete calm scene of at least two full sentences — around 40 to 80 words, never one short sentence alone — that a parent reads aloud slowly in about half a minute. The final page ends by saying goodnight to the child by name. No exclamation marks.", .count(6...9))
     var pages: [String]
 
+    @Guide(description: "The story's very last sentence, on its own: it says goodnight to the child using their name, in the story's language. Nothing else.")
+    var goodnight: String
+
     @Guide(description: "One gentle closing sentence with the story's warm takeaway, phrased for a child.")
     var moral: String
 

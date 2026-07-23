@@ -208,6 +208,59 @@ struct ModelStoryEngineTests {
         try await expectAcceptableStory(from: norwegian)
     }
 
+    /// Yield measurement across every supported story language. Not part of
+    /// normal runs (slow: languages × attempts of real generation) — invoke
+    /// explicitly with:
+    ///   TEST_RUNNER_FABLE_MEASURE_YIELD=1 xcodebuild ... test \
+    ///     -only-testing:"FableTests/ModelStoryEngineTests/measuresYieldPerLanguage()"
+    /// Prints a per-language pass rate and rejection histogram; fails only if
+    /// a model-supported language yields zero acceptable stories, which is
+    /// the "families in that country get curated-only without us knowing"
+    /// regression this exists to catch.
+    @Test(
+        .enabled(if: ProcessInfo.processInfo.environment["FABLE_MEASURE_YIELD"] != nil, "Set FABLE_MEASURE_YIELD=1 to run"),
+        .enabled(if: ModelStoryEngine.isAvailable, "Requires Apple Intelligence")
+    )
+    func measuresYieldPerLanguage() async throws {
+        let engine = ModelStoryEngine()
+        let themes = StoryTheme.allCases
+        var report: [String] = []
+        for language in StoryLanguage.allCases {
+            guard ModelStoryEngine.supportsLanguage(language) else {
+                report.append("\(language.rawValue): model does not support — curated-only by design")
+                continue
+            }
+            var passes = 0
+            var rejections: [String: Int] = [:]
+            for attempt in 0..<Self.generationAttempts {
+                var themed = request
+                themed.language = language
+                themed.theme = themes[attempt % themes.count]
+                let content = ModelStoryEngine.repaginated(
+                    try await engine.rawStory(for: themed),
+                    for: themed
+                )
+                if let rejection = ContentSafetyCheck.rejection(of: content, for: themed) {
+                    let key = String(describing: rejection)
+                    rejections[key, default: 0] += 1
+                    print("[yield:\(language.rawValue)] rejected — \(rejection)")
+                    print("[yield:\(language.rawValue)] last page: \(content.pages.last ?? "-")")
+                } else {
+                    passes += 1
+                }
+            }
+            let line = "\(language.rawValue): \(passes)/\(Self.generationAttempts) passed"
+                + (rejections.isEmpty ? "" : " — rejections: \(rejections.sorted { $0.value > $1.value }.map { "\($0.key)×\($0.value)" }.joined(separator: ", "))")
+            report.append(line)
+            if passes == 0 {
+                Issue.record("Language \(language.rawValue) yielded 0/\(Self.generationAttempts): model-supported but gate-starved. \(line)")
+            }
+        }
+        print("===== PER-LANGUAGE YIELD =====")
+        report.forEach { print($0) }
+        print("==============================")
+    }
+
     private func expectAcceptableStory(from base: StoryRequest) async throws {
         let engine = ModelStoryEngine()
         var rejections: [String] = []
