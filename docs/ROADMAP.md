@@ -45,7 +45,7 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
   - App pinned iPhone-only for v1 (`TARGETED_DEVICE_FAMILY = 1`): no iPad screenshot slot, no unpolished stretched layout in review; real iPad layout stays in Milestone 4
 - [x] Release automation: version/build bump, changelog from conventional commits
   - `scripts/release.sh` (bump major/minor/patch/X.Y.Z, build-only bump, tag) writes project.yml + CHANGELOG.md and commits; pushing the tag triggers `release.yml`, which publishes a GitHub Release with that version's changelog section. CI dry-runs the script so it can't rot. First real run happens at submission time.
-- [ ] Submit for review — build 2 is on TestFlight (2026-07-23); remaining: owner sandbox-checks the paywall (trial wording), accessibility declaration, attach build + include both subscriptions, Add for Review
+- [x] Submit for review — **submitted 2026-07-23 ~18:00**: iOS App 1.0 (build 3) + Fable Plus group + both subscriptions, all Waiting for Review. Manual release. While in review: no metadata edits, no new submissions; dev work continues on branches as usual.
 
 ## Milestone 4 — Grow (post-1.0)
 
