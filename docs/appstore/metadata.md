@@ -90,6 +90,26 @@ feature change that alters what the store page promises.
   tonight's story". On review devices without Apple Intelligence the curated
   library serves the story — same flow, no error states.
 
+## Screenshots
+
+- Files: `docs/appstore/screenshots/6.9/` — 1320×2868 portrait, upload to the
+  **6.9" iPhone** slot in numbered order. The app is iPhone-only for v1
+  (`TARGETED_DEVICE_FAMILY = 1`), so no iPad set is required and ASC reuses
+  this set for smaller sizes.
+- The set, in store-page order:
+  1. `01-reader-title` — the storybook title page, "A story for Nora"
+  2. `02-tonight` — the nightly ritual: mood picker + a series to continue
+  3. `03-reader-page` — the reading experience, nothing but the story
+  4. `04-reader-end` — the ending: moral, "Sweet dreams", series invitation
+  5. `05-setup` — one-screen setup; "Everything stays on this device. No
+     account, ever." is the caption Apple lets us keep
+  6. `06-library` — the growing storybook
+- Regenerate after any UI change: `scripts/capture-screenshots.sh` stages a
+  fresh install on a 6.9" simulator (clean status bar, Fable+ debug flag,
+  scripted evening in `App/UITests/ScreenshotTests.swift`) and exports the
+  numbered PNGs. Raw captures, no device frames or marketing overlays — the
+  product is the pitch.
+
 ## Age rating questionnaire (expected answers)
 
 Everything "None" (no violence, fear themes are actively filtered, no user

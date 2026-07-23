@@ -40,7 +40,9 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 - [x] Onboarding flow (first-run: create profile → first story in under 60 seconds — audited 2026-07-23, verified fresh-install in simulator)
   - Polish shipped: name field auto-focuses with next/done submit chaining; name gets word autocapitalization + no autocorrect; companion/comfort labels now say they're optional (engines default to "a small brave fox" / "a soft warm blanket"); setup → Tonight hands over with a gentle crossfade (skipped under Reduce Motion)
 - [x] Privacy nutrition label prep + App Review notes → docs/appstore/metadata.md
-- [ ] App Store page: description/keywords/subtitle done (docs/appstore/metadata.md); screenshots remain (need final devices + polish pass)
+- [x] App Store page: description/keywords/subtitle done (docs/appstore/metadata.md); screenshots shipped 2026-07-23
+  - 6.9" set (1320×2868) captured by a scripted UI-test lane (`scripts/capture-screenshots.sh` + `FableScreenshots` scheme, outside CI) → `docs/appstore/screenshots/6.9/`; rerun after UI changes
+  - App pinned iPhone-only for v1 (`TARGETED_DEVICE_FAMILY = 1`): no iPad screenshot slot, no unpolished stretched layout in review; real iPad layout stays in Milestone 4
 - [ ] Release automation: version/build bump, changelog from conventional commits
 - [ ] Submit for review
 

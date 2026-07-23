@@ -112,6 +112,9 @@ struct TonightView: View {
                 } label: {
                     Image(systemName: "books.vertical")
                 }
+                // Icon-only control; without this VoiceOver reads the raw
+                // symbol name.
+                .accessibilityLabel("Storybook")
             }
         }
         .sheet(isPresented: $isAddingChild) {
