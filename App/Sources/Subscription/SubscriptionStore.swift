@@ -21,6 +21,10 @@ final class SubscriptionStore {
     /// Loaded products in paywall order (yearly first). Empty until loaded.
     private(set) var products: [Product] = []
     private(set) var isLoadingProducts = false
+    /// True while the family can still claim the introductory free week.
+    /// StoreKit applies the offer automatically at purchase; this only
+    /// controls whether the paywall talks about it.
+    private(set) var isEligibleForIntroOffer = false
     /// Set when the store could not be reached. The paywall shows a quiet
     /// "try again later" rather than an error alert — never break bedtime.
     private(set) var productsUnavailable = false
@@ -76,10 +80,33 @@ final class SubscriptionStore {
                 Self.sortOrder(of: lhs) < Self.sortOrder(of: rhs)
             }
             productsUnavailable = products.isEmpty
+            if let subscription = products.first?.subscription {
+                isEligibleForIntroOffer = await subscription.isEligibleForIntroOffer
+            }
         } catch {
             products = []
             productsUnavailable = true
         }
+    }
+
+    /// The introductory free-trial line for a plan ("1 week free"), or nil
+    /// when there is no free trial or the family already used it.
+    func freeTrialText(for plan: FablePlus.Plan) -> String? {
+        guard isEligibleForIntroOffer,
+              let offer = product(for: plan)?.subscription?.introductoryOffer,
+              offer.paymentMode == .freeTrial
+        else { return nil }
+        let period = offer.period
+        let unit: String
+        switch period.unit {
+        case .day: unit = "day"
+        case .week: unit = "week"
+        case .month: unit = "month"
+        case .year: unit = "year"
+        @unknown default: unit = "period"
+        }
+        let count = period.value
+        return count == 1 ? "1 \(unit) free" : "\(count) \(unit)s free"
     }
 
     func product(for plan: FablePlus.Plan) -> Product? {

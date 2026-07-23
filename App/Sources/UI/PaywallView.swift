@@ -144,9 +144,12 @@ struct PaywallView: View {
     }
 
     private func priceLine(for plan: FablePlus.Plan, product: Product) -> String {
-        let base = "\(product.displayPrice) / \(plan.cadence)"
+        var base = "\(product.displayPrice) / \(plan.cadence)"
         if plan == .annual, let perMonth = subscriptions.monthlyEquivalentPrice(for: plan) {
-            return "\(base) — that's \(perMonth) a month"
+            base = "\(base) — that's \(perMonth) a month"
+        }
+        if let trial = subscriptions.freeTrialText(for: plan) {
+            return "\(trial), then \(base)"
         }
         return base
     }
@@ -158,7 +161,9 @@ struct PaywallView: View {
                     if isPurchasing {
                         ProgressView().tint(FableTheme.nightDeep)
                     } else {
-                        Text("Continue")
+                        Text(subscriptions.freeTrialText(for: selectedPlan) != nil
+                            ? "Start your free week"
+                            : "Continue")
                             .font(.headline)
                     }
                 }
