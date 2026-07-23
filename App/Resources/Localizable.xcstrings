@@ -26,6 +26,12 @@
             "value": "%@ / %@"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ / %@"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -55,6 +61,12 @@
             "value": "%@, soit %@ par mois"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, cioè %@ al mese"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -82,6 +94,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@, puis %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, poi %@"
           }
         },
         "nb": {
@@ -161,6 +179,24 @@
                 "stringUnit": {
                   "state": "translated",
                   "value": "%lld jours gratuits"
+                }
+              }
+            }
+          }
+        },
+        "it": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 giorno gratis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld giorni gratis"
                 }
               }
             }
@@ -255,6 +291,24 @@
                 "stringUnit": {
                   "state": "translated",
                   "value": "%lld mois gratuits"
+                }
+              }
+            }
+          }
+        },
+        "it": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 mese gratis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld mesi gratis"
                 }
               }
             }
@@ -355,6 +409,24 @@
             }
           }
         },
+        "it": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 periodo gratis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld periodi gratis"
+                }
+              }
+            }
+          }
+        },
         "nb": {
           "variations": {
             "plural": {
@@ -444,6 +516,24 @@
                 "stringUnit": {
                   "state": "translated",
                   "value": "Encore %lld histoires de bienvenue, puis une histoire gratuite par semaine"
+                }
+              }
+            }
+          }
+        },
+        "it": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Ancora 1 storia di benvenuto, poi una storia gratuita a settimana"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "Ancora %lld storie di benvenuto, poi una storia gratuita a settimana"
                 }
               }
             }
@@ -543,6 +633,24 @@
             }
           }
         },
+        "it": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 settimana gratis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld settimane gratis"
+                }
+              }
+            }
+          }
+        },
         "nb": {
           "variations": {
             "plural": {
@@ -637,6 +745,24 @@
             }
           }
         },
+        "it": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "1 anno gratis"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld anni gratis"
+                }
+              }
+            }
+          }
+        },
         "nb": {
           "variations": {
             "plural": {
@@ -677,6 +803,12 @@
             "value": "2–3 ans"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2–3 anni"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -703,6 +835,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "4–6 ans"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4–6 anni"
           }
         },
         "nb": {
@@ -733,6 +871,12 @@
             "value": "7–9 ans"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "7–9 anni"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -759,6 +903,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Une histoire toute neuve chaque soir, quand tu en as envie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una storia tutta nuova ogni sera, quando vuoi tu"
           }
         },
         "nb": {
@@ -789,6 +939,12 @@
             "value": "Un ami préféré ou un animal, sinon un petit renard courageux prendra le relais"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un amico del cuore o un animale, altrimenti arriva una piccola volpe coraggiosa"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -815,6 +971,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Une histoire pour %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una storia per %@"
           }
         },
         "nb": {
@@ -845,6 +1007,12 @@
             "value": "Ajouter un enfant"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi un bambino"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -871,6 +1039,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aventure"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avventura"
           }
         },
         "nb": {
@@ -901,6 +1075,12 @@
             "value": "Animaux"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animali"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -929,6 +1109,12 @@
             "value": "Un nouveau héros\nrejoint la famille"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un nuovo eroe\nentra in famiglia"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -955,6 +1141,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Commencer la première histoire"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inizia la prima storia"
           }
         },
         "nb": {
@@ -986,6 +1178,12 @@
             "value": "Bruno le chien"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruno il cane"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1012,6 +1210,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fermer le livre d'histoires"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiudi il libro delle storie"
           }
         },
         "nb": {
@@ -1042,6 +1246,12 @@
             "value": "Continuer"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continua"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1068,6 +1278,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Épisode %lld"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Episodio %lld"
           }
         },
         "nb": {
@@ -1098,6 +1314,12 @@
             "value": "Épisode %lld de « %@ »"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Episodio %lld di «%@»"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1124,6 +1346,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Épisode %lld ce soir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stasera episodio %lld"
           }
         },
         "nb": {
@@ -1154,6 +1382,12 @@
             "value": "Chaque soir mérite\nsa propre histoire"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni sera merita\nla sua storia"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1180,6 +1414,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tout reste sur cet appareil. Aucun compte, jamais."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto resta su questo dispositivo. Nessun account, mai."
           }
         },
         "nb": {
@@ -1210,6 +1450,12 @@
             "value": "Avec Fable+, l'heure de l'histoire devient illimitée, chaque soir."
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con Fable+ l'ora della storia non finisce mai, ogni singola sera."
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1236,6 +1482,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Amis"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amici"
           }
         },
         "nb": {
@@ -1266,6 +1518,12 @@
             "value": "Bonsoir"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buonasera"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1292,6 +1550,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Magie"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magia"
           }
         },
         "nb": {
@@ -1322,6 +1586,12 @@
             "value": "En faire une aventure à suivre"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trasformala in un'avventura a puntate"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1348,6 +1618,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Peut-être plus tard"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magari più tardi"
           }
         },
         "nb": {
@@ -1379,6 +1655,12 @@
             "value": "Mensuel"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensile"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1406,6 +1688,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prochaine histoire gratuite %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prossima storia gratuita %@"
           }
         },
         "nb": {
@@ -1436,6 +1724,12 @@
             "value": "Pas encore d'histoires"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessuna storia"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1460,6 +1754,12 @@
           }
         },
         "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nova"
+          }
+        },
+        "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Nova"
@@ -1493,6 +1793,12 @@
             "value": "Océan"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oceano"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1519,6 +1825,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ou continuer une aventure"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oppure continua un'avventura"
           }
         },
         "nb": {
@@ -1549,6 +1861,12 @@
             "value": "Page %lld sur %lld"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagina %lld di %lld"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1575,6 +1893,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Un profil pour chaque enfant de la famille"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un profilo per ogni bambino della famiglia"
           }
         },
         "nb": {
@@ -1605,6 +1929,12 @@
             "value": "Restaurer les achats"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina acquisti"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1631,6 +1961,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Restauration…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristino…"
           }
         },
         "nb": {
@@ -1662,6 +1998,12 @@
             "value": "Économise %@"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Risparmia %@"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1688,6 +2030,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Enregistré, à continuer depuis l'écran du soir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvata, continuala dalla schermata della sera"
           }
         },
         "nb": {
@@ -1718,6 +2066,12 @@
             "value": "Un objet douillet pour dormir, facultatif aussi"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qualcosa di morbido con cui dorme, anche questo facoltativo"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1744,6 +2098,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Espace"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spazio"
           }
         },
         "nb": {
@@ -1774,6 +2134,12 @@
             "value": "Commence ta semaine gratuite"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inizia la tua settimana gratuita"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1802,6 +2168,12 @@
             "value": "Toujours privé : tout reste sur cet appareil"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sempre privato: tutto resta su questo dispositivo"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1828,6 +2200,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Des séries d'histoires : des aventures qui continuent soir après soir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storie a puntate: avventure che continuano sera dopo sera"
           }
         },
         "nb": {
@@ -1859,6 +2237,12 @@
             "value": "Livre d'histoires"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Libro delle storie"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1887,6 +2271,12 @@
             "value": "L'abonnement se renouvelle automatiquement jusqu'à sa résiliation, possible à tout moment dans Réglages. L'offre gratuite est à toi pour toujours : une nouvelle histoire chaque semaine, et toutes les histoires racontées restent dans ta bibliothèque."
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'abbonamento si rinnova automaticamente finché non viene disdetto, in qualsiasi momento da Impostazioni. Il piano gratuito è tuo per sempre: una nuova storia ogni settimana, e ogni storia raccontata resta nella tua libreria."
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1913,6 +2303,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fais de beaux rêves, %@."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sogni d'oro, %@."
           }
         },
         "nb": {
@@ -1944,6 +2340,12 @@
             "value": "Changer d'enfant. %@ est sélectionné."
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia bambino. %@ è selezionato."
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1972,6 +2374,12 @@
             "value": "Touche ou fais glisser pour commencer"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tocca o scorri per iniziare"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -1998,6 +2406,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Raconter l'histoire du soir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Racconta la storia della sera"
           }
         },
         "nb": {
@@ -2029,6 +2443,12 @@
             "value": "Cric, crac, l'histoire est finie"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "E qui la storia si addormenta"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2055,6 +2475,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "L'aventure continuera un autre soir"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'avventura continua un'altra sera"
           }
         },
         "nb": {
@@ -2085,6 +2511,12 @@
             "value": "La librairie est introuvable pour le moment.\nRéessaie un peu plus tard."
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La libreria non è raggiungibile in questo momento.\nRiprova tra poco."
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2111,6 +2543,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Son âge"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La sua età"
           }
         },
         "nb": {
@@ -2141,6 +2579,12 @@
             "value": "Son prénom"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il suo nome"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2167,6 +2611,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "C'est l'heure d'une histoire,\n%@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "È l'ora di una storia,\n%@"
           }
         },
         "nb": {
@@ -2197,6 +2647,12 @@
             "value": "L'histoire du soir apparaîtra ici, prête à être relue."
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La storia della sera apparirà qui, pronta da rileggere."
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2223,6 +2679,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Souhaiter la bienvenue"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dagli il benvenuto"
           }
         },
         "nb": {
@@ -2253,6 +2715,12 @@
             "value": "De quoi parlera l'histoire de ce soir ?"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Di cosa parlerà la storia di stasera?"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2281,6 +2749,12 @@
             "value": "Pour qui sont les histoires\nde ce soir ?"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per chi sono le storie\ndi stasera?"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2307,6 +2781,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "L'histoire du soir s'écrit…"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La storia della sera prende forma…"
           }
         },
         "nb": {
@@ -2338,6 +2818,12 @@
             "value": "Annuel"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annuale"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2366,6 +2852,12 @@
             "value": "Ton histoire gratuite de la semaine est prête"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua storia gratuita della settimana è pronta"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2392,6 +2884,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ta prochaine histoire gratuite sera prête %@, ou rends l'heure de l'histoire illimitée avec Fable+."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua prossima storia gratuita sarà pronta %@, oppure rendi l'ora della storia illimitata con Fable+."
           }
         },
         "nb": {
@@ -2423,6 +2921,12 @@
             "value": "mois"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mese"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2452,6 +2956,12 @@
             "value": "la couverture jaune"
           }
         },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la copertina gialla"
+          }
+        },
         "nb": {
           "stringUnit": {
             "state": "translated",
@@ -2479,6 +2989,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "an"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "anno"
           }
         },
         "nb": {

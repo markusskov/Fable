@@ -209,6 +209,41 @@ enum ContentSafetyCheck {
         "laids", "laides", "tais-toi", "taisez-vous", "ferme-la",
     ]
 
+
+    /// Italian denylist, same policy: explicit inflections, err strict.
+    /// Homonyms deliberately absent: "cattivo" and "brutto" (everyday mild
+    /// Italian — "un brutto sogno", "non è cattivo" — malvagio holds the
+    /// wickedness line), "botte" (a barrel), and the strillare family (a
+    /// happy squeal is standard cute prose; urlare holds the scream line).
+    /// The English union needs no exemptions; the only overlaps are
+    /// "idiota"-adjacent words denied in both languages anyway.
+    private static let italianDeniedWords: [String] = [
+        // Violence and harm.
+        "sangue", "sanguinante", "uccidere", "uccide", "uccise", "ucciso",
+        "morire", "muore", "muoiono", "morì", "morto", "morta", "morti",
+        "morte", "arma", "armi", "coltello", "coltelli", "pistola",
+        "pistole", "fucile", "fucili", "bomba", "bombe", "spada", "spade",
+        "guerra", "guerre", "battaglia", "battaglie", "lotta", "lottare",
+        "attacco", "attacchi", "attaccare", "attaccò", "colpire", "colpì",
+        "sparare", "sparò", "odio", "odiare", "odia", "odiava",
+        // Fear and dread.
+        "paura", "paure", "impaurito", "impaurita", "spavento", "spaventi",
+        "spaventato", "spaventata", "spaventati", "spaventoso",
+        "spaventosa", "spaventosi", "terrore", "terrificante",
+        "terrorizzato", "terrorizzata", "orrore", "orrori", "orribile",
+        "orribili", "incubo", "incubi", "urlo", "urla", "urlare", "urlò",
+        "urlarono", "mostro", "mostri", "fantasma", "fantasmi", "zombie",
+        "demone", "demoni", "strega", "streghe", "malvagio", "malvagia",
+        "malvagi", "malvagie", "pericolo", "pericoli", "pericoloso",
+        "pericolosa", "pericolosi", "infestato", "infestata", "crudele",
+        "crudeli", "panico", "sinistro", "sinistra", "tenebroso",
+        "tenebrosa",
+        // Unkindness.
+        "stupido", "stupida", "stupidi", "stupide", "scemo", "scema",
+        "idiota", "idioti", "zitto", "zitta", "stai zitto", "stai zitta",
+        "cretino", "cretina",
+    ]
+
     static func deniedWords(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishDeniedWords
@@ -218,6 +253,7 @@ enum ContentSafetyCheck {
                 + germanDeniedWords
         case .spanish: englishDeniedWords + spanishDeniedWords
         case .french: englishDeniedWords + frenchDeniedWords
+        case .italian: englishDeniedWords + italianDeniedWords
         }
     }
 
@@ -301,6 +337,25 @@ enum ContentSafetyCheck {
         "s'assoupirent", "assoupi", "assoupie",
     ]
 
+
+    /// Italian wind-down vocabulary — no English union, same reasoning as
+    /// the other languages, with plural preterites included from the start.
+    private static let italianSleepSignals: [String] = [
+        "buonanotte", "buona notte", "dormire", "dorme", "dormono",
+        "dormì", "dormirono", "dormito", "addormenta", "addormentò",
+        "addormentarono", "addormentato", "addormentata", "addormentati",
+        "addormentate", "addormentarsi", "sonno", "assonnato", "assonnata",
+        "assonnati", "sogno", "sogni", "sognare", "sognò", "sognarono",
+        "sognando", "riposo", "riposare", "riposa", "riposò", "riposarono",
+        "cullare", "culla", "cullò", "cullarono", "cullato", "cullata",
+        "ninnananna", "ninna nanna", "sbadiglio", "sbadigli", "sbadigliare",
+        "sbadigliò", "sbadigliarono", "palpebre", "chiuse gli occhi",
+        "chiusero gli occhi", "occhi si chiusero", "rannicchiò",
+        "rannicchiarono", "rannicchiato", "rannicchiata", "sotto le coperte",
+        "sotto la coperta", "rimboccò", "rimboccarono", "si assopì",
+        "si assopirono", "assopito", "assopita",
+    ]
+
     static func sleepSignals(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishSleepSignals
@@ -308,6 +363,7 @@ enum ContentSafetyCheck {
         case .german: germanSleepSignals
         case .spanish: spanishSleepSignals
         case .french: frenchSleepSignals
+        case .italian: italianSleepSignals
         }
     }
 
