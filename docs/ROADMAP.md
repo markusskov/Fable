@@ -72,6 +72,22 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 - [x] Model-language honesty check per locale: if Apple Intelligence can't write the language, that locale runs curated-only — same "never break bedtime" rule
   - Mechanism shipped with the language plumbing (`ModelStoryEngine.supportsLanguage` gate); each sprint language gets it for free by existing as a `StoryLanguage` case. One nuance: "curated-only" serves the *English* shelf until that language's curated templates land — honest fallback beats machine-translated prose.
 
+## Milestone 4.5 — External review findings (Codex Sol Ultra, 2026-07-24) — release gate for public launch
+
+Verdict after verification: overwhelmingly correct. Fix order follows the reviewer's, with two paths already closed. **1.0 (build 3) contains findings 1–2, so even if Apple approves it, the Release button stays unpressed until a fixed build is approved.**
+
+- [x] **1. Provider-wide safety fail-open (BLOCKER)** — PR #34, open for the reviewer's round two before merging: input neutralized at the provider chokepoint for every path, curated output re-gated, input-free floor story, recap joins gated text, empty-slot regression fixed. SafetyFailOpenTests locks the reproduction across all 7 languages.
+- [ ] **2. In-app Privacy Policy + Terms links (BLOCKER, legal)** — paywall footer + a minimal settings/about surface linking the live site pages and Apple's standard EULA. (Metadata-side URLs are already in ASC; the in-app requirement is the gap.)
+- [ ] **3. Generation task lifecycle** — owned, cancellable task; re-read allowance and series episode number at commit time; don't push a stale profile's reader over the active one. Covers the meter double-spend and episode-number races.
+- [ ] **4. StoreKit entitlement lifecycle** — trust currentEntitlements without re-filtering expiry (grace period!); listen to Product.SubscriptionInfo.Status changes + foreground refresh + expiry timer; treat .unknown as unknown (no paywall flash for cold subscribers); paywall retry for offline catalog; react to pending→success (dismiss + celebrate).
+- [ ] **5. Curated series continuity** — episode-aware curated framing (gated recap as "previously on", same characters, episode title) or stop selling continuation where it can't be delivered. Honesty either way.
+- [ ] **6. Explicit persistence + profile management** — modelContext.save() with error surfacing at profile/story/series commits; edit + delete profiles (delete rules rethought: deleting a child must not globalize their stories); story deletion; a settings surface (also hosts #2's links, subscription management, transparency about which engine told a story).
+- [ ] **7. Editorial pass on fr/it/pt-BR prose** — apply the reviewer's concrete fixes (gender-neutral endings replacing fatigué/stanco/bem coberto + petit marin family; restructure de/di/nas costas + slot contractions; de-calque flagged phrases; pt-BR guillemets → curly quotes; age-band diminutive density). Their suggested lines are good — take them.
+- [ ] **8. Meter robustness** — clamp future-dated stories to now (clock-jump forgiveness); document the 604800s week as intentional.
+- [ ] **9. Denylist normalization** — NFKC-fold + strip zero-width/format characters before matching; keep layered-defense framing documented (denylist is one layer under model guardrails + instructions + structure, not the whole defense).
+- [ ] **10. Prompt hygiene** — move the child's name out of instruction position into delimited user data in the prompt.
+- Accepted risks, documented: third-language code-switching detection (no on-device semantic classifier; layered mitigations), reinstall-loses-library (privacy trade-off — to be communicated in-app), nil-profile legacy visibility until #6's migration.
+
 ## Milestone 5 — Grow (post-1.0)
 
 - [ ] Illustrations via ImagePlayground (cover art per story)
