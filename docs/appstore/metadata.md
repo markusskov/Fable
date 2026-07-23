@@ -46,7 +46,7 @@ feature change that alters what the store page promises.
 > • A profile for every child in the family
 > • Family Sharing included
 >
-> Fable+ is $4.99/month or $39.99/year with a 7-day free trial.
+> Fable+ is $4.99/month, or $39.99/year with a 7-day free trial.
 > Subscriptions renew automatically until cancelled in Settings.
 >
 > Sweet dreams.
