@@ -10,6 +10,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  release-script:
+    name: Release script (dry run)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history + tags: the script walks conventional commits since
+          # the last v* tag to build the changelog section.
+          fetch-depth: 0
+      - name: Dry-run a patch bump and a build bump
+        run: |
+          scripts/release.sh --dry-run patch
+          scripts/release.sh --dry-run build
+
   build-and-test:
     name: Build & test (iOS Simulator)
     runs-on: macos-26

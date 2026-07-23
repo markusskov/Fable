@@ -15,6 +15,7 @@ Things only the repository owner can provide. Items move to *Done* when confirme
    - App Accessibility section (audit shipped 2026-07-23): declare **VoiceOver, Voice Control, Larger Text, Dark Interface, Sufficient Contrast, Reduced Motion**; do NOT declare Differentiate Without Color Alone or Captions/Audio Descriptions
    - Screenshots ready in `docs/appstore/screenshots/6.9/` (upload order in docs/appstore/metadata.md → Screenshots). Claude will upload them with the TestFlight/ASC-API lane; if you're in ASC sooner, drag the six PNGs into the 6.9" iPhone slot in numbered order
    - Build upload is Claude's side (TestFlight lane next)
+2. **Your framed screenshots in `docs/appstore/AppstoreImages/`** (found untracked 2026-07-23): they look great, but at 390×844 px they're too small for App Store Connect — the 6.9" slot only accepts 1320×2868. If you want this framed style on the store page, say so and Claude will rebuild the frames at full resolution from the scripted capture lane; otherwise the plain set in `docs/appstore/screenshots/6.9/` is upload-ready. Left untracked until you decide.
 
 ## Done
 
