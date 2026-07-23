@@ -51,7 +51,8 @@ Working agreement: items move top-to-bottom through **Next → In progress → D
 
 Three workstreams per language, in honesty-order (never ship a language whose stories read like translations):
 - [ ] **nb-NO (first — the founder's market):**
-  - [ ] App UI: String Catalog infrastructure + Norwegian translations (all screens incl. paywall legal text)
+  - [x] App UI: String Catalog infrastructure + Norwegian translations (all screens incl. paywall legal text)
+    - `App/Resources/Localizable.xcstrings` (en source + nb, plural variations for meter/trial lines); plain-`String` call sites plumbed through `String(localized:)` / `LocalizedStringKey`. `SWIFT_EMIT_LOC_STRINGS` on, so `xcodebuild -exportLocalizations` verifies catalog coverage — rerun that check when adding UI strings. Verified live in simulator (`-AppleLanguages "(nb)"`): setup, Tonight (incl. meter plurals), reader (end page uses "Snipp, snapp, snute"), paywall incl. legal text; English re-verified untouched (screenshot UI tests still pass). Story content stays English until the story-language item lands.
   - [ ] Story language plumbing: `StoryRequest.language`, model instructions in-language, `SystemLanguageModel` language-support gating, curated fallback per language
   - [ ] Curated templates in Norwegian — editorial translation, owner (native speaker) reviews before merge
   - [ ] ASC metadata: paste docs/appstore/metadata-nb.md (ready) into the nb localization

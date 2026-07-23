@@ -1,0 +1,955 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
+    "%@ — that's %@ a month" : {
+      "comment" : "Yearly price line: full price, then its monthly equivalent",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ – det er %@ i måneden"
+          }
+        }
+      }
+    },
+    "%@ / %@" : {
+      "comment" : "Price line: localized price / billing cadence, e.g. \"39,99 kr / month\"",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / %@"
+          }
+        }
+      }
+    },
+    "%@, then %@" : {
+      "comment" : "Free-trial prefix on a price line, e.g. \"1 week free, then 39,99 kr / year\"",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, deretter %@"
+          }
+        }
+      }
+    },
+    "%lld days free" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 day free"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days free"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 dag gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld dager gratis"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld months free" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 month free"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld months free"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 måned gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld måneder gratis"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld periods free" : {
+      "comment" : "Fallback for an unknown StoreKit period unit — effectively unreachable",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 period free"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld periods free"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 periode gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld perioder gratis"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld starter stories left — then one free story a week" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 starter story left — then one free story a week"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld starter stories left — then one free story a week"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 starthistorie igjen – så én gratis historie i uken"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld starthistorier igjen – så én gratis historie i uken"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld weeks free" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 week free"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld weeks free"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 uke gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld uker gratis"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld years free" : {
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 year free"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld years free"
+                }
+              }
+            }
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 år gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld år gratis"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "✨" : {
+      "shouldTranslate" : false
+    },
+    "🌙" : {
+      "shouldTranslate" : false
+    },
+    "2–3 years" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2–3 år"
+          }
+        }
+      }
+    },
+    "4–6 years" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4–6 år"
+          }
+        }
+      }
+    },
+    "7–9 years" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7–9 år"
+          }
+        }
+      }
+    },
+    "A brand-new story every night, whenever you want one" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En splitter ny historie hver kveld, når du vil"
+          }
+        }
+      }
+    },
+    "A favorite friend or animal — skip it and a small brave fox steps in" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En yndlingsvenn eller et dyr – hopper du over, stiller en liten modig rev opp"
+          }
+        }
+      }
+    },
+    "A story for %@" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En historie til %@"
+          }
+        }
+      }
+    },
+    "Add a child" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legg til et barn"
+          }
+        }
+      }
+    },
+    "Adventure" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eventyr"
+          }
+        }
+      }
+    },
+    "Animals" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dyr"
+          }
+        }
+      }
+    },
+    "Another hero\njoins the family" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En ny helt\nblir med i familien"
+          }
+        }
+      }
+    },
+    "Begin the first story" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begynn på den første historien"
+          }
+        }
+      }
+    },
+    "Bruno the dog" : {
+      "comment" : "Placeholder example in the companion text field",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hunden Bruno"
+          }
+        }
+      }
+    },
+    "Close the storybook" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lukk eventyrboken"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsett"
+          }
+        }
+      }
+    },
+    "Episode %lld" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episode %lld"
+          }
+        }
+      }
+    },
+    "Episode %lld of “%@”" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episode %lld av «%@»"
+          }
+        }
+      }
+    },
+    "Episode %lld tonight" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episode %lld i kveld"
+          }
+        }
+      }
+    },
+    "Every night deserves\nits own story" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hver kveld fortjener\nsin egen historie"
+          }
+        }
+      }
+    },
+    "Everything stays on this device. No account, ever." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alt blir værende på denne enheten. Ingen konto, aldri."
+          }
+        }
+      }
+    },
+    "Fable+ makes story time unlimited, every single night." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fable+ gjør eventyrstunden ubegrenset, hver eneste kveld."
+          }
+        }
+      }
+    },
+    "Friends" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Venner"
+          }
+        }
+      }
+    },
+    "Good evening" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "God kveld"
+          }
+        }
+      }
+    },
+    "Magic" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magi"
+          }
+        }
+      }
+    },
+    "Make this a continuing adventure" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La eventyret fortsette"
+          }
+        }
+      }
+    },
+    "Maybe later" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanskje senere"
+          }
+        }
+      }
+    },
+    "month" : {
+      "comment" : "Billing cadence in a price line: \"39,99 kr / month\"",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "måned"
+          }
+        }
+      }
+    },
+    "Monthly" : {
+      "comment" : "Subscription plan name on the paywall",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Månedlig"
+          }
+        }
+      }
+    },
+    "Next free story %@" : {
+      "comment" : "Followed by a relative date, e.g. \"Next free story in 3 days\"",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neste gratishistorie %@"
+          }
+        }
+      }
+    },
+    "No stories yet" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingen historier ennå"
+          }
+        }
+      }
+    },
+    "Nova" : {
+      "comment" : "Placeholder example in the name text field",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
+          }
+        }
+      }
+    },
+    "Ocean" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Havet"
+          }
+        }
+      }
+    },
+    "Or continue an adventure" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eller fortsett et eventyr"
+          }
+        }
+      }
+    },
+    "Page %lld of %lld" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Side %lld av %lld"
+          }
+        }
+      }
+    },
+    "Profiles for every child in the family" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profiler til alle barna i familien"
+          }
+        }
+      }
+    },
+    "Restore purchases" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjenopprett kjøp"
+          }
+        }
+      }
+    },
+    "Restoring…" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjenoppretter…"
+          }
+        }
+      }
+    },
+    "Save %@" : {
+      "comment" : "Yearly-plan badge; the argument is an already-formatted percentage, e.g. \"33 %\"",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spar %@"
+          }
+        }
+      }
+    },
+    "Saved — continue it from the Tonight screen" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lagret – fortsett fra forsiden en annen kveld"
+          }
+        }
+      }
+    },
+    "Something cozy they sleep with — optional too" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Noe koselig de sover med – også valgfritt"
+          }
+        }
+      }
+    },
+    "Space" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdensrommet"
+          }
+        }
+      }
+    },
+    "Start your free week" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start gratisuken din"
+          }
+        }
+      }
+    },
+    "Still private: everything stays on this device" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortsatt privat: alt blir på denne enheten"
+          }
+        }
+      }
+    },
+    "Story series — adventures that continue night after night" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historieserier – eventyr som fortsetter kveld etter kveld"
+          }
+        }
+      }
+    },
+    "Storybook" : {
+      "comment" : "The library of past stories: toolbar accessibility label and navigation title",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eventyrbok"
+          }
+        }
+      }
+    },
+    "Subscriptions renew automatically until cancelled — cancel anytime in Settings. The free tier is yours forever: one new story every week, and every story you've told stays in your library." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonnementet fornyes automatisk til det sies opp – si opp når som helst i Innstillinger. Gratisnivået er ditt for alltid: én ny historie hver uke, og hver historie du har fortalt, blir stående i biblioteket."
+          }
+        }
+      }
+    },
+    "Sweet dreams, %@." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sov godt, %@."
+          }
+        }
+      }
+    },
+    "Switch child. %@ is active." : {
+      "comment" : "VoiceOver label on the profile switcher menu",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bytt barn. %@ er valgt."
+          }
+        }
+      }
+    },
+    "Tap or swipe to begin" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk eller sveip for å begynne"
+          }
+        }
+      }
+    },
+    "Tell tonight's story" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortell kveldens historie"
+          }
+        }
+      }
+    },
+    "The adventure continues another night" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eventyret fortsetter en annen kveld"
+          }
+        }
+      }
+    },
+    "The bookshop can't be reached right now.\nPlease try again a little later." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vi når ikke bokhandelen akkurat nå.\nPrøv igjen litt senere."
+          }
+        }
+      }
+    },
+    "The End" : {
+      "comment" : "Closing mark on the last page. Norwegian uses the traditional fairy-tale ending.",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Snipp, snapp, snute"
+          }
+        }
+      }
+    },
+    "the yellow blanket" : {
+      "comment" : "Placeholder example in the comfort-object text field",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "det gule teppet"
+          }
+        }
+      }
+    },
+    "Their age" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barnets alder"
+          }
+        }
+      }
+    },
+    "Their name" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Barnets navn"
+          }
+        }
+      }
+    },
+    "Time for a story,\n%@" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tid for en historie,\n%@"
+          }
+        }
+      }
+    },
+    "Tonight's story will appear here, ready to read again." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kveldens historie dukker opp her, klar til å bli lest igjen."
+          }
+        }
+      }
+    },
+    "Welcome them in" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ønsk dem velkommen"
+          }
+        }
+      }
+    },
+    "What should tonight feel like?" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hva skal kveldens historie handle om?"
+          }
+        }
+      }
+    },
+    "Who are tonight's\nstories for?" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvem er kveldens\nhistorier til?"
+          }
+        }
+      }
+    },
+    "Writing tonight's story…" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriver kveldens historie…"
+          }
+        }
+      }
+    },
+    "year" : {
+      "comment" : "Billing cadence in a price line: \"399 kr / year\"",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "år"
+          }
+        }
+      }
+    },
+    "Yearly" : {
+      "comment" : "Subscription plan name on the paywall",
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Årlig"
+          }
+        }
+      }
+    },
+    "Your free story of the week is ready" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukens gratishistorie er klar"
+          }
+        }
+      }
+    },
+    "Your next free story is ready %@ — or make story time unlimited with Fable+." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din neste gratishistorie er klar %@ – eller gjør eventyrstunden ubegrenset med Fable+."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

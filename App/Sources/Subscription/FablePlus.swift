@@ -24,16 +24,16 @@ enum FablePlus {
 
         var displayName: String {
             switch self {
-            case .monthly: "Monthly"
-            case .annual: "Yearly"
+            case .monthly: String(localized: "Monthly")
+            case .annual: String(localized: "Yearly")
             }
         }
 
         /// Suffix for a price label: "3,99 € / month".
         var cadence: String {
             switch self {
-            case .monthly: "month"
-            case .annual: "year"
+            case .monthly: String(localized: "month")
+            case .annual: String(localized: "year")
             }
         }
 

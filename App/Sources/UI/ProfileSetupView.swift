@@ -114,17 +114,17 @@ struct ProfileSetupView: View {
         }
     }
 
-    private func label(_ text: String) -> some View {
+    private func label(_ text: LocalizedStringKey) -> some View {
         Text(text)
             .font(.subheadline)
             .foregroundStyle(FableTheme.creamDim)
     }
 
-    private func prompt(_ text: String) -> Text {
+    private func prompt(_ text: LocalizedStringKey) -> Text {
         Text(text).foregroundStyle(FableTheme.cream.opacity(0.25))
     }
 
-    private func field(_ title: String, @ViewBuilder content: () -> some View) -> some View {
+    private func field(_ title: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             label(title)
                 .accessibilityHidden(true) // the field itself carries the label

@@ -63,7 +63,7 @@ struct PaywallView: View {
         }
     }
 
-    private func benefit(_ symbol: String, _ text: String) -> some View {
+    private func benefit(_ symbol: String, _ text: LocalizedStringKey) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {
             Image(systemName: symbol)
                 .font(.subheadline)
@@ -114,7 +114,9 @@ struct PaywallView: View {
                             .font(.headline)
                             .foregroundStyle(FableTheme.cream)
                         if plan == .annual, let saving = subscriptions.yearlySavingPercent {
-                            Text("Save \(saving)%")
+                            // .percent keeps the sign locale-correct ("33%" vs
+                            // Norwegian "33 %") and keeps "%" out of format keys.
+                            Text("Save \(saving, format: .percent)")
                                 .font(.caption.weight(.semibold))
                                 .foregroundStyle(FableTheme.nightDeep)
                                 .padding(.horizontal, 8)
@@ -144,12 +146,12 @@ struct PaywallView: View {
     }
 
     private func priceLine(for plan: FablePlus.Plan, product: Product) -> String {
-        var base = "\(product.displayPrice) / \(plan.cadence)"
+        var base = String(localized: "\(product.displayPrice) / \(plan.cadence)")
         if plan == .annual, let perMonth = subscriptions.monthlyEquivalentPrice(for: plan) {
-            base = "\(base) — that's \(perMonth) a month"
+            base = String(localized: "\(base) — that's \(perMonth) a month")
         }
         if let trial = subscriptions.freeTrialText(for: plan) {
-            return "\(trial), then \(base)"
+            return String(localized: "\(trial), then \(base)")
         }
         return base
     }
