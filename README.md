@@ -2,6 +2,8 @@
 
 **Personalized bedtime stories for your kids — imagined together, told beautifully, private by design.**
 
+Shipping as **Fable Bedtime** on the App Store (v1.0 in review, worldwide). Stories and UI in seven languages: English, norsk, Deutsch, español, français, italiano, and português do Brasil.
+
 Fable is an iOS app that turns a child's name, interests, and a spark of an idea into a one-of-a-kind bedtime story, generated entirely on-device with Apple Intelligence. No accounts, no servers, no data leaving the phone. Just stories.
 
 ## Why Fable
@@ -13,7 +15,7 @@ Fable is an iOS app that turns a child's name, interests, and a spark of an idea
 
 ## Business model
 
-Free tier with a limited number of stories, and a **Fable+** auto-renewing subscription (monthly / annual, family-priced) for unlimited stories, story series, and premium themes. Payments are handled entirely by the App Store via StoreKit 2.
+Free tier with 3 starter stories then one per week, and a **Fable+** auto-renewing subscription ($4.99/month, or $39.99/year with a 7-day free trial) for unlimited stories, story series, and a profile per child. Payments are handled entirely by the App Store via StoreKit 2; Family Sharing is on. Support and privacy policy live at [markusskov.github.io/Fable](https://markusskov.github.io/Fable/).
 
 ## Repository layout
 
