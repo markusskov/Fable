@@ -125,6 +125,45 @@ enum ContentSafetyCheck {
         "gemeine", "fies", "fiese",
     ]
 
+    /// Spanish denylist, same policy: explicit inflections, err strict.
+    /// Homonyms deliberately absent: "mata" (kills, but also a bush — cozy
+    /// garden scenes grow "una mata de flores"), "golpe" ("de golpe" is the
+    /// everyday idiom for "suddenly"; the verb forms hold the line), and the
+    /// chillar family (a mouse that «chilló de alegría» is standard cute in
+    /// Spanish children's prose). The English list has no Spanish false
+    /// friends — checked word by word — so the union needs no exemptions.
+    private static let spanishDeniedWords: [String] = [
+        // Violence and harm.
+        "sangre", "sangriento", "sangrienta", "matar", "mató", "matado",
+        "matan", "maten", "morir", "muere", "mueren", "murió", "muerto",
+        "muerta", "muertos", "muertas", "muerte", "pistola", "pistolas",
+        "arma", "armas", "cuchillo", "cuchillos", "espada", "espadas",
+        "bomba", "bombas", "guerra", "guerras", "pelea", "peleas", "pelear",
+        "peleó", "peleando", "lucha", "luchas", "luchar", "luchó", "golpes",
+        "golpear", "golpeó", "atacar", "ataca", "atacó", "ataque", "ataques",
+        "disparar", "dispara", "disparó", "disparo", "disparos", "odio",
+        "odiar", "odia", "odió", "herir", "hiere", "hirió", "herido",
+        "herida",
+        // Fear and dread.
+        "miedo", "miedos", "miedoso", "miedosa", "asustar", "asusta",
+        "asustó", "asustado", "asustada", "asustados", "asustadas", "susto",
+        "sustos", "espanto", "espantos", "espantoso", "espantosa",
+        "espantosos", "espantosas", "terrores", "terrorífico", "terrorífica",
+        "aterrador", "aterradora", "aterradores", "pesadilla", "pesadillas",
+        "grito", "gritos", "gritar", "grita", "gritó", "gritando",
+        "monstruo", "monstruos", "fantasma", "fantasmas", "zombi", "zombis",
+        "demonio", "demonios", "bruja", "brujas", "brujo", "brujos",
+        "malvado", "malvada", "malvados", "malvadas", "maldad", "peligro",
+        "peligros", "peligroso", "peligrosa", "embrujado", "embrujada",
+        "tenebroso", "tenebrosa", "escalofriante", "escalofriantes",
+        "siniestro", "siniestra", "horrible", "horribles", "horrores",
+        "espeluznante", "espeluznantes", "pánico", "temible", "temibles",
+        // Unkindness.
+        "tonto", "tonta", "tontos", "tontas", "estúpido", "estúpida",
+        "idiota", "idiotas", "feo", "fea", "feos", "feas", "cállate",
+        "callaos", "cruel", "crueles",
+    ]
+
     /// English denied words that are everyday harmless German words: "die"
     /// (the article), "dies" (this), "war" (was). A naive union would
     /// reject every German sentence ever written; the German words for
@@ -138,6 +177,7 @@ enum ContentSafetyCheck {
         case .german:
             englishDeniedWords.filter { !englishGermanFalseFriends.contains($0) }
                 + germanDeniedWords
+        case .spanish: englishDeniedWords + spanishDeniedWords
         }
     }
 
@@ -181,11 +221,29 @@ enum ContentSafetyCheck {
         "schloss die Augen", "Augen fielen zu",
     ]
 
+    /// Spanish wind-down vocabulary — like the others, no English union: a
+    /// Spanish story must say goodnight in Spanish. "sueño" carries both
+    /// sleepiness and dreams, which is exactly the double duty wanted here.
+    private static let spanishSleepSignals: [String] = [
+        "buenas noches", "dormir", "duerme", "duermen", "durmió",
+        "durmieron", "dormido", "dormida", "dormidos", "dormidas",
+        "durmiendo", "dormirse", "duérmete", "sueño", "sueños", "soñar",
+        "sueña", "soñaba", "soñando", "soñó", "adormilado", "adormilada",
+        "descansar", "descansa", "descansó", "descanso", "arrullo",
+        "arrullar", "arrulla", "arrulló", "nana", "nanas", "canción de cuna",
+        "bostezo", "bostezos", "bostezar", "bosteza", "bostezó",
+        "bostezando", "acurrucó", "acurruca", "acurrucado", "acurrucada",
+        "acurrucados", "arropó", "arropa", "arropado", "arropada",
+        "arropadita", "arropadito", "cerró los ojos", "los ojos se le cerraron",
+        "párpados", "soñoliento", "somnoliento", "a dormir",
+    ]
+
     static func sleepSignals(for language: StoryLanguage) -> [String] {
         switch language {
         case .english: englishSleepSignals
         case .norwegianBokmal: norwegianSleepSignals
         case .german: germanSleepSignals
+        case .spanish: spanishSleepSignals
         }
     }
 

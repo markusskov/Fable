@@ -24,10 +24,20 @@ enum TemplateLibrary {
     /// dative article in. {treasure} entries are introduced by colon
     /// apposition (nominative) and referred back to by a fixed epithet or a
     /// per-template uniform pronoun, so genders never disagree.
+    /// Spanish shelf discipline (no cases, but contractions and gender):
+    /// {setting} pools bake the article and sit only behind prepositions
+    /// that never contract (hacia, hasta, por, en, tras) — "a {setting}" or
+    /// "de {setting}" would demand "al"/"del" and read broken. {companion}
+    /// and {comfort} appear as subjects, after "con", or in verbless
+    /// appositions; no participle or adjective ever agrees with a slot, so
+    /// whatever gender a parent types stays correct. {treasure} pools are
+    /// uniformly feminine where the prose refers back with "la", or referred
+    /// back by the fixed epithet "aquel visitante silencioso".
     static let byLanguage: [StoryLanguage: [StoryTemplate]] = [
         .english: all,
         .norwegianBokmal: [lanternPathNb, sleepyVoyageNb, littleLostFriendNb],
         .german: [lanternPathDe, sleepyVoyageDe, littleLostFriendDe],
+        .spanish: [lanternPathEs, sleepyVoyageEs, littleLostFriendEs],
     ]
 
     // MARK: - The Lantern Path (adventure · magic)
@@ -405,6 +415,132 @@ enum TemplateLibrary {
         moralVariants: [
             "Jemanden nach Hause zu bringen ist der wärmste Abschluss für einen Tag.",
             "Keine Freundlichkeit ist klein, wenn man selbst klein ist.",
+        ]
+    )
+
+    // MARK: - El sendero de farolillos (es · adventure · magic)
+
+    static let lanternPathEs = StoryTemplate(
+        id: "lantern-path-es",
+        themes: [.adventure, .magic],
+        titleVariants: [
+            "{name} y el sendero de farolillos",
+            "La noche en que las luciérnagas vinieron a buscar a {name}",
+            "{name} y las lucecitas",
+        ],
+        pages: [
+            "Un atardecer, justo cuando el cielo se puso del color de los arándanos, {name} vio una lucecita diminuta que bailaba al otro lado de la ventana. Luego otra. Y otra más. ¡Luciérnagas! Y parecía que estaban esperando a alguien.",
+            "{name} salió de puntillas con {companion}, llevando {comfort} muy cerquita. Las luciérnagas formaban un sendero brillante, como una cinta de farolillos diminutos, que serpenteaba hacia {setting}.",
+            "El sendero era blandito bajo los pies de {name}, y la noche era tibia y amable. En algún lugar muy lejano se oyó {sound}, un sonido suave y dormilón, como si el mundo entero bostezara.",
+            "Al final del sendero de farolillos, escondida bajo una raíz con musgo, allí estaba, quietecita y paciente: {treasure}. Brillaba muy despacito, como si llevara mucho, mucho tiempo esperando a que alguien la encontrara.",
+            "«Se ha caído del cielo», susurró {companion}. «Seguro que echa de menos su casa.» {name} la levantó con muchísimo cuidado. Estaba calentita, como un corazoncito que late bajito.",
+            "Entonces {name} la alzó bien alto, más alto, tan alto como llegan los brazos. Y las luciérnagas se juntaron debajo y la llevaron arriba, arriba y más arriba, hasta que se acomodó otra vez en el cielo, justo en su sitio.",
+            "El cielo parpadeó para dar las gracias. Las luciérnagas hicieron una reverencia con sus lucecitas. Y de pronto {name} sintió muchísimo sueño, del bueno, como el que llega después de un día lleno de maravillas.",
+            "Ya en casa, {name} se metió bajo las mantas con {comfort}, y {companion} se acurrucó muy cerca. Fuera, una luciérnaga se quedó junto a la ventana, montando guardia. Buenas noches, {name}. Esta noche el cielo te sonríe.",
+        ],
+        settings: [
+            "el viejo portón del jardín",
+            "el bosquecillo de abedules que susurran",
+            "el prado detrás de la colina",
+            "el arroyo de las piedras lisas",
+        ],
+        sounds: [
+            "uu-uh",
+            "chss-chss-chsss",
+            "prrrl",
+        ],
+        treasures: [
+            "una estrellita caída",
+            "una lucecita de luna guardada en un tarro de cristal",
+            "una campanilla de plata que solo suena para los corazones buenos",
+        ],
+        moralVariants: [
+            "Las manos bondadosas encuentran el camino a casa, y también lo encuentra todo lo que llevan.",
+            "Hasta los ayudantes más pequeños pueden iluminar el cielo entero.",
+        ]
+    )
+
+    // MARK: - El viaje dormilón (es · space · ocean)
+
+    static let sleepyVoyageEs = StoryTemplate(
+        id: "sleepy-voyage-es",
+        themes: [.space, .ocean],
+        titleVariants: [
+            "{name} y el viaje dormilón",
+            "El barquito de luz de luna",
+            "{name} y las estrellas que tarareaban",
+        ],
+        pages: [
+            "Cuando la casa se quedó en silencio y las luces se volvieron suavecitas, la cama de {name} hizo algo que las camas casi nunca hacen: se levantó despacito, muy despacito, y se convirtió en un barquito.",
+            "El barquito salió flotando por la ventana hacia la oscuridad blandita, que era amable y acogedora, como si el cielo entero te arropara. Delante iba {companion}, y {comfort} se convirtió en la almohada perfecta.",
+            "Pasaron navegando por {setting}, donde todo dormía ya. Las olas, ¿o quizá eran nubes?, mecían el barquito despacio. Un... dos... un... dos...",
+            "Una familia de estrellas salió a verlos pasar. La estrella más pequeñita tarareaba {sound}, esa melodía que cantan las estrellas cuando llega la hora de descansar. {name} tarareó con ella, muy bajito.",
+            "«Mira», susurró {companion}. Allí delante, en medio de una luz suave, flotaba {treasure}. Aquel visitante silencioso se acercó despacito, saludó con mucha educación y se quedó con ellos, como un viejo amigo que conocía el camino.",
+            "El barquito se mecía. Las estrellas tarareaban. Los ojos de {name} se fueron poniendo pesados, y un poquito más pesados, de la manera más bonita, como mantas hechas de silencio calentito.",
+            "Despacio, muy despacio, el barquito dio la vuelta hacia casa, bajó planeando por la oscuridad blandita, entró otra vez por la ventana y aterrizó, pluf, con muchísima suavidad, justo donde debe estar una cama.",
+            "Y allí estaba {name}, ya en su camita, con {comfort} al ladito, mientras {companion} ya soñaba. El viaje estaría esperando otra vez mañana por la noche. A dormir, que las estrellas tararean para ti, {name}.",
+        ],
+        settings: [
+            "el faro dormido",
+            "la isla de arena blandita como una almohada",
+            "la cala donde sueñan las ballenas",
+            "el puerto de los barquitos de papel",
+        ],
+        sounds: [
+            "mmm-hmm-mmm",
+            "lu-lu-lu",
+            "nanita-nana",
+        ],
+        treasures: [
+            "un pececito farol con su propia lucecita de noche",
+            "una nubecita con forma de gato",
+            "la barca de remos de la Luna",
+        ],
+        moralVariants: [
+            "La oscuridad tranquila es una amiga que nos lleva con suavidad hasta la mañana.",
+            "Dormir es un viaje, y quien duerme zarpa cada noche con mucha valentía.",
+        ]
+    )
+
+    // MARK: - El amiguito perdido (es · animals · friendship)
+
+    static let littleLostFriendEs = StoryTemplate(
+        id: "little-lost-friend-es",
+        themes: [.animals, .friendship],
+        titleVariants: [
+            "{name} y el amiguito perdido",
+            "El invitado más pequeñito",
+            "La noche en que {name} acompañó a casa al amiguito",
+        ],
+        pages: [
+            "Justo antes de irse a la cama, {name} oyó el sonido más pequeñito del mundo, y venía de la puerta de casa: {sound}. {name} y {companion} se asomaron con mucho cuidado.",
+            "Allí, no más grande que una taza de té, había un animalito de ojos grandes y redondos. Se había perdido. Su casa quedaba lejos, tras {setting}, y la noche se hacía cada vez más honda.",
+            "«No te preocupes», dijo {name} con esa voz suave que se usa para las cosas muy pequeñas. «Te acompañamos a casa.» Y claro que {comfort} también vino, porque con algo querido al lado el camino se hace más fácil.",
+            "El pequeño invitado pudo ir montado, porque {companion} lo llevó sobre el lomo, y él se agarró bien fuerte. Por el camino soltó algún puchero, así que {name} le contó lo que espera en casa a los invitados pequeños: {treasure}. Los ojos redondos se le pusieron aún más redondos de asombro, y las penas se le olvidaron del todo.",
+            "Pasaron por {setting}, pasito a pasito, muy despacio. El aire de la noche olía a hierba y a estrellas. El pequeño invitado se puso a tararear {sound}, pero ahora más contento, como se tararea cuando por fin se va camino de casa.",
+            "Y de repente allí estaba: una puerta chiquitita bajo una colina chiquitita, con una luz calentita dentro y toda una familia de pequeñines saludando. El invitado más pequeñito abrazó el pulgar de {name}, que era el abrazo más grande que sabía dar.",
+            "«Gracias», dijo con su vocecita, «por acompañarme hasta casa.» Y dejó un regalo: unas cosquillas diminutas de bigotes en la punta de la nariz de {name}. Eso, entre los animalitos pequeños, es un honor muy grande.",
+            "{name} y {companion} volvieron a casa paseando bajo la luna vieja y amable, bostezando todo el camino. Y cuando {name} se metió en la cama con {comfort}, la noche entera se sintió amiga y llena de casitas pequeñas y felices. Buenas noches, {name}.",
+        ],
+        settings: [
+            "el seto de moras",
+            "las tres piedras redondas",
+            "el gran roble de la rama torcida",
+            "la hierba alta donde cantan los grillos",
+        ],
+        sounds: [
+            "pío-pío",
+            "iiip",
+            "miau",
+        ],
+        treasures: [
+            "el lecho de musgo más blandito de todo el bosque",
+            "una despensa llena de bayas de miel",
+            "una lucecita de noche hecha con un rayito de sol atrapado",
+        ],
+        moralVariants: [
+            "Acompañar a alguien a casa es la manera más bonita de terminar el día.",
+            "Ninguna bondad es pequeña cuando quien la da también es pequeño.",
         ]
     )
 }

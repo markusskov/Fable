@@ -13,6 +13,12 @@
             "value" : "%@ – das sind %@ im Monat"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ – son %@ al mes"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -25,6 +31,12 @@
       "comment" : "Price line: localized price / billing cadence, e.g. \"39,99 kr / month\"",
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / %@"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ / %@"
@@ -45,6 +57,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@, danach %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, después %@"
           }
         },
         "nb" : {
@@ -88,6 +106,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld days free"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 día gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld días gratis"
                 }
               }
             }
@@ -146,6 +182,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld months free"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 mes gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld meses gratis"
                 }
               }
             }
@@ -210,6 +264,24 @@
             }
           }
         },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 periodo gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld periodos gratis"
+                }
+              }
+            }
+          }
+        },
         "nb" : {
           "variations" : {
             "plural" : {
@@ -263,6 +335,24 @@
                 "stringUnit" : {
                   "state" : "translated",
                   "value" : "%lld starter stories left — then one free story a week"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Queda 1 cuento para empezar – luego, un cuento gratis a la semana"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Quedan %lld cuentos para empezar – luego, un cuento gratis a la semana"
                 }
               }
             }
@@ -326,6 +416,24 @@
             }
           }
         },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 semana gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld semanas gratis"
+                }
+              }
+            }
+          }
+        },
         "nb" : {
           "variations" : {
             "plural" : {
@@ -384,6 +492,24 @@
             }
           }
         },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "1 año gratis"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld años gratis"
+                }
+              }
+            }
+          }
+        },
         "nb" : {
           "variations" : {
             "plural" : {
@@ -418,6 +544,12 @@
             "value" : "2–3 Jahre"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2–3 años"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -432,6 +564,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "4–6 Jahre"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4–6 años"
           }
         },
         "nb" : {
@@ -450,6 +588,12 @@
             "value" : "7–9 Jahre"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "7–9 años"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -464,6 +608,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jeden Abend eine ganz neue Geschichte, wann immer du magst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un cuento nuevo cada noche, siempre que quieras"
           }
         },
         "nb" : {
@@ -482,6 +632,12 @@
             "value" : "Ein Lieblingsfreund oder ein Tier – lässt du es frei, springt ein kleiner mutiger Fuchs ein"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un amigo favorito o un animal – si lo dejas en blanco, un pequeño zorro valiente ocupa su lugar"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -496,6 +652,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Eine Geschichte für %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un cuento para %@"
           }
         },
         "nb" : {
@@ -514,6 +676,12 @@
             "value" : "Kind hinzufügen"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir un peque"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -528,6 +696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Abenteuer"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aventura"
           }
         },
         "nb" : {
@@ -546,6 +720,12 @@
             "value" : "Tiere"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animales"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -562,6 +742,12 @@
             "value" : "Noch ein Held\nfür die Familie"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otro héroe\nse une a la familia"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -576,6 +762,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die erste Geschichte beginnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empezar el primer cuento"
           }
         },
         "nb" : {
@@ -595,6 +787,12 @@
             "value" : "Bruno der Hund"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bruno el perro"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -609,6 +807,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Das Geschichtenbuch schließen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar el libro de cuentos"
           }
         },
         "nb" : {
@@ -627,6 +831,12 @@
             "value" : "Weiter"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -641,6 +851,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Folge %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodio %lld"
           }
         },
         "nb" : {
@@ -659,6 +875,12 @@
             "value" : "Folge %lld von „%@“"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Episodio %lld de «%@»"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -673,6 +895,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Heute Abend Folge %lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta noche, episodio %lld"
           }
         },
         "nb" : {
@@ -691,6 +919,12 @@
             "value" : "Jeder Abend verdient\nseine eigene Geschichte"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada noche merece\nsu propio cuento"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -705,6 +939,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Alles bleibt auf diesem Gerät. Kein Konto, niemals."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todo se queda en este dispositivo. Sin cuentas, nunca."
           }
         },
         "nb" : {
@@ -723,6 +963,12 @@
             "value" : "Mit Fable+ ist die Geschichtenzeit unbegrenzt, jeden einzelnen Abend."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Fable+ la hora del cuento es ilimitada, todas las noches."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -737,6 +983,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Freunde"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amigos"
           }
         },
         "nb" : {
@@ -755,6 +1007,12 @@
             "value" : "Guten Abend"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buenas noches"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -769,6 +1027,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Magie"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Magia"
           }
         },
         "nb" : {
@@ -787,6 +1051,12 @@
             "value" : "Daraus ein fortlaufendes Abenteuer machen"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Que la aventura continúe"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -801,6 +1071,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vielleicht später"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quizá más tarde"
           }
         },
         "nb" : {
@@ -820,6 +1096,12 @@
             "value" : "Monat"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mes"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -835,6 +1117,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Monatlich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mensual"
           }
         },
         "nb" : {
@@ -854,6 +1142,12 @@
             "value" : "Nächste Gratisgeschichte %@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo cuento gratis %@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -870,6 +1164,12 @@
             "value" : "Noch keine Geschichten"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay cuentos"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -882,6 +1182,12 @@
       "comment" : "Placeholder example in the name text field",
       "localizations" : {
         "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nova"
+          }
+        },
+        "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nova"
@@ -903,6 +1209,12 @@
             "value" : "Meer"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -917,6 +1229,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Oder ein Abenteuer fortsetzen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O continúa una aventura"
           }
         },
         "nb" : {
@@ -935,6 +1253,12 @@
             "value" : "Seite %lld von %lld"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página %lld de %lld"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -949,6 +1273,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Profile für jedes Kind der Familie"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un perfil para cada peque de la familia"
           }
         },
         "nb" : {
@@ -967,6 +1297,12 @@
             "value" : "Käufe wiederherstellen"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurar compras"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -981,6 +1317,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wird wiederhergestellt…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restaurando…"
           }
         },
         "nb" : {
@@ -1000,6 +1342,12 @@
             "value" : "Spare %@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahorra %@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1014,6 +1362,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gespeichert – weiter geht es abends auf der Startseite"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardado – continúa desde la pantalla de inicio"
           }
         },
         "nb" : {
@@ -1032,6 +1386,12 @@
             "value" : "Etwas Kuscheliges zum Einschlafen – auch das ist freiwillig"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Algo suave con lo que duerma – también opcional"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1046,6 +1406,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Weltraum"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espacio"
           }
         },
         "nb" : {
@@ -1064,6 +1430,12 @@
             "value" : "Starte deine Gratiswoche"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empieza tu semana gratis"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1080,6 +1452,12 @@
             "value" : "Weiterhin privat: Alles bleibt auf diesem Gerät"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privado como siempre: todo se queda en este dispositivo"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1094,6 +1472,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Geschichtenserien – Abenteuer, die Abend für Abend weitergehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Series de cuentos – aventuras que continúan noche tras noche"
           }
         },
         "nb" : {
@@ -1113,6 +1497,12 @@
             "value" : "Geschichtenbuch"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Libro de cuentos"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1129,6 +1519,12 @@
             "value" : "Das Abo verlängert sich automatisch, bis es gekündigt wird – kündbar jederzeit in den Einstellungen. Die Gratisstufe gehört dir für immer: jede Woche eine neue Geschichte, und jede Geschichte, die du erzählt hast, bleibt in deinem Geschichtenbuch."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La suscripción se renueva automáticamente hasta que se cancele – puedes cancelarla cuando quieras en Ajustes. El nivel gratuito es tuyo para siempre: un cuento nuevo cada semana, y cada cuento que hayas contado se queda en tu biblioteca."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1143,6 +1539,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Träum süß, %@."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dulces sueños, %@."
           }
         },
         "nb" : {
@@ -1162,6 +1564,12 @@
             "value" : "Kind wechseln. %@ ist ausgewählt."
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cambiar de peque. Perfil activo: %@."
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1176,6 +1584,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tippe oder streiche, um zu beginnen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca o desliza para empezar"
           }
         },
         "nb" : {
@@ -1194,6 +1608,12 @@
             "value" : "Die Gutenachtgeschichte erzählen"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contar el cuento de esta noche"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1210,6 +1630,12 @@
             "value" : "Das Abenteuer geht an einem anderen Abend weiter"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aventura continúa otra noche"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1224,6 +1650,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die Buchhandlung ist gerade nicht zu erreichen.\nVersuch es später noch einmal."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora mismo no encontramos la librería.\nInténtalo de nuevo un poco más tarde."
           }
         },
         "nb" : {
@@ -1243,6 +1675,12 @@
             "value" : "Ende gut, alles gut"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Y colorín colorado, este cuento se ha acabado"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1258,6 +1696,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "die gelbe Decke"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "la manta amarilla"
           }
         },
         "nb" : {
@@ -1276,6 +1720,12 @@
             "value" : "Alter des Kindes"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su edad"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1290,6 +1740,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Name des Kindes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Su nombre"
           }
         },
         "nb" : {
@@ -1308,6 +1764,12 @@
             "value" : "Zeit für eine Geschichte,\n%@"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora de un cuento,\n%@"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1322,6 +1784,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hier erscheint die Geschichte von heute Abend, bereit, noch einmal gelesen zu werden."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El cuento de esta noche aparecerá aquí, listo para leerlo otra vez."
           }
         },
         "nb" : {
@@ -1340,6 +1808,12 @@
             "value" : "Willkommen heißen"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dale la bienvenida"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1354,6 +1828,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Wovon soll die Geschichte heute Abend erzählen?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿De qué tratará el cuento de esta noche?"
           }
         },
         "nb" : {
@@ -1372,6 +1852,12 @@
             "value" : "Für wen sind die\nGeschichten heute Abend?"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Para quién son los\ncuentos de esta noche?"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1386,6 +1872,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Die Gutenachtgeschichte entsteht…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribiendo el cuento de esta noche…"
           }
         },
         "nb" : {
@@ -1405,6 +1897,12 @@
             "value" : "Jahr"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "año"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1420,6 +1918,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Jährlich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anual"
           }
         },
         "nb" : {
@@ -1438,6 +1942,12 @@
             "value" : "Deine Gratisgeschichte der Woche ist bereit"
           }
         },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu cuento gratis de la semana está listo"
+          }
+        },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1452,6 +1962,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Deine nächste Gratisgeschichte ist %@ bereit – oder mach die Geschichtenzeit mit Fable+ unbegrenzt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu próximo cuento gratis estará listo %@ – o haz que la hora del cuento no tenga límite con Fable+."
           }
         },
         "nb" : {

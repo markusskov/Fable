@@ -35,6 +35,7 @@ struct StoryRequest: Sendable, Equatable {
         // Nominative — German templates only splice {companion} into
         // subject positions, so any case-marked parent input stays correct.
         case .german: "ein kleiner mutiger Fuchs"
+        case .spanish: "un pequeño zorro valiente"
         }
     }
 
@@ -47,6 +48,7 @@ struct StoryRequest: Sendable, Equatable {
         // Feminine, so nominative and accusative splice sites both read
         // correctly ("eine" is both cases).
         case .german: "eine weiche, warme Decke"
+        case .spanish: "una manta suave y calentita"
         }
     }
 }
