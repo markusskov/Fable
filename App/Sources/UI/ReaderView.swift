@@ -11,6 +11,7 @@ struct ReaderView: View {
     @State private var didStartSeries = false
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dismiss) private var dismiss
     @Environment(SubscriptionStore.self) private var subscriptions
     @Environment(\.modelContext) private var modelContext
     @ScaledMetric(relativeTo: .largeTitle) private var emblemSize = 52
@@ -114,6 +115,23 @@ struct ReaderView: View {
 
                         seriesFooter
                             .padding(.top, 16)
+
+                        // Owner feedback 2026-07-23: the toolbar back chevron
+                        // is easy to miss at the end of a story. A quiet,
+                        // explicit way out — deliberately not "read another
+                        // story"; endings should end.
+                        Button {
+                            dismiss()
+                        } label: {
+                            Label("Close the storybook", systemImage: "book.closed")
+                                .font(.footnote.weight(.medium))
+                                .foregroundStyle(FableTheme.cream)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 10)
+                                .background(FableTheme.card, in: Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, 6)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 20)
