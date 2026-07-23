@@ -94,8 +94,10 @@ EOF
       patch) NEW_VERSION="$MAJ.$MIN.$((PAT + 1))" ;;
     esac ;;
   *)
-    echo "$ACTION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$' \
-      || die "not a bump keyword or X.Y.Z version: $ACTION"
+    # Two- or three-part versions: CFBundleShortVersionString allows both,
+    # and the App Store version string ("1.0") must match the binary exactly.
+    echo "$ACTION" | grep -Eq '^[0-9]+\.[0-9]+(\.[0-9]+)?$' \
+      || die "not a bump keyword or X.Y[.Z] version: $ACTION"
     NEW_VERSION="$ACTION" ;;
 esac
 
