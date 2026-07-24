@@ -352,7 +352,8 @@ struct StoryLanguageTests {
             settings: ["den gamle hagen"],
             sounds: ["en myk uglesang"],
             treasures: ["en blank liten stein"],
-            moralVariants: ["Den som følger noen hjem, finner alltid veien selv."]
+            moralVariants: ["Den som følger noen hjem, finner alltid veien selv."],
+            recapVariants: ["{name} og {companion} fulgte en liten rev hjem gjennom {setting}."]
         )
         let engine = CuratedStoryEngine(libraries: [
             .english: TemplateLibrary.all,

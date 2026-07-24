@@ -82,6 +82,7 @@ struct SpanishShelfTests {
             let strings = template.titleVariants + template.pages
                 + template.settings + template.sounds
                 + template.treasures + template.moralVariants
+                + template.recapVariants
             for text in strings {
                 #expect(!text.contains("—"), "Em dash in es copy: \(text)")
                 #expect(!text.contains("–"), "En dash in es copy: \(text)")

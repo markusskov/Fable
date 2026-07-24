@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 /// Post-generation gate: no provider output is displayed unchecked (CLAUDE.md
 /// guardrail). Model, curated, emergency, and floor content share this bar.
@@ -424,9 +425,14 @@ enum ContentSafetyCheck {
     private static func firstDeniedWord(in text: String, language: StoryLanguage) -> String? {
         // Output and general free-text use the strict policy: both inserted
         // accents ("Mönster") and omitted accents ("murio") must still meet
-        // their denied term.
-        deniedWords(for: language).first {
-            containsWord($0, in: text, foldingDiacritics: true)
+        // their denied term. The text is folded ONCE for the whole scan:
+        // folding is O(text) and the vocabulary has hundreds of entries, so
+        // per-word folding made every gate call quadratic-ish — slow enough
+        // on device to matter and slow enough in the seeded shelf sweeps to
+        // trip the test runner's watchdog.
+        let folded = matchFolded(text, foldingDiacritics: true)
+        return deniedWords(for: language).first {
+            matchesFoldedText(word: $0, foldedText: folded, foldingDiacritics: true)
         }
     }
 
@@ -434,8 +440,9 @@ enum ContentSafetyCheck {
         // Wind-down vocabulary is semantic, not an adversarial denylist.
         // Accent-folding Spanish "soñar" to "sonar" makes an ordinary bell
         // satisfy the bedtime ending contract.
-        sleepSignals(for: language).contains {
-            containsWord($0, in: text, foldingDiacritics: false)
+        let folded = matchFolded(text, foldingDiacritics: false)
+        return sleepSignals(for: language).contains {
+            matchesFoldedText(word: $0, foldedText: folded, foldingDiacritics: false)
         }
     }
 
@@ -514,11 +521,39 @@ enum ContentSafetyCheck {
         return foldingConfusables(folded)
     }
 
-    private static func containsWord(
-        _ word: String,
-        in text: String,
+    /// The vocabulary is fixed, so each word's boundary regex is compiled
+    /// exactly once. NSRegularExpression is immutable and thread-safe; the
+    /// Mutex only guards the dictionary.
+    private static let compiledWordPatterns = Mutex<[String: NSRegularExpression]>([:])
+
+    private static func matchesFoldedText(
+        word: String,
+        foldedText: String,
         foldingDiacritics: Bool
     ) -> Bool {
+        let cacheKey = (foldingDiacritics ? "d|" : "x|") + word
+        let regex = compiledWordPatterns.withLock { cache -> NSRegularExpression? in
+            if let hit = cache[cacheKey] { return hit }
+            // Patterns are escaped literals in fixed scaffolding and always
+            // compile; the fallback below exists so the gate can never crash.
+            guard let compiled = try? NSRegularExpression(
+                pattern: wordPattern(for: word, foldingDiacritics: foldingDiacritics),
+                options: [.caseInsensitive]
+            ) else { return nil }
+            cache[cacheKey] = compiled
+            return compiled
+        }
+        guard let regex else {
+            return foldedText.range(
+                of: wordPattern(for: word, foldingDiacritics: foldingDiacritics),
+                options: [.regularExpression, .caseInsensitive]
+            ) != nil
+        }
+        let range = NSRange(foldedText.startIndex..., in: foldedText)
+        return regex.firstMatch(in: foldedText, options: [], range: range) != nil
+    }
+
+    private static func wordPattern(for word: String, foldingDiacritics: Bool) -> String {
         let foldedWord = matchFolded(word, foldingDiacritics: foldingDiacritics)
         // Multiword insults cannot evade the phrase rule by replacing a space
         // with a dash ("shut-up"). Keep single-word matching literal.
@@ -535,10 +570,7 @@ enum ContentSafetyCheck {
         // phrase is safer to reject than to treat as a distinct cozy word.
         let separator = "(?:\\s|\\p{Pd})*"
         let token = escaped.joined(separator: separator)
-        let pattern = "(?<![\\p{L}\\p{M}])\(token)(?![\\p{L}\\p{M}])"
-        let options: String.CompareOptions = [.regularExpression, .caseInsensitive]
-        return matchFolded(text, foldingDiacritics: foldingDiacritics)
-            .range(of: pattern, options: options) != nil
+        return "(?<![\\p{L}\\p{M}])\(token)(?![\\p{L}\\p{M}])"
     }
 
     /// A page short enough to be a single tossed-off sentence isn't a bedtime
