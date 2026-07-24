@@ -2,6 +2,15 @@ import Foundation
 
 /// Everything an engine needs to write tonight's story. Plain data, Sendable.
 struct StoryRequest: Sendable, Equatable {
+    /// Removes template braces from parent input and trims. Shared by the
+    /// default accessors and the curated renderer so a value like "{}" or
+    /// "{sound}" can never survive to defeat a default or hijack a slot.
+    static func bracesStripped(_ value: String) -> String {
+        value.replacingOccurrences(of: "{", with: "")
+            .replacingOccurrences(of: "}", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     var childName: String
     var ageBand: AgeBand
     var theme: StoryTheme
@@ -27,7 +36,9 @@ struct StoryRequest: Sendable, Equatable {
     /// follow the story language: they are spliced into story prose, and
     /// "a small brave fox" mid-sentence would break a bokmål page.
     var companionOrDefault: String {
-        let trimmed = companion.trimmingCharacters(in: .whitespacesAndNewlines)
+        // Brace-strip before the empty check: "{}" is non-empty raw but must
+        // not defeat the default (2026-07-24 review — "with , holding close").
+        let trimmed = Self.bracesStripped(companion)
         guard trimmed.isEmpty else { return trimmed }
         return switch language {
         case .english: "a small brave fox"
@@ -43,7 +54,7 @@ struct StoryRequest: Sendable, Equatable {
     }
 
     var comfortObjectOrDefault: String {
-        let trimmed = comfortObject.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmed = Self.bracesStripped(comfortObject)
         guard trimmed.isEmpty else { return trimmed }
         return switch language {
         case .english: "a soft warm blanket"

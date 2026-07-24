@@ -16,6 +16,11 @@ final class Story {
     /// One narrator's sentence of what happened, used as "previously on"
     /// context when a series continues. Empty for pre-series stories.
     var recap: String = ""
+    /// The language the prose is actually written in, stamped from the
+    /// gated content. Empty for rows persisted before the stamp existed —
+    /// which is why the legacy repair sweep cannot vocabulary-scan old
+    /// bodies (scanning German prose with English words flags "die"/"war").
+    var languageRaw: String = ""
     /// Set when this story is an episode of a continuing adventure.
     var series: StorySeries?
     var episodeNumber: Int?
@@ -33,7 +38,7 @@ final class Story {
         set { engineRaw = newValue.rawValue }
     }
 
-    init(content: StoryContent, theme: StoryTheme, childName: String, engine: StoryEngineKind) {
+    private init(content: StoryContent, theme: StoryTheme, childName: String, engine: StoryEngineKind) {
         self.title = content.title
         self.pages = content.pages
         self.moral = content.moral
@@ -45,6 +50,33 @@ final class Story {
         // Engines that can't author a recap (curated templates) leave it
         // empty; the moral is an honest one-line stand-in for "previously on".
         self.recap = content.recap.isEmpty ? content.moral : content.recap
+        self.languageRaw = content.language.rawValue
+    }
+
+    /// The one way UI persists a provider result: the hero identity travels
+    /// with the content it was written for. Round two reached the reader
+    /// chrome because a call site paired gated content with the RAW profile
+    /// name; round three noted the fix lived only at that call site. This
+    /// initializer removes the choice.
+    convenience init(telling result: StoryProvider.TellResult, theme: StoryTheme) {
+        self.init(content: result.content, theme: theme,
+                  childName: result.heroName, engine: result.engine)
+    }
+
+    /// Nil means this row predates the language-stamped, all-path gate and is
+    /// therefore quarantined from reader and series-continuation surfaces.
+    var contentLanguage: StoryLanguage? {
+        StoryLanguage(rawValue: languageRaw)
+    }
+
+    var isSafetyQuarantined: Bool {
+        contentLanguage == nil
+    }
+
+    /// Reader chrome also includes the parent series title, so a stamped
+    /// episode inside a mixed legacy series is not independently displayable.
+    var isReaderSafe: Bool {
+        !isSafetyQuarantined && series?.isSafetyQuarantined != true
     }
 }
 
@@ -59,10 +91,22 @@ extension StorySeries {
     func belongs(to profile: ChildProfile) -> Bool {
         profileUUID == nil || profileUUID == profile.uuid
     }
+
+    /// A legacy episode can contain an ungated body or recap. Keep the series
+    /// out of both display and prompt construction until every episode carries
+    /// the post-gate language stamp; the rows themselves remain recoverable.
+    var isSafetyQuarantined: Bool {
+        episodes.isEmpty || episodes.contains(where: \.isSafetyQuarantined)
+    }
 }
 
 /// Which producer wrote a story. Shown honestly in settings, never in the reader.
 enum StoryEngineKind: String, Codable, Sendable {
     case curated
     case model
+    /// The deterministic personalized fallback (curated + emergency were
+    /// indistinguishable before the 2026-07-24 round-two review).
+    case emergency
+    /// The input-free floor: safe by construction, not personalized.
+    case floor
 }

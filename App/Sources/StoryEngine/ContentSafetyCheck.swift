@@ -1,8 +1,7 @@
 import Foundation
 
-/// Post-generation gate: model output is never displayed unchecked (CLAUDE.md
-/// guardrail). Curated templates are pre-vetted editorially and skip this in
-/// production, but tests hold them to the same bar.
+/// Post-generation gate: no provider output is displayed unchecked (CLAUDE.md
+/// guardrail). Model, curated, emergency, and floor content share this bar.
 ///
 /// Second iteration: age-banded structural heuristics, a calm-tone check, and
 /// a denylist with explicit inflections. Rejection is cheap — the caller falls
@@ -423,16 +422,123 @@ enum ContentSafetyCheck {
     }
 
     private static func firstDeniedWord(in text: String, language: StoryLanguage) -> String? {
-        deniedWords(for: language).first { containsWord($0, in: text) }
+        // Output and general free-text use the strict policy: both inserted
+        // accents ("Mönster") and omitted accents ("murio") must still meet
+        // their denied term.
+        deniedWords(for: language).first {
+            containsWord($0, in: text, foldingDiacritics: true)
+        }
     }
 
     private static func containsSleepSignal(_ text: String, language: StoryLanguage) -> Bool {
-        sleepSignals(for: language).contains { containsWord($0, in: text) }
+        // Wind-down vocabulary is semantic, not an adversarial denylist.
+        // Accent-folding Spanish "soñar" to "sonar" makes an ordinary bell
+        // satisfy the bedtime ending contract.
+        sleepSignals(for: language).contains {
+            containsWord($0, in: text, foldingDiacritics: false)
+        }
     }
 
-    private static func containsWord(_ word: String, in text: String) -> Bool {
-        let pattern = "\\b\(NSRegularExpression.escapedPattern(for: word))\\b"
-        return text.range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
+    /// Canonicalizes text before any vocabulary matching: NFKC compatibility
+    /// mapping folds fullwidth letters ("ｍｏｎｓｔｅｒ") to ASCII, Unicode
+    /// default-ignorables (not merely general-category `Cf`) are removed so
+    /// variation selectors and fillers cannot create an invisible field or
+    /// split a word, and every whitespace becomes a plain space.
+    static func normalizedForMatching(_ text: String) -> String {
+        let folded = text.precomposedStringWithCompatibilityMapping
+        var out = String.UnicodeScalarView()
+        var lastWasSpace = false
+        for scalar in folded.unicodeScalars {
+            let category = scalar.properties.generalCategory
+            if scalar.properties.isDefaultIgnorableCodePoint
+                || category == .format {
+                continue
+            }
+            if scalar.properties.isWhitespace {
+                // Collapse runs: two NBSPs inside "shut  up" must still meet
+                // the single-spaced denylist phrase (round-three finding).
+                if !lastWasSpace { out.append(" ") }
+                lastWasSpace = true
+            } else {
+                if category == .control { continue }
+                out.append(scalar)
+                lastWasSpace = false
+            }
+        }
+        return String(out)
+    }
+
+    /// Cross-script confusables that read as Latin at a glance — the
+    /// round-three "mоnster with Cyrillic о" bypass. Deliberately only the
+    /// visually near-identical core (Cyrillic/Greek lookalikes), not full
+    /// UTS #39: matching-layer only, so a real Cyrillic name still displays
+    /// as its family wrote it.
+    private static let confusables: [Unicode.Scalar: Unicode.Scalar] = [
+        // Cyrillic lowercase / uppercase lookalikes
+        "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x",
+        "к": "k",
+        "і": "i", "ѕ": "s", "ј": "j", "һ": "h", "ԁ": "d", "ѡ": "w", "ь": "b",
+        "ӏ": "l",
+        "А": "a", "В": "b", "Е": "e", "К": "k", "М": "m", "Н": "h", "О": "o",
+        "Р": "p", "С": "c", "Т": "t", "У": "y", "Х": "x", "Ѕ": "s", "І": "i",
+        "Ј": "j", "Ӏ": "i",
+        // Greek lookalikes
+        "ο": "o", "α": "a", "ν": "v", "ρ": "p", "τ": "t", "υ": "u", "ι": "i",
+        "κ": "k", "ϲ": "c",
+        "Α": "a", "Β": "b", "Ε": "e", "Ζ": "z", "Η": "h", "Ι": "i", "Κ": "k",
+        "Μ": "m", "Ν": "n", "Ο": "o", "Ρ": "p", "Τ": "t", "Υ": "y", "Χ": "x",
+        "Ϲ": "c",
+    ]
+
+    private static func foldingConfusables(_ text: String) -> String {
+        var output = String.UnicodeScalarView()
+        for scalar in text.unicodeScalars {
+            output.append(confusables[scalar] ?? scalar)
+        }
+        return String(output)
+    }
+
+    /// Matching-only fold, applied to BOTH the vocabulary word and the text.
+    /// Diacritics are optional by policy; confusables always fold. Never used
+    /// for display, so names keep their accents and script.
+    private static func matchFolded(_ text: String, foldingDiacritics: Bool) -> String {
+        // Map on both sides of NFKC. Some compatibility confusables (Greek
+        // lunate sigma ϲ/Ϲ) decompose into a different scalar before the table
+        // would otherwise see them.
+        let preMapped = foldingConfusables(text)
+        var folded = normalizedForMatching(preMapped)
+            .replacingOccurrences(of: "\u{2019}", with: "'")
+        if foldingDiacritics {
+            folded = folded.folding(options: .diacriticInsensitive, locale: nil)
+        }
+        return foldingConfusables(folded)
+    }
+
+    private static func containsWord(
+        _ word: String,
+        in text: String,
+        foldingDiacritics: Bool
+    ) -> Bool {
+        let foldedWord = matchFolded(word, foldingDiacritics: foldingDiacritics)
+        // Multiword insults cannot evade the phrase rule by replacing a space
+        // with a dash ("shut-up"). Keep single-word matching literal.
+        let parts = foldedWord.split(omittingEmptySubsequences: true) { character in
+            character.isWhitespace || character.unicodeScalars.allSatisfy {
+                $0.properties.generalCategory == .dashPunctuation
+            }
+        }
+        let escaped = parts.map {
+            NSRegularExpression.escapedPattern(for: String($0))
+        }
+        // Zero is intentional: default-ignorables are removed before this
+        // match, so "shut<ZWSP>up" becomes "shutup". A concatenated abusive
+        // phrase is safer to reject than to treat as a distinct cozy word.
+        let separator = "(?:\\s|\\p{Pd})*"
+        let token = escaped.joined(separator: separator)
+        let pattern = "(?<![\\p{L}\\p{M}])\(token)(?![\\p{L}\\p{M}])"
+        let options: String.CompareOptions = [.regularExpression, .caseInsensitive]
+        return matchFolded(text, foldingDiacritics: foldingDiacritics)
+            .range(of: pattern, options: options) != nil
     }
 
     /// A page short enough to be a single tossed-off sentence isn't a bedtime
@@ -449,6 +555,80 @@ enum ContentSafetyCheck {
 
     static func isAcceptable(_ content: StoryContent, for request: StoryRequest) -> Bool {
         rejection(of: content, for: request) == nil
+    }
+
+    /// True when the text contains a word denied in the given language (or in
+    /// English, which is always checked). Public so callers can vet parent
+    /// input before it is ever spliced into a story.
+    static func containsDeniedWord(_ text: String, language: StoryLanguage) -> Bool {
+        firstDeniedWord(in: text, language: language) != nil
+    }
+
+    /// A safe, generic hero name when a parent's own name would inject a
+    /// denied word (a child literally named "Monster") or is degenerate.
+    /// These are article-free, capitalized endearments that function as
+    /// proper names, because every shelf's grammar discipline (German case
+    /// after "von", Romance contractions after "de"/"di", sentence-initial
+    /// capitalization) assumes {name} behaves like a name — an articled
+    /// phrase such as "das kleine Kind" would break "von {name}" sites.
+    static func safeGenericName(for language: StoryLanguage) -> String {
+        switch language {
+        case .english: "Little One"
+        case .norwegianBokmal: "Lillevenn"
+        case .german: "Sternchen"
+        case .spanish: "Peque"
+        case .french: "Loulou"
+        case .italian: "Tesorino"
+        case .portugueseBrazilian: "Anjinho"
+        }
+    }
+
+    /// Returns a request whose free-text fields cannot inject a denied word.
+    /// Normal input passes through untouched; only a value that actually
+    /// trips the denylist is swapped for a safe default. Used on the curated
+    /// and emergency paths, which have no model guardrail of their own, so
+    /// that a hostile or unlucky profile can never reach a child unchecked.
+    /// A name reduced to name-like characters: letters (any script), marks,
+    /// digits, spaces, hyphens and apostrophes. "Nova!!!!" becomes "Nova"
+    /// instead of forcing the floor through the exclamation budget; a
+    /// format-character-only "name" becomes empty and falls to the generic.
+    static func nameSanitized(_ value: String) -> String {
+        let normalized = normalizedForMatching(StoryRequest.bracesStripped(value))
+        let kept = normalized.unicodeScalars.filter { scalar in
+            let cat = scalar.properties.generalCategory
+            switch cat {
+            case .uppercaseLetter, .lowercaseLetter, .titlecaseLetter,
+                 .otherLetter, .modifierLetter, .nonspacingMark,
+                 .spacingMark, .decimalNumber:
+                return true
+            default:
+                return scalar == " " || scalar == "-" || scalar == "'" || scalar == "\u{2019}"
+            }
+        }
+        return String(String.UnicodeScalarView(kept))
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// The canonical form of a free-text profile field: brace-stripped,
+    /// format characters removed, whitespace collapsed, trimmed. This is the
+    /// representation that is validated AND stored AND spliced — round three
+    /// found the three diverging (an invisible-only companion was validated
+    /// as empty but stored non-empty, suppressing the default).
+    static func fieldSanitized(_ value: String) -> String {
+        StoryRequest.bracesStripped(normalizedForMatching(value))
+    }
+
+    static func neutralized(_ request: StoryRequest) -> StoryRequest {
+        var safe = request
+        // Validation, persistence and story interpolation intentionally call
+        // the same canonical storable helpers.
+        safe.childName = storableName(from: request.childName, language: request.language)
+        safe.companion = storableProfileField(from: request.companion, language: request.language)
+        safe.comfortObject = storableProfileField(
+            from: request.comfortObject,
+            language: request.language
+        )
+        return safe
     }
 
     /// The first rule the story breaks, or nil when it is safe to show.
@@ -469,8 +649,11 @@ enum ContentSafetyCheck {
             }
         }
 
-        // Calm: an excited story announces itself in punctuation.
-        let fullText = ([content.title, content.moral] + content.pages).joined(separator: "\n")
+        // Calm: an excited story announces itself in punctuation. The recap
+        // is checked too — it is model-authored and is injected verbatim into
+        // the next episode's prompt, so an unsafe recap must never survive.
+        let fullText = ([content.title, content.moral, content.recap] + content.pages)
+            .joined(separator: "\n")
         let exclamations = fullText.count(where: { $0 == "!" })
         guard exclamations <= 3 else { return .tooExcited(exclamationCount: exclamations) }
 
@@ -495,6 +678,60 @@ enum ContentSafetyCheck {
             return .deniedWord(word)
         }
         return nil
+    }
+
+    /// Input-boundary check for the profile form: a value is storable when
+    /// it does not trip the device language's story vocabulary (which
+    /// always includes the English union) and, for names, survives
+    /// sanitation. Scoped to ONE language on purpose — checking all seven
+    /// rejects ordinary values ("die Katze" tripped by English "die",
+    /// "red hat" by Norwegian "hat"; round-three finding). Language drift
+    /// after storage is covered by the launch repair sweep, which re-runs
+    /// with the CURRENT device language on every start.
+    static func isStorableProfileField(_ value: String, language: StoryLanguage = .deviceDefault) -> Bool {
+        let candidate = fieldSanitized(value)
+        guard !candidate.isEmpty else { return true } // empties fall to defaults
+        guard candidate.count <= 120, candidate.unicodeScalars.count <= 240 else { return false }
+        let safetyCandidate = fieldSanitized(foldingConfusables(value))
+        return !containsDeniedWord(safetyCandidate, language: language)
+            && !containsDeniedWord(candidate, language: language)
+    }
+
+    static func isStorableName(_ value: String, language: StoryLanguage = .deviceDefault) -> Bool {
+        let sanitized = nameSanitized(value)
+        let hasLetterOrDigit = sanitized.unicodeScalars.contains { scalar in
+            switch scalar.properties.generalCategory {
+            case .uppercaseLetter, .lowercaseLetter, .titlecaseLetter,
+                 .otherLetter, .modifierLetter, .decimalNumber:
+                true
+            default:
+                false
+            }
+        }
+        guard hasLetterOrDigit,
+              sanitized.count <= 60,
+              sanitized.unicodeScalars.count <= 120 else {
+            return false
+        }
+        let safetyCandidate = nameSanitized(foldingConfusables(value))
+        return firstDeniedWord(in: safetyCandidate, language: language) == nil
+            && firstDeniedWord(in: sanitized, language: language) == nil
+    }
+
+    /// The canonical storable form: what the profile form persists and what
+    /// the launch sweep repairs legacy rows to. Validation, storage and
+    /// splicing all share this representation, so "validated but stored
+    /// differently" (round-three P1) cannot recur.
+    static func storableName(from value: String, language: StoryLanguage = .deviceDefault) -> String {
+        let sanitized = nameSanitized(value)
+        return isStorableName(value, language: language)
+            ? sanitized
+            : safeGenericName(for: language)
+    }
+
+    static func storableProfileField(from value: String, language: StoryLanguage = .deviceDefault) -> String {
+        let sanitized = fieldSanitized(value)
+        return isStorableProfileField(value, language: language) ? sanitized : ""
     }
 
     /// Whether a final page already fulfils the ending contract (name +
