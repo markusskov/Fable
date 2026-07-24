@@ -17,7 +17,7 @@ struct TonightView: View {
     @Query(sort: \StorySeries.createdAt, order: .reverse) private var series: [StorySeries]
     @Query(sort: \ChildProfile.createdAt) private var profiles: [ChildProfile]
     @State private var selectedTheme: StoryTheme = .adventure
-    @State private var isWriting = false
+    @State private var writer = StoryWriter()
     @State private var isShowingPaywall = false
     @State private var isAddingChild = false
     @State private var isShowingAbout = false
@@ -85,7 +85,7 @@ struct TonightView: View {
                 VStack(spacing: 10) {
                     Button(action: tellStoryTapped) {
                         HStack(spacing: 8) {
-                            if isWriting {
+                            if writer.isWriting {
                                 ProgressView().tint(FableTheme.nightDeep)
                                 Text("Writing tonight's story…")
                             } else {
@@ -99,7 +99,7 @@ struct TonightView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .foregroundStyle(FableTheme.nightDeep)
-                    .disabled(isWriting)
+                    .disabled(writer.isWriting)
 
                     if let caption = meterCaption {
                         Text(caption)
@@ -112,6 +112,13 @@ struct TonightView: View {
         }
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
+        // This screen's identity IS the profile (RootView re-ids on switch),
+        // so disappearing while another child is active means the family
+        // moved on: abandon the write. Being covered by the reader or the
+        // library is not a switch and must not abandon it.
+        .onDisappear {
+            if !writeServesActiveProfile { writer.abandon() }
+        }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 profileMenu
@@ -231,7 +238,6 @@ struct TonightView: View {
 
     private func seriesCard(_ adventure: StorySeries) -> some View {
         Button {
-            guard !isWriting else { return }
             tellStory(continuing: adventure)
         } label: {
             HStack(spacing: 12) {
@@ -266,12 +272,11 @@ struct TonightView: View {
     }
 
     private func tellStory(continuing adventure: StorySeries?) {
-        isWriting = true
-        // Claim the meter slot NOW, synchronously, before any suspension:
-        // generation takes seconds, and switching profiles mid-write rebuilds
-        // this view (resetting isWriting) while the old task keeps running.
-        // The household-wide reservation is what stops the same weekly credit
-        // being spent once per profile (2026-07-24 money-path review, P1).
+        guard !writer.isWriting else { return }
+        // Claim the meter slot NOW, synchronously with the allowance check
+        // and before any suspension. The household-wide reservation is what
+        // stops the same weekly credit being spent once per profile
+        // (2026-07-24 money-path review, P1).
         let reservation = reservations.reserve()
         let theme = adventure?.theme ?? selectedTheme
         var request = StoryRequest(
@@ -289,20 +294,24 @@ struct TonightView: View {
                 previously: adventure.recentRecaps()
             )
         }
-        Task {
-            // A brief pause makes the moment feel authored, and keeps the UX
-            // consistent once on-device model generation (which takes seconds)
-            // becomes the primary engine.
-            async let pause: Void? = try? await Task.sleep(for: .seconds(0.8))
-            let result = await provider.makeStory(for: request)
-            _ = await pause
-
+        writer.write(request, using: provider) { outcome in
+            // Abandoned, or the family switched children in the race window
+            // before onDisappear could abandon it: refund the claim and tell
+            // no one. A story nobody read must not eat a weekly credit.
+            guard case .finished(let result) = outcome, writeServesActiveProfile else {
+                reservations.release(reservation)
+                return
+            }
             // Story(telling:) pairs the content with the hero it was written
             // for (round-two P1: raw profile names reached the reader chrome
             // around a neutralized body). For every normal profile that hero
             // IS profile.name; they diverge only when neutralization stepped in.
             let story = Story(telling: result, theme: theme)
             if let adventure {
+                // Re-read, not the tap-time snapshot: an episode that landed
+                // while this one was being written must not be duplicated
+                // (2026-07-24 review, finding #3). The prompt's number is
+                // advisory; this one orders the shelf.
                 story.episodeNumber = adventure.nextEpisodeNumber
                 story.series = adventure
             }
@@ -311,7 +320,17 @@ struct TonightView: View {
             // The persisted row carries the meter charge from here on.
             reservations.release(reservation)
             path.append(story)
-            isWriting = false
         }
+    }
+
+    /// Whether a story finishing now is still for the child on screen.
+    /// An empty stored id means "the fallback first profile", which is this
+    /// screen's profile by construction (RootView resolves it that way).
+    private var writeServesActiveProfile: Bool {
+        Self.writeServesActiveProfile(activeProfileUUID: activeProfileUUID, profile: profile.uuid)
+    }
+
+    static func writeServesActiveProfile(activeProfileUUID: String, profile: UUID) -> Bool {
+        activeProfileUUID.isEmpty || activeProfileUUID == profile.uuidString
     }
 }
