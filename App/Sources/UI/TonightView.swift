@@ -270,17 +270,11 @@ struct TonightView: View {
             let result = await provider.makeStory(for: request)
             _ = await pause
 
-            // The persisted childName is the hero the story was actually
-            // written for (round-two P1: raw profile names reached the
-            // reader chrome around a neutralized body). For every normal
-            // profile heroName == profile.name; they diverge only when
-            // neutralization had to step in.
-            let story = Story(
-                content: result.content,
-                theme: theme,
-                childName: result.heroName,
-                engine: result.engine
-            )
+            // Story(telling:) pairs the content with the hero it was written
+            // for (round-two P1: raw profile names reached the reader chrome
+            // around a neutralized body). For every normal profile that hero
+            // IS profile.name; they diverge only when neutralization stepped in.
+            let story = Story(telling: result, theme: theme)
             if let adventure {
                 story.episodeNumber = adventure.nextEpisodeNumber
                 story.series = adventure

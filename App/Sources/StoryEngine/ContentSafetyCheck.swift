@@ -439,22 +439,46 @@ enum ContentSafetyCheck {
     static func normalizedForMatching(_ text: String) -> String {
         let folded = text.precomposedStringWithCompatibilityMapping
         var out = String.UnicodeScalarView()
+        var lastWasSpace = false
         for scalar in folded.unicodeScalars {
             if scalar.properties.generalCategory == .format { continue }
             if scalar.properties.isWhitespace {
-                out.append(" ")
+                // Collapse runs: two NBSPs inside "shut  up" must still meet
+                // the single-spaced denylist phrase (round-three finding).
+                if !lastWasSpace { out.append(" ") }
+                lastWasSpace = true
             } else {
                 out.append(scalar)
+                lastWasSpace = false
             }
         }
         return String(out)
     }
 
-    /// Matching-only diacritic fold, applied to BOTH the vocabulary word and
-    /// the text so "Mönster" meets "monster" and accented vocabulary still
-    /// meets itself. Never used for display — names keep their accents.
+    /// Cross-script confusables that read as Latin at a glance — the
+    /// round-three "mоnster with Cyrillic о" bypass. Deliberately only the
+    /// visually near-identical core (Cyrillic/Greek lookalikes), not full
+    /// UTS #39: matching-layer only, so a real Cyrillic name still displays
+    /// as its family wrote it.
+    private static let confusables: [Character: Character] = [
+        // Cyrillic lowercase / uppercase lookalikes
+        "а": "a", "е": "e", "о": "o", "р": "p", "с": "c", "у": "y", "х": "x",
+        "і": "i", "ѕ": "s", "ј": "j", "һ": "h", "ԁ": "d", "ѡ": "w", "ь": "b",
+        "А": "a", "В": "b", "Е": "e", "К": "k", "М": "m", "Н": "h", "О": "o",
+        "Р": "p", "С": "c", "Т": "t", "У": "y", "Х": "x", "Ѕ": "s", "І": "i",
+        // Greek lookalikes
+        "ο": "o", "α": "a", "ν": "v", "ρ": "p", "τ": "t", "υ": "u", "ι": "i",
+        "κ": "k", "Ο": "o", "Α": "a", "Ε": "e", "Τ": "t", "Ι": "i", "Κ": "k",
+    ]
+
+    /// Matching-only fold, applied to BOTH the vocabulary word and the text:
+    /// diacritics ("Mönster" meets "monster", accented vocabulary meets
+    /// itself) and cross-script confusables. Never used for display — names
+    /// keep their accents and script.
     private static func matchFolded(_ text: String) -> String {
-        normalizedForMatching(text).folding(options: .diacriticInsensitive, locale: nil)
+        let folded = normalizedForMatching(text)
+            .folding(options: .diacriticInsensitive, locale: nil)
+        return String(folded.map { confusables[$0] ?? $0 })
     }
 
     private static func containsWord(_ word: String, in text: String) -> Bool {
@@ -531,13 +555,22 @@ enum ContentSafetyCheck {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    /// The canonical form of a free-text profile field: brace-stripped,
+    /// format characters removed, whitespace collapsed, trimmed. This is the
+    /// representation that is validated AND stored AND spliced — round three
+    /// found the three diverging (an invisible-only companion was validated
+    /// as empty but stored non-empty, suppressing the default).
+    static func fieldSanitized(_ value: String) -> String {
+        StoryRequest.bracesStripped(normalizedForMatching(value))
+    }
+
     static func neutralized(_ request: StoryRequest) -> StoryRequest {
         var safe = request
         // Names are reduced to name-like characters; free-text fields are
-        // brace-stripped, then everything is denylist-neutralized.
+        // canonicalized, then everything is denylist-neutralized.
         safe.childName = nameSanitized(request.childName)
-        safe.companion = StoryRequest.bracesStripped(request.companion)
-        safe.comfortObject = StoryRequest.bracesStripped(request.comfortObject)
+        safe.companion = fieldSanitized(request.companion)
+        safe.comfortObject = fieldSanitized(request.comfortObject)
         // Degenerate lengths are neutralized too: a 500-character "name"
         // is hostile input that would blow page-length bounds on every
         // engine (real names fit comfortably in 60).
@@ -604,37 +637,39 @@ enum ContentSafetyCheck {
     }
 
     /// Input-boundary check for the profile form: a value is storable when
-    /// it does not trip any supported language's denylist (names travel —
-    /// the device language can change after the profile is created) and,
-    /// for names, survives sanitation. The UI offers a nickname instead;
-    /// nothing hostile is ever persisted, so chrome (greeting, reader
-    /// dedication) can safely show the stored name. Neutralization remains
-    /// as defense in depth for data that predates this boundary.
-    static func isStorableProfileField(_ value: String) -> Bool {
-        let candidate = normalizedForMatching(value)
+    /// it does not trip the device language's story vocabulary (which
+    /// always includes the English union) and, for names, survives
+    /// sanitation. Scoped to ONE language on purpose — checking all seven
+    /// rejects ordinary values ("die Katze" tripped by English "die",
+    /// "red hat" by Norwegian "hat"; round-three finding). Language drift
+    /// after storage is covered by the launch repair sweep, which re-runs
+    /// with the CURRENT device language on every start.
+    static func isStorableProfileField(_ value: String, language: StoryLanguage = .deviceDefault) -> Bool {
+        let candidate = fieldSanitized(value)
         guard !candidate.isEmpty else { return true } // empties fall to defaults
-        return StoryLanguage.allCases.allSatisfy { language in
-            !containsDeniedWord(candidate, language: language)
-        }
+        return !containsDeniedWord(candidate, language: language)
     }
 
-    static func isStorableName(_ value: String) -> Bool {
+    static func isStorableName(_ value: String, language: StoryLanguage = .deviceDefault) -> Bool {
         let sanitized = nameSanitized(value)
-        return !sanitized.isEmpty && sanitized.count <= 60 && isStorableProfileField(sanitized)
+        return !sanitized.isEmpty && sanitized.count <= 60
+            && isStorableProfileField(sanitized, language: language)
     }
 
-    /// Storage repair for profiles persisted before the input boundary
-    /// existed (TestFlight builds before PR #34): the launch sweep runs
-    /// these over every stored profile so chrome that shows profile fields
-    /// raw stays safe for legacy data too, not just newly created profiles.
-    static func storableName(from value: String) -> String {
+    /// The canonical storable form: what the profile form persists and what
+    /// the launch sweep repairs legacy rows to. Validation, storage and
+    /// splicing all share this representation, so "validated but stored
+    /// differently" (round-three P1) cannot recur.
+    static func storableName(from value: String, language: StoryLanguage = .deviceDefault) -> String {
         let sanitized = nameSanitized(value)
-        return isStorableName(sanitized) ? sanitized : safeGenericName(for: .deviceDefault)
+        return isStorableName(sanitized, language: language)
+            ? sanitized
+            : safeGenericName(for: language)
     }
 
-    static func storableProfileField(from value: String) -> String {
-        let stripped = StoryRequest.bracesStripped(value)
-        return isStorableProfileField(stripped) ? stripped : ""
+    static func storableProfileField(from value: String, language: StoryLanguage = .deviceDefault) -> String {
+        let sanitized = fieldSanitized(value)
+        return isStorableProfileField(sanitized, language: language) ? sanitized : ""
     }
 
     /// Whether a final page already fulfils the ending contract (name +

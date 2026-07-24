@@ -126,19 +126,17 @@ struct ProfileSetupView: View {
     }
 
     private func save() {
-        // canContinue already blocks unstorable input; this is the belt to
-        // its suspenders, so nothing the chrome later displays is unsafe.
-        let request = StoryRequest(
-            childName: name, ageBand: ageBand, theme: .adventure,
-            companion: companion, comfortObject: comfortObject,
-            language: .deviceDefault
-        )
-        let safe = ContentSafetyCheck.neutralized(request)
+        // canContinue already blocks unstorable input in this UI; the guard
+        // makes the persistence function itself refuse it, and storableName/
+        // storableProfileField persist the SAME canonical representation the
+        // validation judged (round three: an invisible-only companion was
+        // validated as empty but stored non-empty).
+        guard canContinue else { return }
         let profile = ChildProfile(
-            name: safe.childName,
+            name: ContentSafetyCheck.storableName(from: name),
             ageBand: ageBand,
-            companion: safe.companion,
-            comfortObject: safe.comfortObject
+            companion: ContentSafetyCheck.storableProfileField(from: companion),
+            comfortObject: ContentSafetyCheck.storableProfileField(from: comfortObject)
         )
         modelContext.insert(profile)
         // The newest child takes the stage right away.

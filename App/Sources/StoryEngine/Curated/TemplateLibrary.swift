@@ -135,7 +135,9 @@ enum TemplateLibrary {
         titleVariants: [
             "{name} and the Little Lost Friend",
             "The Smallest Guest",
-            "How {name} Walked the Little One Home",
+            // "the Little One" collided with the English generic hero name,
+            // producing "How Little One Walked the Little One Home".
+            "How {name} Walked a Small Friend Home",
         ],
         pages: [
             "Just before bedtime, {name} heard the smallest sound in the world coming from the doorstep: {sound}. {name} and {companion} peeked outside.",

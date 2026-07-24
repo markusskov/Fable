@@ -16,6 +16,11 @@ final class Story {
     /// One narrator's sentence of what happened, used as "previously on"
     /// context when a series continues. Empty for pre-series stories.
     var recap: String = ""
+    /// The language the prose is actually written in, stamped from the
+    /// gated content. Empty for rows persisted before the stamp existed —
+    /// which is why the legacy repair sweep cannot vocabulary-scan old
+    /// bodies (scanning German prose with English words flags "die"/"war").
+    var languageRaw: String = ""
     /// Set when this story is an episode of a continuing adventure.
     var series: StorySeries?
     var episodeNumber: Int?
@@ -45,6 +50,17 @@ final class Story {
         // Engines that can't author a recap (curated templates) leave it
         // empty; the moral is an honest one-line stand-in for "previously on".
         self.recap = content.recap.isEmpty ? content.moral : content.recap
+        self.languageRaw = content.language.rawValue
+    }
+
+    /// The one way UI persists a provider result: the hero identity travels
+    /// with the content it was written for. Round two reached the reader
+    /// chrome because a call site paired gated content with the RAW profile
+    /// name; round three noted the fix lived only at that call site. This
+    /// initializer removes the choice.
+    convenience init(telling result: StoryProvider.TellResult, theme: StoryTheme) {
+        self.init(content: result.content, theme: theme,
+                  childName: result.heroName, engine: result.engine)
     }
 }
 
