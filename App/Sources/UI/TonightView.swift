@@ -326,8 +326,15 @@ struct TonightView: View {
     /// Whether a story finishing now is still for the child on screen.
     /// An empty stored id means "the fallback first profile", which is this
     /// screen's profile by construction (RootView resolves it that way).
+    /// Reads UserDefaults directly, not the @AppStorage wrapper: the deliver
+    /// closure can run after this view instance was torn down by a profile
+    /// switch, and a torn-down wrapper is not guaranteed to report the live
+    /// value — the one moment this guard must not be wrong.
     private var writeServesActiveProfile: Bool {
-        Self.writeServesActiveProfile(activeProfileUUID: activeProfileUUID, profile: profile.uuid)
+        Self.writeServesActiveProfile(
+            activeProfileUUID: UserDefaults.standard.string(forKey: "activeProfileUUID") ?? "",
+            profile: profile.uuid
+        )
     }
 
     static func writeServesActiveProfile(activeProfileUUID: String, profile: UUID) -> Bool {
