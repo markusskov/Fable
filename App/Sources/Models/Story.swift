@@ -38,7 +38,7 @@ final class Story {
         set { engineRaw = newValue.rawValue }
     }
 
-    init(content: StoryContent, theme: StoryTheme, childName: String, engine: StoryEngineKind) {
+    private init(content: StoryContent, theme: StoryTheme, childName: String, engine: StoryEngineKind) {
         self.title = content.title
         self.pages = content.pages
         self.moral = content.moral
@@ -62,6 +62,22 @@ final class Story {
         self.init(content: result.content, theme: theme,
                   childName: result.heroName, engine: result.engine)
     }
+
+    /// Nil means this row predates the language-stamped, all-path gate and is
+    /// therefore quarantined from reader and series-continuation surfaces.
+    var contentLanguage: StoryLanguage? {
+        StoryLanguage(rawValue: languageRaw)
+    }
+
+    var isSafetyQuarantined: Bool {
+        contentLanguage == nil
+    }
+
+    /// Reader chrome also includes the parent series title, so a stamped
+    /// episode inside a mixed legacy series is not independently displayable.
+    var isReaderSafe: Bool {
+        !isSafetyQuarantined && series?.isSafetyQuarantined != true
+    }
 }
 
 extension Story {
@@ -74,6 +90,13 @@ extension Story {
 extension StorySeries {
     func belongs(to profile: ChildProfile) -> Bool {
         profileUUID == nil || profileUUID == profile.uuid
+    }
+
+    /// A legacy episode can contain an ungated body or recap. Keep the series
+    /// out of both display and prompt construction until every episode carries
+    /// the post-gate language stamp; the rows themselves remain recoverable.
+    var isSafetyQuarantined: Bool {
+        episodes.isEmpty || episodes.contains(where: \.isSafetyQuarantined)
     }
 }
 

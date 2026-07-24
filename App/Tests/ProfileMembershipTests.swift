@@ -15,14 +15,16 @@ struct ProfileMembershipTests {
 
     private func story(named title: String) -> Story {
         Story(
-            content: StoryContent(
+            telling: StoryProvider.TellResult(
+                content: StoryContent(
                 title: title,
                 pages: ["One.", "Two.", "Three.", "Goodnight."],
                 moral: "Rest well."
+                ),
+                engine: .curated,
+                heroName: "Nova"
             ),
-            theme: .animals,
-            childName: "Nova",
-            engine: .curated
+            theme: .animals
         )
     }
 
@@ -75,5 +77,34 @@ struct ProfileMembershipTests {
         context.insert(astrid)
         #expect(nova.uuid != astrid.uuid)
         #expect(UUID(uuidString: nova.uuid.uuidString) == nova.uuid)
+    }
+
+    @Test func unstampedLegacyStoriesAndTheirSeriesAreQuarantinedWithoutDeletion() {
+        let legacy = story(named: "Old Tale")
+        legacy.languageRaw = ""
+        let series = StorySeries(title: legacy.title, theme: .animals, childName: legacy.childName)
+        legacy.series = series
+
+        #expect(legacy.isSafetyQuarantined)
+        #expect(series.isSafetyQuarantined)
+        #expect(!legacy.isReaderSafe)
+
+        legacy.languageRaw = StoryLanguage.english.rawValue
+        #expect(!legacy.isSafetyQuarantined)
+        #expect(!series.isSafetyQuarantined)
+        #expect(legacy.isReaderSafe)
+    }
+
+    @Test func aStampedEpisodeInAMixedLegacySeriesStaysOutOfTheReader() {
+        let series = StorySeries(title: "Old unsafe title", theme: .animals, childName: "Nova")
+        let legacy = story(named: "Old Tale")
+        legacy.languageRaw = ""
+        legacy.series = series
+        let stamped = story(named: "New Tale")
+        stamped.series = series
+
+        #expect(!stamped.isSafetyQuarantined)
+        #expect(series.isSafetyQuarantined)
+        #expect(!stamped.isReaderSafe)
     }
 }

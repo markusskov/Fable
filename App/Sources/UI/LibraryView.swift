@@ -11,9 +11,10 @@ struct LibraryView: View {
 
     @Query(sort: \Story.createdAt, order: .reverse) private var allStories: [Story]
 
-    /// This child's storybook. Pre-profiles stories belong to everyone.
+    /// This child's storybook. Pre-profiles stories belong to everyone, but
+    /// rows that predate the all-path gate remain stored and quarantined.
     private var stories: [Story] {
-        allStories.filter { $0.belongs(to: profile) }
+        allStories.filter { $0.belongs(to: profile) && $0.isReaderSafe }
     }
 
     var body: some View {

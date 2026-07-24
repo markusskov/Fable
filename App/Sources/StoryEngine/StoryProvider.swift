@@ -98,11 +98,14 @@ struct StoryProvider: Sendable {
     /// unsafe. Marked English because its prose is English (the gate judges
     /// by the text's actual language).
     private static func emergencyStory(for request: StoryRequest) -> StoryContent {
-        // English prose gets English default slots: a Spanish comfort default
-        // spliced mid-English-sentence was round-three's mixed-language
-        // finding. A parent-typed comfort object still appears verbatim —
-        // it is the child's own thing, whatever language names it.
+        // English prose gets English slots. A localized free-text phrase can
+        // also collide with English safety vocabulary ("die Decke"), so the
+        // emergency path drops it when crossing languages and uses the known
+        // English default. The child's proper name remains language-neutral.
         var request = request
+        if request.language != .english {
+            request.comfortObject = ""
+        }
         request.language = .english
         return StoryContent(
             title: "Goodnight, \(request.childName)",

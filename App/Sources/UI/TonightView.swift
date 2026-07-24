@@ -23,6 +23,10 @@ struct TonightView: View {
 
     private let provider = StoryProvider()
 
+    private func displayName(for profile: ChildProfile) -> String {
+        ContentSafetyCheck.storableName(from: profile.name)
+    }
+
     /// Fable+ is unlimited; the free tier runs on the meter.
     private var allowance: StoryMeter.Allowance {
         StoryMeter.allowance(storyDates: stories.map(\.createdAt))
@@ -42,7 +46,7 @@ struct TonightView: View {
                     Text("Good evening")
                         .font(.subheadline)
                         .foregroundStyle(FableTheme.creamDim)
-                    Text("Time for a story,\n\(profile.name)")
+                    Text("Time for a story,\n\(displayName(for: profile))")
                         .font(.system(.largeTitle, design: .serif, weight: .semibold))
                         .foregroundStyle(FableTheme.cream)
                 }
@@ -60,7 +64,9 @@ struct TonightView: View {
                     }
                 }
 
-                let childSeries = series.filter { $0.belongs(to: profile) }
+                let childSeries = series.filter {
+                    $0.belongs(to: profile) && !$0.isSafetyQuarantined
+                }
                 if subscriptions.isSubscribed, !childSeries.isEmpty {
                     VStack(alignment: .leading, spacing: 12) {
                         Text("Or continue an adventure")
@@ -182,9 +188,9 @@ struct TonightView: View {
                     activeProfileUUID = child.uuid.uuidString
                 } label: {
                     if child.uuid == profile.uuid {
-                        Label(child.name, systemImage: "checkmark")
+                        Label(displayName(for: child), systemImage: "checkmark")
                     } else {
-                        Text(child.name)
+                        Text(displayName(for: child))
                     }
                 }
             }
@@ -201,11 +207,11 @@ struct TonightView: View {
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: "person.circle")
-                Text(profile.name)
+                Text(displayName(for: profile))
                     .font(.subheadline.weight(.medium))
             }
         }
-        .accessibilityLabel("Switch child. \(profile.name) is active.")
+        .accessibilityLabel("Switch child. \(displayName(for: profile)) is active.")
     }
 
     private func seriesCard(_ adventure: StorySeries) -> some View {
@@ -248,7 +254,7 @@ struct TonightView: View {
         isWriting = true
         let theme = adventure?.theme ?? selectedTheme
         var request = StoryRequest(
-            childName: profile.name,
+            childName: displayName(for: profile),
             ageBand: profile.ageBand,
             theme: theme,
             companion: profile.companion,

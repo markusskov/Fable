@@ -22,6 +22,22 @@ struct StorySeriesTests {
         )
     }
 
+    private func story(
+        title: String,
+        recap: String = "",
+        theme: StoryTheme,
+        engine: StoryEngineKind
+    ) -> Story {
+        Story(
+            telling: StoryProvider.TellResult(
+                content: content(title: title, recap: recap),
+                engine: engine,
+                heroName: "Nova"
+            ),
+            theme: theme
+        )
+    }
+
     @Test func episodesStayOrderedAndNumbered() throws {
         let container = try makeContainer()
         let context = container.mainContext
@@ -31,10 +47,10 @@ struct StorySeriesTests {
 
         // Insert episodes out of order; ordering must come from numbers.
         for number in [2, 1, 3] {
-            let story = Story(
-                content: content(title: "Episode \(number)", recap: "Recap \(number)."),
+            let story = story(
+                title: "Episode \(number)",
+                recap: "Recap \(number).",
                 theme: .adventure,
-                childName: "Nova",
                 engine: .model
             )
             story.episodeNumber = number
@@ -47,15 +63,18 @@ struct StorySeriesTests {
     }
 
     @Test func recapFallsBackToTheMoral() {
-        let authored = Story(
-            content: content(title: "With recap", recap: "Nova found the lantern."),
-            theme: .magic, childName: "Nova", engine: .model
+        let authored = story(
+            title: "With recap",
+            recap: "Nova found the lantern.",
+            theme: .magic,
+            engine: .model
         )
         #expect(authored.recap == "Nova found the lantern.")
 
-        let curated = Story(
-            content: content(title: "No recap"),
-            theme: .magic, childName: "Nova", engine: .curated
+        let curated = story(
+            title: "No recap",
+            theme: .magic,
+            engine: .curated
         )
         #expect(curated.recap == "Gentle nights make gentle days.")
     }
