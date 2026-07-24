@@ -9,6 +9,26 @@ enum SubscriptionError: Error, Equatable {
     case unverifiedTransaction
 }
 
+/// What actually happened when the family tried to subscribe. The paywall
+/// speaks to each honestly — a pending Ask-to-Buy is not a cancellation
+/// (2026-07-24 external money-path review, P2).
+enum PurchaseOutcome: Equatable {
+    case subscribed
+    /// Waiting for a parent's approval (Ask to Buy). The approval arrives
+    /// later through the update stream; the paywall stays ready for it.
+    case pending
+    case cancelled
+    /// The App Store could not complete the purchase (offline, verification).
+    case failed
+}
+
+enum RestoreOutcome: Equatable {
+    case subscribed
+    case nothingToRestore
+    /// The App Store could not be reached.
+    case failed
+}
+
 /// Owns every StoreKit interaction in the app: loading the Fable+ products,
 /// purchasing, restoring, and keeping `status` current as entitlements change.
 ///
@@ -29,7 +49,20 @@ final class SubscriptionStore {
     /// "try again later" rather than an error alert — never break bedtime.
     private(set) var productsUnavailable = false
 
+    private let client: any StoreClient
     private var updatesTask: Task<Void, Never>?
+    private var hasStarted = false
+    /// Monotonic guard against interleaved refreshes: an entitlement snapshot
+    /// read before a newer refresh began must never overwrite the newer
+    /// truth (2026-07-24 external money-path review — a refund landing
+    /// mid-refresh could be undone by the stale first snapshot).
+    private var refreshGeneration = 0
+
+    /// The client is injectable so entitlement lifecycle transitions can be
+    /// forced in tests; production always talks to the real App Store.
+    init(client: any StoreClient = LiveStoreClient()) {
+        self.client = client
+    }
 
     // In the app this store lives as long as the process, but nothing should
     // rely on that: without the cancel, the updates listener would keep a
@@ -50,19 +83,17 @@ final class SubscriptionStore {
     }
 
     /// Begins listening for entitlement changes and loads the catalog.
-    /// Idempotent, so it is safe to call from a view's `.task`.
+    /// Genuinely idempotent: repeat calls are no-ops for the listener AND
+    /// the bootstrap, so overlapping catalog requests cannot race.
     func start() {
-        if updatesTask == nil {
-            updatesTask = Task { [weak self] in
-                // Renewals, refunds, Ask-to-Buy approvals, and purchases made
-                // on another device all arrive here.
-                for await update in Transaction.updates {
-                    guard let self else { return }
-                    if case .verified(let transaction) = update {
-                        await transaction.finish()
-                    }
-                    await self.refreshStatus()
-                }
+        guard !hasStarted else { return }
+        hasStarted = true
+        updatesTask = Task { [weak self] in
+            // Renewals, refunds, Ask-to-Buy approvals, and purchases made
+            // on another device all arrive here.
+            guard let self else { return }
+            for await _ in client.updates {
+                await self.refreshStatus()
             }
         }
         Task {
@@ -71,7 +102,19 @@ final class SubscriptionStore {
         }
     }
 
+    /// Re-checks entitlements and retries a failed catalog load. Called on
+    /// foregrounding and when the paywall appears, so an offline first launch
+    /// is not sticky until restart and a subscription that lapsed or renewed
+    /// while backgrounded is noticed promptly.
+    func refreshOnReturn() async {
+        await refreshStatus()
+        if products.isEmpty, !isLoadingProducts {
+            await loadProducts()
+        }
+    }
+
     func loadProducts() async {
+        guard !isLoadingProducts else { return }
         isLoadingProducts = true
         defer { isLoadingProducts = false }
         do {
@@ -113,50 +156,53 @@ final class SubscriptionStore {
         products.first { $0.id == plan.productID }
     }
 
-    /// Returns true when the family now has Fable+. A cancelled sheet or a
-    /// purchase awaiting a parent's approval returns false without throwing —
-    /// neither is an error worth surfacing.
-    @discardableResult
-    func purchase(_ plan: FablePlus.Plan) async throws -> Bool {
-        guard let product = product(for: plan) else { throw SubscriptionError.productUnavailable }
-        let result = try await product.purchase()
-        switch result {
-        case .success(let verification):
-            guard case .verified(let transaction) = verification else {
-                throw SubscriptionError.unverifiedTransaction
+    /// What happened, honestly — the paywall narrates each outcome instead
+    /// of collapsing pending/offline/verification into "nothing happened".
+    func purchase(_ plan: FablePlus.Plan) async -> PurchaseOutcome {
+        guard let product = product(for: plan) else { return .failed }
+        do {
+            let result = try await product.purchase()
+            switch result {
+            case .success(let verification):
+                guard case .verified(let transaction) = verification else {
+                    return .failed
+                }
+                await transaction.finish()
+                await refreshStatus()
+                return status.isSubscribed ? .subscribed : .failed
+            case .pending:
+                // Ask to Buy: approval arrives later via the update stream,
+                // which refreshes status; the paywall auto-dismisses then.
+                return .pending
+            case .userCancelled:
+                return .cancelled
+            @unknown default:
+                return .failed
             }
-            await transaction.finish()
-            await refreshStatus()
-            return status.isSubscribed
-        case .userCancelled, .pending:
-            return false
-        @unknown default:
-            return false
+        } catch {
+            return .failed
         }
     }
 
     /// "Restore purchases" — required by App Review for any subscription app.
-    func restore() async throws {
-        try await AppStore.sync()
+    func restore() async -> RestoreOutcome {
+        do {
+            try await client.sync()
+        } catch {
+            return .failed
+        }
         await refreshStatus()
+        return status.isSubscribed ? .subscribed : .nothingToRestore
     }
 
-    /// Recomputes `status` from the entitlements StoreKit can currently verify.
+    /// Recomputes `status` from the entitlements StoreKit can currently
+    /// verify. Latest-wins: if a newer refresh started while this one was
+    /// suspended reading entitlements, this snapshot is stale and discarded.
     func refreshStatus() async {
-        var records: [EntitlementRecord] = []
-        for await result in Transaction.currentEntitlements {
-            // Unverified entitlements are ignored outright: a signature we
-            // cannot check is not a purchase we honour.
-            guard case .verified(let transaction) = result else { continue }
-            records.append(
-                EntitlementRecord(
-                    productID: transaction.productID,
-                    expirationDate: transaction.expirationDate,
-                    revocationDate: transaction.revocationDate,
-                    isUpgraded: transaction.isUpgraded
-                )
-            )
-        }
+        refreshGeneration += 1
+        let generation = refreshGeneration
+        let records = await client.currentEntitlements()
+        guard generation == refreshGeneration else { return }
         status = SubscriptionStatus.derive(from: records)
     }
 

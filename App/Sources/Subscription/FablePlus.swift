@@ -124,11 +124,17 @@ extension SubscriptionStatus {
     ///
     /// An empty set means free — StoreKit only returns entitlements it can
     /// vouch for, so "nothing" is a real answer, not a missing one.
-    static func derive(from records: [EntitlementRecord], now: Date = .now) -> SubscriptionStatus {
+    ///
+    /// Membership in `currentEntitlements` IS the access decision. Apple
+    /// includes subscriptions in billing grace there even though the last
+    /// transaction's expiration date is already past, so re-checking the
+    /// date locally locks out exactly the paying families Apple is trying
+    /// to keep (2026-07-24 external money-path review, P1). Staleness is
+    /// handled by refreshing on foreground and on `Transaction.updates`,
+    /// not by second-guessing the platform's answer.
+    static func derive(from records: [EntitlementRecord]) -> SubscriptionStatus {
         let active = records.filter { record in
-            guard record.revocationDate == nil, !record.isUpgraded else { return false }
-            guard let expiry = record.expirationDate else { return true }
-            return expiry > now
+            record.revocationDate == nil && !record.isUpgraded
         }
         // If a family somehow holds both (plan switch mid-period), the yearly
         // plan wins — it is the one with the longer remaining runway.

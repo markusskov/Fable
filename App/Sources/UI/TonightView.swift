@@ -11,6 +11,7 @@ struct TonightView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(SubscriptionStore.self) private var subscriptions
+    @Environment(StoryReservations.self) private var reservations
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
     @Query private var stories: [Story]
     @Query(sort: \StorySeries.createdAt, order: .reverse) private var series: [StorySeries]
@@ -27,9 +28,11 @@ struct TonightView: View {
         ContentSafetyCheck.storableName(from: profile.name)
     }
 
-    /// Fable+ is unlimited; the free tier runs on the meter.
+    /// Fable+ is unlimited; the free tier runs on the meter. Stories being
+    /// written right now count too — a reservation is a spent credit even
+    /// before its row lands in the store.
     private var allowance: StoryMeter.Allowance {
-        StoryMeter.allowance(storyDates: stories.map(\.createdAt))
+        StoryMeter.allowance(storyDates: stories.map(\.createdAt) + reservations.dates)
     }
 
     // Three columns of theme cards, two once type grows into accessibility
@@ -252,6 +255,12 @@ struct TonightView: View {
 
     private func tellStory(continuing adventure: StorySeries?) {
         isWriting = true
+        // Claim the meter slot NOW, synchronously, before any suspension:
+        // generation takes seconds, and switching profiles mid-write rebuilds
+        // this view (resetting isWriting) while the old task keeps running.
+        // The household-wide reservation is what stops the same weekly credit
+        // being spent once per profile (2026-07-24 money-path review, P1).
+        let reservation = reservations.reserve()
         let theme = adventure?.theme ?? selectedTheme
         var request = StoryRequest(
             childName: displayName(for: profile),
@@ -287,6 +296,8 @@ struct TonightView: View {
             }
             story.profile = profile
             modelContext.insert(story)
+            // The persisted row carries the meter charge from here on.
+            reservations.release(reservation)
             path.append(story)
             isWriting = false
         }
