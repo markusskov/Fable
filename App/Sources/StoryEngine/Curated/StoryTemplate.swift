@@ -15,6 +15,13 @@ struct StoryTemplate: Identifiable, Sendable {
     let sounds: [String]
     let treasures: [String]
     let moralVariants: [String]
+    /// One narrator's sentence of what happened, rendered with the same slot
+    /// picks as the story it summarizes. This is the "previously on" material
+    /// the next episode of a series builds on — without it, curated episodes
+    /// fell back to the moral, which reads as a lesson, not a recap
+    /// (external review 2026-07-24, finding #5). Uses the same slots and the
+    /// same grammar discipline as pages.
+    let recapVariants: [String]
 
     func render(for request: StoryRequest, rng: inout some RandomNumberGenerator) -> StoryContent {
         // Parent-typed values are brace-stripped: a child "named" {sound}
@@ -32,11 +39,17 @@ struct StoryTemplate: Identifiable, Sendable {
             "{sound}": sounds.pick(using: &rng),
             "{treasure}": treasures.pick(using: &rng),
         ]
-        return StoryContent(
+        // The recap variant is picked LAST so that adding recaps did not
+        // shift the title/page/moral output of any existing seed.
+        var content = StoryContent(
             title: titleVariants.pick(using: &rng).applying(substitutions),
             pages: pages.map { $0.applying(substitutions) },
             moral: moralVariants.pick(using: &rng).applying(substitutions)
         )
+        if !recapVariants.isEmpty {
+            content.recap = recapVariants.pick(using: &rng).applying(substitutions)
+        }
+        return content
     }
 }
 

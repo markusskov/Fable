@@ -82,6 +82,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Kind hands find their way home, and so do the things they carry.",
             "Even small helpers can light up the whole sky.",
+        ],
+        recapVariants: [
+            "{name} and {companion} followed the lantern path toward {setting} and helped {treasure} find the way back up into the sky.",
         ]
     )
 
@@ -124,6 +127,9 @@ enum TemplateLibrary {
         moralVariants: [
             "The quiet dark is a friend who carries us gently to morning.",
             "Rest is a voyage, and every sleeper is a brave sailor.",
+        ],
+        recapVariants: [
+            "{name}'s bed became a little boat that sailed past {setting}, and {treasure} came along for the voyage.",
         ]
     )
 
@@ -168,6 +174,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Helping someone home is the warmest way to end a day.",
             "No kindness is small when you are small.",
+        ],
+        recapVariants: [
+            "{name} and {companion} walked a very small lost friend all the way home, past {setting}.",
         ]
     )
 
@@ -210,6 +219,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Snille hender finner veien hjem, og det gjør det de bærer på også.",
             "Selv små hjelpere kan lyse opp en hel himmel.",
+        ],
+        recapVariants: [
+            "{name} og {companion} fulgte lyktestien mot {setting} og hjalp {treasure} med å finne veien hjem til himmelen.",
         ]
     )
 
@@ -252,6 +264,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Det stille mørket er en venn som bærer oss varsomt til morgenen.",
             "Søvnen er en seilas, og alle som sover er tapre små seilere.",
+        ],
+        recapVariants: [
+            "Sengen til {name} ble en liten båt som seilte forbi {setting}, og {treasure} ble med på ferden.",
         ]
     )
 
@@ -294,6 +309,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Å følge noen hjem er den varmeste måten å avslutte en dag på.",
             "Ingen snillhet er liten når du selv er liten.",
+        ],
+        recapVariants: [
+            "{name} og {companion} fulgte et bitte lite vesen trygt hjem, helt forbi {setting}.",
         ]
     )
 
@@ -336,6 +354,12 @@ enum TemplateLibrary {
         moralVariants: [
             "Freundliche Hände finden den Weg nach Hause, und alles, was sie tragen, findet ihn mit.",
             "Auch kleine Helfer können einen ganzen Himmel zum Leuchten bringen.",
+        ],
+        // Treasure in colon apposition (nominative), like the pages — one
+        // pool entry carries a relative clause and needs the sentence to end
+        // right after it.
+        recapVariants: [
+            "{name} und {companion} folgten dem Laternenpfad zu {setting} und brachten einen kleinen Schatz zurück an den Himmel: {treasure}.",
         ]
     )
 
@@ -378,6 +402,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Das stille Dunkel ist ein Freund, der uns sanft bis zum Morgen trägt.",
             "Schlafen ist eine Reise, und alle, die schlafen, sind mutige kleine Reisende.",
+        ],
+        recapVariants: [
+            "Das Bett von {name} wurde ein kleines Boot und segelte an {setting} vorbei, und unterwegs kam ein stiller Gast mit: {treasure}.",
         ]
     )
 
@@ -420,6 +447,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Jemanden nach Hause zu bringen ist der wärmste Abschluss für einen Tag.",
             "Keine Freundlichkeit ist klein, wenn man selbst klein ist.",
+        ],
+        recapVariants: [
+            "{name} und {companion} brachten einen sehr kleinen Gast nach Hause, den ganzen Weg an {setting} vorbei.",
         ]
     )
 
@@ -462,6 +492,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Las manos bondadosas encuentran el camino a casa, y también lo encuentra todo lo que llevan.",
             "Hasta los ayudantes más pequeños pueden iluminar el cielo entero.",
+        ],
+        recapVariants: [
+            "{name} y {companion} siguieron el sendero de farolillos hacia {setting} y ayudaron a {treasure} a volver a su sitio en el cielo.",
         ]
     )
 
@@ -504,6 +537,9 @@ enum TemplateLibrary {
         moralVariants: [
             "La oscuridad tranquila es una amiga que nos lleva con suavidad hasta la mañana.",
             "Dormir es un viaje, y quien duerme zarpa cada noche con mucha valentía.",
+        ],
+        recapVariants: [
+            "La cama de {name} se convirtió en un barquito que navegó por {setting}, y {treasure} acompañó el viaje.",
         ]
     )
 
@@ -546,6 +582,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Acompañar a alguien a casa es la manera más bonita de terminar el día.",
             "Ninguna bondad es pequeña cuando quien la da también es pequeño.",
+        ],
+        recapVariants: [
+            "{name} y {companion} acompañaron a casa a un animalito perdido, pasando por {setting}.",
         ]
     )
 
@@ -597,6 +636,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Les mains douces retrouvent toujours le chemin de la maison, et ce qu'elles portent le retrouve avec elles.",
             "Même les tout petits peuvent faire briller un ciel tout entier.",
+        ],
+        recapVariants: [
+            "{name} et {companion} suivirent le sentier des lanternes vers {setting} et aidèrent {treasure} à retrouver sa place dans le ciel.",
         ]
     )
 
@@ -639,6 +681,9 @@ enum TemplateLibrary {
         moralVariants: [
             "La douce obscurité est une amie qui nous porte doucement jusqu'au matin.",
             "Dormir est un voyage, et chaque dormeur est un brave petit marin.",
+        ],
+        recapVariants: [
+            "Le lit de {name} devint un petit bateau qui vogua devant {setting}, et {treasure} se joignit au voyage.",
         ]
     )
 
@@ -681,6 +726,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Raccompagner quelqu'un chez lui, c'est la plus chaleureuse façon de finir la journée.",
             "Aucune gentillesse n'est petite quand on est petit.",
+        ],
+        recapVariants: [
+            "{name} et {companion} raccompagnèrent chez lui un tout petit ami perdu, en passant devant {setting}.",
         ]
     )
 
@@ -732,6 +780,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Le mani gentili ritrovano sempre la strada di casa, e ciò che portano la ritrova con loro.",
             "Anche i piccoli aiutanti possono far brillare un cielo intero.",
+        ],
+        recapVariants: [
+            "{name} e {companion} seguirono il sentiero delle lanterne verso {setting} e aiutarono {treasure} a ritrovare il suo posto nel cielo.",
         ]
     )
 
@@ -774,6 +825,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Il buio gentile è un amico che ci porta piano piano fino al mattino.",
             "Riposare è un viaggio, e chi dorme è un piccolo marinaio coraggioso.",
+        ],
+        recapVariants: [
+            "Il letto di {name} diventò una barchetta che navigò oltre {setting}, e {treasure} si unì al viaggio.",
         ]
     )
 
@@ -816,6 +870,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Accompagnare qualcuno a casa è il modo più caldo di finire la giornata.",
             "Nessuna gentilezza è piccola quando si è piccoli.",
+        ],
+        recapVariants: [
+            "{name} e {companion} accompagnarono a casa un piccolo amico smarrito, superando {setting}.",
         ]
     )
 
@@ -868,6 +925,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Mãos gentis sempre encontram o caminho de casa, e o que elas carregam encontra junto.",
             "Até os ajudantes pequenininhos conseguem acender um céu inteiro.",
+        ],
+        recapVariants: [
+            "{name} e {companion} seguiram a trilha das lanterninhas até {setting} e ajudaram {treasure} a voltar para o seu lugar no céu.",
         ]
     )
 
@@ -910,6 +970,9 @@ enum TemplateLibrary {
         moralVariants: [
             "O escuro gentil é um amigo que nos carrega devagarinho até a manhã.",
             "Descansar é uma viagem, e quem dorme é um pequeno marinheiro corajoso.",
+        ],
+        recapVariants: [
+            "A cama de {name} virou um barquinho que cruzou {setting}, e {treasure} acompanhou a viagem.",
         ]
     )
 
@@ -952,6 +1015,9 @@ enum TemplateLibrary {
         moralVariants: [
             "Levar alguém para casa é o jeito mais quentinho de terminar o dia.",
             "Nenhuma gentileza é pequena quando a gente é pequeno.",
+        ],
+        recapVariants: [
+            "{name} e {companion} levaram um amiguinho perdido para casa, cruzando {setting}.",
         ]
     )
 }
