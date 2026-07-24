@@ -28,6 +28,10 @@ struct CuratedStoryEngine: StoryEngine {
             .pick(using: &rng)
             .render(for: request, rng: &rng)
         rendered.language = language
-        return rendered
+        // A series continuation gets an episode-aware opening page instead of
+        // pretending tonight's tale is unrelated (review finding #5). Framed
+        // AFTER the language stamp: the frame follows the shelf actually
+        // served, not the one asked for.
+        return CuratedSeriesFraming.framed(rendered, for: request)
     }
 }
