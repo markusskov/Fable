@@ -37,5 +37,22 @@ struct RootView: View {
             }
         }
         .tint(FableTheme.gold)
+        .task { repairLegacyProfiles() }
+    }
+
+    /// Profiles persisted before the profile form validated input
+    /// (TestFlight builds before PR #34) can hold values today's form
+    /// would refuse, and the greeting/profile menu show these fields raw.
+    /// One pass on launch makes storage itself safe; profiles created
+    /// through the current form are untouched by construction.
+    private func repairLegacyProfiles() {
+        for profile in profiles {
+            let name = ContentSafetyCheck.storableName(from: profile.name)
+            if profile.name != name { profile.name = name }
+            let companion = ContentSafetyCheck.storableProfileField(from: profile.companion)
+            if profile.companion != companion { profile.companion = companion }
+            let comfort = ContentSafetyCheck.storableProfileField(from: profile.comfortObject)
+            if profile.comfortObject != comfort { profile.comfortObject = comfort }
+        }
     }
 }

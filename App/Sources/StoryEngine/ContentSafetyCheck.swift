@@ -450,9 +450,16 @@ enum ContentSafetyCheck {
         return String(out)
     }
 
+    /// Matching-only diacritic fold, applied to BOTH the vocabulary word and
+    /// the text so "Mönster" meets "monster" and accented vocabulary still
+    /// meets itself. Never used for display — names keep their accents.
+    private static func matchFolded(_ text: String) -> String {
+        normalizedForMatching(text).folding(options: .diacriticInsensitive, locale: nil)
+    }
+
     private static func containsWord(_ word: String, in text: String) -> Bool {
-        let pattern = "\\b\(NSRegularExpression.escapedPattern(for: word))\\b"
-        return normalizedForMatching(text)
+        let pattern = "\\b\(NSRegularExpression.escapedPattern(for: matchFolded(word)))\\b"
+        return matchFolded(text)
             .range(of: pattern, options: [.regularExpression, .caseInsensitive]) != nil
     }
 
@@ -614,6 +621,20 @@ enum ContentSafetyCheck {
     static func isStorableName(_ value: String) -> Bool {
         let sanitized = nameSanitized(value)
         return !sanitized.isEmpty && sanitized.count <= 60 && isStorableProfileField(sanitized)
+    }
+
+    /// Storage repair for profiles persisted before the input boundary
+    /// existed (TestFlight builds before PR #34): the launch sweep runs
+    /// these over every stored profile so chrome that shows profile fields
+    /// raw stays safe for legacy data too, not just newly created profiles.
+    static func storableName(from value: String) -> String {
+        let sanitized = nameSanitized(value)
+        return isStorableName(sanitized) ? sanitized : safeGenericName(for: .deviceDefault)
+    }
+
+    static func storableProfileField(from value: String) -> String {
+        let stripped = StoryRequest.bracesStripped(value)
+        return isStorableProfileField(stripped) ? stripped : ""
     }
 
     /// Whether a final page already fulfils the ending contract (name +
