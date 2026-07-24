@@ -1992,6 +1992,47 @@
         }
       }
     },
+    "No earlier purchase was found for this Apple Account.": {
+      "comment": "Paywall store note: restore succeeded but found nothing",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für diesen Apple Account wurde kein früherer Kauf gefunden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha encontrado ninguna compra anterior para esta cuenta de Apple."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aucun achat antérieur n'a été trouvé pour ce compte Apple."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun acquisto precedente trovato per questo account Apple."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fant ingen tidligere kjøp for denne Apple-kontoen."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nenhuma compra anterior foi encontrada para esta Conta Apple."
+          }
+        }
+      }
+    },
     "No stories yet": {
       "localizations": {
         "de": {
@@ -2229,6 +2270,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Um perfil para cada criança da família"
+          }
+        }
+      }
+    },
+    "Restore couldn't reach the App Store. Please check your connection and try again.": {
+      "comment": "Paywall store note: restore failed because the App Store was unreachable",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Wiederherstellung konnte den App Store nicht erreichen. Prüf bitte deine Verbindung und versuch es noch einmal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La restauración no ha podido conectar con App Store. Comprueba tu conexión e inténtalo de nuevo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La restauration n'a pas pu joindre l'App Store. Vérifie ta connexion et réessaie."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il ripristino non è riuscito a raggiungere l'App Store. Controlla la connessione e riprova."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gjenoppretting fikk ikke kontakt med App Store. Sjekk tilkoblingen og prøv igjen."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A restauração não conseguiu conectar à App Store. Verifique sua conexão e tente de novo."
           }
         }
       }
@@ -2554,6 +2636,88 @@
         }
       }
     },
+    "Stories can't use that word. Try a friendlier sidekick.": {
+      "comment": "Profile form: the companion field failed the content-safety check",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Wort können die Geschichten nicht verwenden. Versuch es mit einem freundlicheren Begleiter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los cuentos no pueden usar esa palabra. Prueba con un acompañante más amable."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les histoires ne peuvent pas utiliser ce mot. Essaie un compagnon plus amical."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le storie non possono usare quella parola. Prova con un compagno più amichevole."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historiene kan ikke bruke det ordet. Prøv en vennligere følgesvenn."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As histórias não podem usar essa palavra. Tente um companheiro mais amigável."
+          }
+        }
+      }
+    },
+    "Stories can't use that word. Try something cozier.": {
+      "comment": "Profile form: the comfort-object field failed the content-safety check",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Wort können die Geschichten nicht verwenden. Versuch es mit etwas Gemütlicherem."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los cuentos no pueden usar esa palabra. Prueba con algo más acogedor."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les histoires ne peuvent pas utiliser ce mot. Essaie quelque chose de plus douillet."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le storie non possono usare quella parola. Prova con qualcosa di più morbido."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historiene kan ikke bruke det ordet. Prøv noe koseligere."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As histórias não podem usar essa palavra. Tente algo mais aconchegante."
+          }
+        }
+      }
+    },
     "Story series — adventures that continue night after night": {
       "localizations": {
         "de": {
@@ -2836,6 +3000,88 @@
         }
       }
     },
+    "That name can't go into a story. A nickname works great.": {
+      "comment": "Profile form: the child's name failed the content-safety check",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieser Name kann nicht in einer Geschichte vorkommen. Ein Spitzname passt wunderbar."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ese nombre no puede entrar en un cuento. Un apodo funciona genial."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ce prénom ne peut pas entrer dans une histoire. Un surnom fera très bien l'affaire."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quel nome non può entrare in una storia. Un soprannome va benissimo."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Det navnet kan ikke være med i en historie. Et kallenavn funker fint."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esse nome não pode entrar numa história. Um apelido funciona muito bem."
+          }
+        }
+      }
+    },
+    "The App Store couldn't be reached. Please try again in a moment.": {
+      "comment": "Paywall store note: purchase failed because the App Store was unreachable",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der App Store war nicht erreichbar. Bitte versuch es gleich noch einmal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido conectar con App Store. Inténtalo de nuevo en un momento."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossible de joindre l'App Store. Réessaie dans un instant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile raggiungere l'App Store. Riprova tra un momento."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fikk ikke kontakt med App Store. Prøv igjen om litt."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não foi possível conectar à App Store. Tente de novo em instantes."
+          }
+        }
+      }
+    },
     "The End": {
       "comment": "Closing mark on the last page. Norwegian uses the traditional fairy-tale ending.",
       "localizations": {
@@ -3113,6 +3359,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "A história de hoje vai aparecer aqui, prontinha para ser relida."
+          }
+        }
+      }
+    },
+    "Try again": {
+      "comment": "Paywall: retry button under the products-unavailable note",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erneut versuchen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intentar de nuevo"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réessayer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprova"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prøv igjen"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tentar de novo"
+          }
+        }
+      }
+    },
+    "Waiting for a parent to approve this purchase. Stories unlock the moment they do.": {
+      "comment": "Paywall store note: Ask to Buy purchase is pending parental approval",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Kauf wartet auf die Zustimmung eines Elternteils. Sobald sie da ist, schalten sich die Geschichten frei."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando a que un padre o una madre apruebe la compra. Los cuentos se desbloquean en cuanto lo haga."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En attente de l'accord d'un parent pour cet achat. Les histoires se débloqueront dès qu'il sera donné."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In attesa che un genitore approvi l'acquisto. Le storie si sbloccano non appena succede."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Venter på at en forelder godkjenner kjøpet. Historiene låses opp i det øyeblikket det skjer."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando um responsável aprovar a compra. As histórias desbloqueiam assim que isso acontecer."
           }
         }
       }
