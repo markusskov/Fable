@@ -26,7 +26,11 @@ struct TonightView: View {
     private let provider = StoryProvider()
 
     private func displayName(for profile: ChildProfile) -> String {
-        ContentSafetyCheck.storableName(from: profile.name)
+        // Memoized: the raw storableName scan walks the whole vocabulary
+        // with fresh regexes, and this view re-renders on every theme tap.
+        // Uncached it cost 1-2 seconds of visible lag per selection
+        // (owner-reported, 2026-07-24).
+        ContentSafetyCheck.displayName(for: profile.name)
     }
 
     /// Fable+ is unlimited; the free tier runs on the meter. Stories being
@@ -238,6 +242,13 @@ struct TonightView: View {
 
     private func seriesCard(_ adventure: StorySeries) -> some View {
         Button {
+            // Authorize the ACTION, not just the card's existence: a
+            // revocation can land before SwiftUI removes the row
+            // (2026-07-24 review round two).
+            guard subscriptions.isSubscribed else {
+                isShowingPaywall = true
+                return
+            }
             tellStory(continuing: adventure)
         } label: {
             HStack(spacing: 12) {
@@ -317,6 +328,12 @@ struct TonightView: View {
             }
             story.profile = profile
             modelContext.insert(story)
+            // Save explicitly BEFORE releasing: the claim hands off to the
+            // persisted row, so the row must actually be persisted first
+            // (2026-07-24 review round two). If the save throws, autosave
+            // will land the insert moments later; either way exactly one of
+            // claim-or-row holds the charge at every instant.
+            try? modelContext.save()
             // The persisted row carries the meter charge from here on.
             reservations.release(reservation)
             path.append(story)

@@ -734,6 +734,25 @@ enum ContentSafetyCheck {
         return isStorableProfileField(value, language: language) ? sanitized : ""
     }
 
+    /// Memoized `storableName` for RENDER paths. The raw scan compiles a
+    /// fresh regex per vocabulary word, which is fine once at the input
+    /// boundary or launch sweep, but SwiftUI re-renders the greeting and
+    /// profile menu on every interaction — uncached this was 1-2 seconds of
+    /// visible lag per theme tap (owner-reported, 2026-07-24). Stored names
+    /// are immutable between repairs, so the cache never goes stale within
+    /// a run; keyed by language because the generic fallback localizes.
+    @MainActor
+    private static var displayNameCache: [String: String] = [:]
+
+    @MainActor
+    static func displayName(for value: String, language: StoryLanguage = .deviceDefault) -> String {
+        let key = "\(language.rawValue)|\(value)"
+        if let cached = displayNameCache[key] { return cached }
+        let name = storableName(from: value, language: language)
+        displayNameCache[key] = name
+        return name
+    }
+
     /// Whether a final page already fulfils the ending contract (name +
     /// wind-down signal). The model engine uses this to decide if the
     /// separately-generated goodnight sentence needs appending; the rules

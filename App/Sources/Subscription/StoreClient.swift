@@ -18,6 +18,23 @@ protocol StoreClient: Sendable {
     var updates: AsyncStream<Void> { get }
     /// "Restore purchases" — asks the App Store to sync this device.
     func sync() async throws
+    /// Runs the purchase flow for a product and reports what the App Store
+    /// said, in plain values — so pending, cancellation, and verification
+    /// failure are forceable in tests (2026-07-24 review round two: the
+    /// previous seam left every purchase path environment-dependent).
+    func purchase(productID: String) async throws -> ClientPurchaseResult
+}
+
+enum ClientPurchaseResult: Equatable {
+    /// Verified and finished; entitlements now reflect it.
+    case successVerified
+    /// The App Store accepted the purchase but could not vouch for the
+    /// transaction's signature.
+    case successUnverified
+    /// Ask to Buy: a parent must approve; the outcome arrives later
+    /// through `updates`.
+    case pending
+    case cancelled
 }
 
 /// Production client. The only file in Fable that talks to StoreKit's
@@ -62,5 +79,28 @@ struct LiveStoreClient: StoreClient {
 
     func sync() async throws {
         try await AppStore.sync()
+    }
+
+    func purchase(productID: String) async throws -> ClientPurchaseResult {
+        // Re-resolve rather than borrowing the paywall's display list:
+        // Product is not Sendable-constructible across the boundary, and
+        // StoreKit caches this lookup.
+        guard let product = try await Product.products(for: [productID]).first else {
+            throw SubscriptionError.productUnavailable
+        }
+        switch try await product.purchase() {
+        case .success(let verification):
+            guard case .verified(let transaction) = verification else {
+                return .successUnverified
+            }
+            await transaction.finish()
+            return .successVerified
+        case .pending:
+            return .pending
+        case .userCancelled:
+            return .cancelled
+        @unknown default:
+            return .cancelled
+        }
     }
 }

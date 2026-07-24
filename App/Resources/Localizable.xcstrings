@@ -2074,43 +2074,43 @@
         }
       }
     },
-    "No earlier purchase was found for this Apple Account.": {
-      "comment": "Paywall store note: restore succeeded but found nothing",
+    "No active subscription was found for this Apple Account.": {
+      "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Für diesen Apple Account wurde kein früherer Kauf gefunden."
+            "value": "Für diesen Apple Account wurde kein aktives Abo gefunden."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "No se ha encontrado ninguna compra anterior para esta cuenta de Apple."
+            "value": "No se encontró ninguna suscripción activa para esta cuenta de Apple."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aucun achat antérieur n'a été trouvé pour ce compte Apple."
+            "value": "Aucun abonnement actif n'a été trouvé pour ce compte Apple."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nessun acquisto precedente trovato per questo account Apple."
+            "value": "Nessun abbonamento attivo trovato per questo account Apple."
           }
         },
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fant ingen tidligere kjøp for denne Apple-kontoen."
+            "value": "Fant ikke noe aktivt abonnement for denne Apple-kontoen."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nenhuma compra anterior foi encontrada para esta Conta Apple."
+            "value": "Nenhuma assinatura ativa foi encontrada para esta conta Apple."
           }
         }
       }
@@ -2397,43 +2397,43 @@
         }
       }
     },
-    "Restore couldn't reach the App Store. Please check your connection and try again.": {
-      "comment": "Paywall store note: restore failed because the App Store was unreachable",
+    "Restore didn't finish. Please check your connection and try again.": {
+      "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Wiederherstellung konnte den App Store nicht erreichen. Prüf bitte deine Verbindung und versuch es noch einmal."
+            "value": "Die Wiederherstellung wurde nicht abgeschlossen. Bitte prüfe deine Verbindung und versuche es erneut."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La restauración no ha podido conectar con App Store. Comprueba tu conexión e inténtalo de nuevo."
+            "value": "La restauración no se completó. Comprueba tu conexión e inténtalo de nuevo."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La restauration n'a pas pu joindre l'App Store. Vérifie ta connexion et réessaie."
+            "value": "La restauration n'a pas abouti. Vérifiez votre connexion et réessayez."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il ripristino non è riuscito a raggiungere l'App Store. Controlla la connessione e riprova."
+            "value": "Il ripristino non è andato a buon fine. Controlla la connessione e riprova."
           }
         },
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gjenoppretting fikk ikke kontakt med App Store. Sjekk tilkoblingen og prøv igjen."
+            "value": "Gjenopprettingen ble ikke fullført. Sjekk tilkoblingen og prøv igjen."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "A restauração não conseguiu conectar à App Store. Verifique sua conexão e tente de novo."
+            "value": "A restauração não foi concluída. Verifique sua conexão e tente novamente."
           }
         }
       }
@@ -2881,6 +2881,47 @@
         }
       }
     },
+    "Story unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geschichte nicht verfügbar"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuento no disponible"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Histoire indisponible"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storia non disponibile"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historien er ikke tilgjengelig"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "História indisponível"
+          }
+        }
+      }
+    },
     "Storybook": {
       "comment": "The library of past stories: toolbar accessibility label and navigation title",
       "localizations": {
@@ -3246,47 +3287,6 @@
         }
       }
     },
-    "The App Store couldn't be reached. Please try again in a moment.": {
-      "comment": "Paywall store note: purchase failed because the App Store was unreachable",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Der App Store war nicht erreichbar. Bitte versuch es gleich noch einmal."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se ha podido conectar con App Store. Inténtalo de nuevo en un momento."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossible de joindre l'App Store. Réessaie dans un instant."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossibile raggiungere l'App Store. Riprova tra un momento."
-          }
-        },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fikk ikke kontakt med App Store. Prøv igjen om litt."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Não foi possível conectar à App Store. Tente de novo em instantes."
-          }
-        }
-      }
-    },
     "The End": {
       "comment": "Closing mark on the last page. Norwegian uses the traditional fairy-tale ending.",
       "localizations": {
@@ -3408,6 +3408,47 @@
         }
       }
     },
+    "The purchase couldn't be completed. Please try again in a moment.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Kauf konnte nicht abgeschlossen werden. Bitte versuche es gleich noch einmal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se pudo completar la compra. Inténtalo de nuevo en un momento."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'achat n'a pas pu être finalisé. Veuillez réessayer dans un instant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non è stato possibile completare l'acquisto. Riprova tra un istante."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kjøpet kunne ikke fullføres. Prøv igjen om et lite øyeblikk."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Não foi possível concluir a compra. Tente novamente em instantes."
+          }
+        }
+      }
+    },
     "Their age": {
       "localizations": {
         "de": {
@@ -3484,6 +3525,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nome da criança"
+          }
+        }
+      }
+    },
+    "This older story can't be opened safely.": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese ältere Geschichte kann nicht sicher geöffnet werden."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este cuento antiguo no se puede abrir de forma segura."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette ancienne histoire ne peut pas être ouverte en toute sécurité."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa storia meno recente non può essere aperta in sicurezza."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denne eldre historien kan ikke åpnes trygt."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta história antiga não pode ser aberta com segurança."
           }
         }
       }

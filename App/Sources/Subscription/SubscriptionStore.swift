@@ -88,11 +88,16 @@ final class SubscriptionStore {
     func start() {
         guard !hasStarted else { return }
         hasStarted = true
+        // Capture the client, not self: promoting `self` before an
+        // effectively infinite loop is a store → task → store cycle that
+        // keeps deinit (and thus the cancel) from ever running
+        // (2026-07-24 review round two). `self` stays weak per iteration.
+        let updates = client.updates
         updatesTask = Task { [weak self] in
             // Renewals, refunds, Ask-to-Buy approvals, and purchases made
             // on another device all arrive here.
-            guard let self else { return }
-            for await _ in client.updates {
+            for await _ in updates {
+                guard let self else { return }
                 await self.refreshStatus()
             }
         }
@@ -108,7 +113,10 @@ final class SubscriptionStore {
     /// while backgrounded is noticed promptly.
     func refreshOnReturn() async {
         await refreshStatus()
-        if products.isEmpty, !isLoadingProducts {
+        // A PARTIAL catalog is a failure too: with one of two plans loaded
+        // the paywall's default selection can be unbuyable with no retry
+        // route (2026-07-24 review round two).
+        if products.count < FablePlus.productIDs.count, !isLoadingProducts {
             await loadProducts()
         }
     }
@@ -159,25 +167,24 @@ final class SubscriptionStore {
     /// What happened, honestly — the paywall narrates each outcome instead
     /// of collapsing pending/offline/verification into "nothing happened".
     func purchase(_ plan: FablePlus.Plan) async -> PurchaseOutcome {
-        guard let product = product(for: plan) else { return .failed }
+        // No local catalog guard: the client resolves the product itself and
+        // throws when it is unavailable, which maps to .failed below. This
+        // keeps every purchase path reachable through the injectable seam.
         do {
-            let result = try await product.purchase()
-            switch result {
-            case .success(let verification):
-                guard case .verified(let transaction) = verification else {
-                    return .failed
-                }
-                await transaction.finish()
-                await refreshStatus()
-                return status.isSubscribed ? .subscribed : .failed
+            switch try await client.purchase(productID: plan.productID) {
+            case .successVerified:
+                // Judge by THIS refresh's answer, not the global status a
+                // concurrent newer refresh may own (round-two P1).
+                let refreshed = await refreshStatus()
+                return refreshed.isSubscribed ? .subscribed : .failed
+            case .successUnverified:
+                return .failed
             case .pending:
                 // Ask to Buy: approval arrives later via the update stream,
                 // which refreshes status; the paywall auto-dismisses then.
                 return .pending
-            case .userCancelled:
+            case .cancelled:
                 return .cancelled
-            @unknown default:
-                return .failed
             }
         } catch {
             return .failed
@@ -191,19 +198,28 @@ final class SubscriptionStore {
         } catch {
             return .failed
         }
-        await refreshStatus()
-        return status.isSubscribed ? .subscribed : .nothingToRestore
+        let refreshed = await refreshStatus()
+        return refreshed.isSubscribed ? .subscribed : .nothingToRestore
     }
 
     /// Recomputes `status` from the entitlements StoreKit can currently
-    /// verify. Latest-wins: if a newer refresh started while this one was
-    /// suspended reading entitlements, this snapshot is stale and discarded.
-    func refreshStatus() async {
+    /// verify. Latest-wins for the GLOBAL state: if a newer refresh started
+    /// while this one was suspended reading entitlements, this snapshot
+    /// does not overwrite it. The locally derived status is still returned,
+    /// because the operation that asked (a purchase, a restore) read a
+    /// perfectly current answer for itself — discarding the commit must not
+    /// make a successful purchase report failure (2026-07-24 review round
+    /// two, P1: latest-wins protects final state, not operation outcomes).
+    @discardableResult
+    func refreshStatus() async -> SubscriptionStatus {
         refreshGeneration += 1
         let generation = refreshGeneration
         let records = await client.currentEntitlements()
-        guard generation == refreshGeneration else { return }
-        status = SubscriptionStatus.derive(from: records)
+        let derived = SubscriptionStatus.derive(from: records)
+        if generation == refreshGeneration {
+            status = derived
+        }
+        return derived
     }
 
     // MARK: - Paywall copy helpers

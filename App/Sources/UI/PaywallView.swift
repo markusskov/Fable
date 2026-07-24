@@ -14,8 +14,14 @@ struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var selectedPlan: FablePlus.Plan = .annual
-    @State private var isPurchasing = false
-    @State private var isRestoring = false
+    /// ONE money operation at a time: purchase and restore share this state
+    /// so they cannot overlap and race the note or status, and a pending
+    /// Ask-to-Buy keeps the buy button down instead of inviting a duplicate
+    /// submission (2026-07-24 review round two).
+    private enum StoreOperation: Equatable {
+        case idle, purchasing, restoring, awaitingApproval
+    }
+    @State private var operation: StoreOperation = .idle
     /// One calm line about what the store just said (Ask-to-Buy pending,
     /// offline, nothing to restore). Nil when there is nothing to report —
     /// quiet by default.
@@ -38,7 +44,13 @@ struct PaywallView: View {
         .presentationDragIndicator(.visible)
         // A failed catalog load is not sticky: reopening the paywall retries
         // (2026-07-24 money-path review). Also settles a cold-start .unknown.
-        .task { await subscriptions.refreshOnReturn() }
+        .task {
+            await subscriptions.refreshOnReturn()
+            // onChange below is not initial: a family whose entitlement
+            // resolved between presenting and mounting would otherwise sit
+            // on a paywall they already passed (review round two).
+            if subscriptions.isSubscribed { dismiss() }
+        }
         // Entitlement can arrive while the sheet is open — an Ask-to-Buy
         // approval, a purchase on another device, cold-start resolution. The
         // paywall's job is done the moment the family is subscribed.
@@ -178,7 +190,7 @@ struct PaywallView: View {
         VStack(spacing: 14) {
             Button(action: purchase) {
                 Group {
-                    if isPurchasing {
+                    if operation == .purchasing {
                         ProgressView().tint(FableTheme.nightDeep)
                     } else {
                         Text(subscriptions.freeTrialText(for: selectedPlan) != nil
@@ -192,7 +204,7 @@ struct PaywallView: View {
             }
             .buttonStyle(.borderedProminent)
             .foregroundStyle(FableTheme.nightDeep)
-            .disabled(isPurchasing || subscriptions.product(for: selectedPlan) == nil)
+            .disabled(operation != .idle || subscriptions.product(for: selectedPlan) == nil)
 
             if let storeNote {
                 Text(storeNote)
@@ -212,12 +224,12 @@ struct PaywallView: View {
             Text("Subscriptions renew automatically until cancelled. You can cancel anytime in Settings. The free tier is yours forever: one new story every week, and every story you've told stays in your library.")
                 .font(.footnote)
                 .foregroundStyle(FableTheme.creamDim)
-            Button(isRestoring ? "Restoring…" : "Restore purchases") {
+            Button(operation == .restoring ? "Restoring…" : "Restore purchases") {
                 restore()
             }
             .font(.footnote)
             .foregroundStyle(FableTheme.gold)
-            .disabled(isRestoring)
+            .disabled(operation != .idle)
             // App Review 3.1.2: privacy policy and terms must be reachable
             // inside a subscription app, not just from the store listing.
             HStack(spacing: 16) {
@@ -231,39 +243,46 @@ struct PaywallView: View {
     }
 
     private func purchase() {
-        isPurchasing = true
+        guard operation == .idle else { return }
+        operation = .purchasing
         storeNote = nil
         Task {
-            defer { isPurchasing = false }
             // Each outcome gets an honest, calm word (2026-07-24 money-path
             // review: pending and offline used to be indistinguishable from
             // "nothing happened"). Only a cancelled sheet stays silent — the
-            // family just changed their mind.
+            // family just changed their mind. A pending approval keeps the
+            // button down: resubmitting would stack sheets on the parent.
             switch await subscriptions.purchase(selectedPlan) {
             case .subscribed:
+                operation = .idle
                 dismiss()
             case .pending:
+                operation = .awaitingApproval
                 storeNote = "Waiting for a parent to approve this purchase. Stories unlock the moment they do."
             case .cancelled:
-                break
+                operation = .idle
             case .failed:
-                storeNote = "The App Store couldn't be reached. Please try again in a moment."
+                operation = .idle
+                storeNote = "The purchase couldn't be completed. Please try again in a moment."
             }
         }
     }
 
     private func restore() {
-        isRestoring = true
+        guard operation == .idle else { return }
+        operation = .restoring
         storeNote = nil
         Task {
-            defer { isRestoring = false }
+            defer { if operation == .restoring { operation = .idle } }
             switch await subscriptions.restore() {
             case .subscribed:
                 dismiss()
             case .nothingToRestore:
-                storeNote = "No earlier purchase was found for this Apple Account."
+                // Honest scope: currentEntitlements proves no ACTIVE
+                // subscription, not that no purchase ever existed.
+                storeNote = "No active subscription was found for this Apple Account."
             case .failed:
-                storeNote = "Restore couldn't reach the App Store. Please check your connection and try again."
+                storeNote = "Restore didn't finish. Please check your connection and try again."
             }
         }
     }
