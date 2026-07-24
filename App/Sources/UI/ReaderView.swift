@@ -152,7 +152,7 @@ struct ReaderView: View {
                 .foregroundStyle(FableTheme.creamDim)
         } else if subscriptions.isSubscribed {
             if didStartSeries {
-                Label("Saved — continue it from the Tonight screen", systemImage: "checkmark.circle")
+                Label("Saved. Continue it from the Tonight screen", systemImage: "checkmark.circle")
                     .font(.footnote)
                     .foregroundStyle(FableTheme.gold)
             } else {

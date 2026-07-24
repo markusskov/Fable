@@ -89,14 +89,14 @@ struct ProfileSetupView: View {
                     .pickerStyle(.segmented)
                 }
 
-                field("A favorite friend or animal — skip it and a small brave fox steps in", problem: companionProblem) {
+                field("A favorite friend or animal. Skip it and a small brave fox steps in", problem: companionProblem) {
                     TextField("", text: $companion, prompt: prompt("Bruno the dog"))
                         .focused($focusedField, equals: .companion)
                         .submitLabel(.next)
                         .onSubmit { focusedField = .comfortObject }
                 }
 
-                field("Something cozy they sleep with — optional too", problem: comfortProblem) {
+                field("Something cozy they sleep with, optional too", problem: comfortProblem) {
                     TextField("", text: $comfortObject, prompt: prompt("the yellow blanket"))
                         .focused($focusedField, equals: .comfortObject)
                         .submitLabel(.done)

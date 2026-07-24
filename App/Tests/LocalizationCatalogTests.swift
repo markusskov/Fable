@@ -98,6 +98,20 @@ struct LocalizationCatalogTests {
         }
     }
 
+    /// Owner copy style: no em dashes in customer-facing copy, in any
+    /// language — neither in a key (the English source) nor in any
+    /// translation. En dashes stay legal for numeric ranges ("2–3 years").
+    @Test func noEmDashInAnyCustomerFacingString() {
+        for (key, entry) in strings {
+            #expect(!key.contains("—"), "Em dash in key: \(key)")
+            for (language, localization) in localizations(entry) {
+                for (_, value) in values(of: localization) {
+                    #expect(!value.contains("—"), "Em dash in \(language) copy: \(value)")
+                }
+            }
+        }
+    }
+
     /// A translation whose specifiers diverge from its key would garble (or
     /// crash) the formatted string at runtime. The "one" plural variant may
     /// drop the number ("1 uke gratis"); everything else must match exactly.

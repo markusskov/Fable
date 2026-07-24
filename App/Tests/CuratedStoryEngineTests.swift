@@ -103,6 +103,21 @@ struct CuratedStoryEngineTests {
         }
     }
 
+    /// Owner copy style: no dashes in customer-facing prose — the English
+    /// shelf is held to the same bar every localized shelf already enforces.
+    @Test func englishProseUsesNoDashes() {
+        let shelf = TemplateLibrary.byLanguage[.english] ?? []
+        for template in shelf {
+            let strings = template.titleVariants + template.pages
+                + template.settings + template.sounds
+                + template.treasures + template.moralVariants
+            for text in strings {
+                #expect(!text.contains("—"), "Em dash in en copy: \(text)")
+                #expect(!text.contains("–"), "En dash in en copy: \(text)")
+            }
+        }
+    }
+
     @Test func providerNeverFails() async {
         let provider = StoryProvider()
         let result = await provider.makeStory(for: request())

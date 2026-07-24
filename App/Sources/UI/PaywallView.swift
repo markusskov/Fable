@@ -56,7 +56,7 @@ struct PaywallView: View {
                 .font(.system(.largeTitle, design: .serif, weight: .semibold))
                 .foregroundStyle(FableTheme.cream)
             if let nextFreeStoryDate {
-                Text("Your next free story is ready \(nextFreeStoryDate.formatted(.relative(presentation: .named))) — or make story time unlimited with Fable+.")
+                Text("Your next free story is ready \(nextFreeStoryDate.formatted(.relative(presentation: .named))), or make story time unlimited with Fable+.")
                     .font(.subheadline)
                     .foregroundStyle(FableTheme.creamDim)
             } else {
@@ -70,7 +70,7 @@ struct PaywallView: View {
     private var benefits: some View {
         VStack(alignment: .leading, spacing: 14) {
             benefit("moon.stars.fill", "A brand-new story every night, whenever you want one")
-            benefit("books.vertical.fill", "Story series — adventures that continue night after night")
+            benefit("books.vertical.fill", "Story series: adventures that continue night after night")
             benefit("person.2.fill", "Profiles for every child in the family")
             benefit("lock.fill", "Still private: everything stays on this device")
         }
@@ -166,7 +166,7 @@ struct PaywallView: View {
     private func priceLine(for plan: FablePlus.Plan, product: Product) -> String {
         var base = String(localized: "\(product.displayPrice) / \(plan.cadence)")
         if plan == .annual, let perMonth = subscriptions.monthlyEquivalentPrice(for: plan) {
-            base = String(localized: "\(base) — that's \(perMonth) a month")
+            base = String(localized: "\(base), that's \(perMonth) a month")
         }
         if let trial = subscriptions.freeTrialText(for: plan) {
             return String(localized: "\(trial), then \(base)")
@@ -209,7 +209,7 @@ struct PaywallView: View {
 
     private var footer: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("Subscriptions renew automatically until cancelled — cancel anytime in Settings. The free tier is yours forever: one new story every week, and every story you've told stays in your library.")
+            Text("Subscriptions renew automatically until cancelled. You can cancel anytime in Settings. The free tier is yours forever: one new story every week, and every story you've told stays in your library.")
                 .font(.footnote)
                 .foregroundStyle(FableTheme.creamDim)
             Button(isRestoring ? "Restoring…" : "Restore purchases") {
