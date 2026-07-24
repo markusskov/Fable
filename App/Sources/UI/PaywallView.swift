@@ -218,6 +218,14 @@ struct PaywallView: View {
             .font(.footnote)
             .foregroundStyle(FableTheme.gold)
             .disabled(isRestoring)
+            // App Review 3.1.2: privacy policy and terms must be reachable
+            // inside a subscription app, not just from the store listing.
+            HStack(spacing: 16) {
+                Link("Privacy Policy", destination: FableLinks.privacyPolicy)
+                Link("Terms of Use", destination: FableLinks.termsOfUse)
+            }
+            .font(.footnote)
+            .foregroundStyle(FableTheme.gold)
         }
         .padding(.bottom, 24)
     }
