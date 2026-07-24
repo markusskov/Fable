@@ -1149,6 +1149,47 @@
         }
       }
     },
+    "About Fable": {
+      "comment": "Accessibility label for the info button on Tonight, and the about sheet it opens",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über Fable"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de Fable"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "À propos de Fable"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informazioni su Fable"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Om Fable"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobre o Fable"
+          }
+        }
+      }
+    },
     "Add a child": {
       "localizations": {
         "de": {
@@ -1305,6 +1346,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mais um herói\nchega à família"
+          }
+        }
+      }
+    },
+    "Bedtime stories, written on this device. Nothing ever leaves it.": {
+      "comment": "About sheet: the one-line privacy promise under the app name",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gutenachtgeschichten, geschrieben auf diesem Gerät. Nichts verlässt es je."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuentos para dormir, escritos en este dispositivo. Nada sale nunca de él."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Des histoires du soir, écrites sur cet appareil. Rien n'en sort jamais."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storie della buonanotte, scritte su questo dispositivo. Nulla lo lascia mai."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Godnatthistorier, skrevet på denne enheten. Ingenting forlater den."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Histórias de ninar, escritas neste dispositivo. Nada sai dele."
           }
         }
       }
@@ -2234,6 +2316,47 @@
         }
       }
     },
+    "Privacy Policy": {
+      "comment": "Legal link on the paywall footer and the about sheet",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datenschutzerklärung"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Política de privacidad"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Politique de confidentialité"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informativa sulla privacy"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personvernerklæring"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Política de Privacidade"
+          }
+        }
+      }
+    },
     "Profiles for every child in the family": {
       "localizations": {
         "de": {
@@ -2839,6 +2962,47 @@
         }
       }
     },
+    "Support": {
+      "comment": "About sheet: link to the support website",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Support"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soporte"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Assistance"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporto"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brukerstøtte"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suporte"
+          }
+        }
+      }
+    },
     "Sweet dreams, %@.": {
       "localizations": {
         "de": {
@@ -2996,6 +3160,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Contar a história de hoje"
+          }
+        }
+      }
+    },
+    "Terms of Use": {
+      "comment": "Legal link on the paywall footer and the about sheet (Apple standard EULA)",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutzungsbedingungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condiciones de uso"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conditions d'utilisation"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condizioni d'uso"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bruksvilkår"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termos de uso"
           }
         }
       }

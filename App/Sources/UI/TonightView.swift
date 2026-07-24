@@ -20,6 +20,7 @@ struct TonightView: View {
     @State private var isWriting = false
     @State private var isShowingPaywall = false
     @State private var isAddingChild = false
+    @State private var isShowingAbout = false
     @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
     private let provider = StoryProvider()
@@ -125,6 +126,17 @@ struct TonightView: View {
                 // symbol name.
                 .accessibilityLabel("Storybook")
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isShowingAbout = true
+                } label: {
+                    Image(systemName: "info.circle")
+                }
+                .accessibilityLabel("About Fable")
+            }
+        }
+        .sheet(isPresented: $isShowingAbout) {
+            AboutView()
         }
         .sheet(isPresented: $isAddingChild) {
             ProfileSetupView(isAddingAnotherChild: true)
