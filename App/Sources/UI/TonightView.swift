@@ -159,7 +159,7 @@ struct TonightView: View {
         switch allowance {
         case .starter(let remaining) where remaining < StoryMeter.starterStories:
             // Singular/plural lives in the string catalog's plural variations.
-            return String(localized: "\(remaining) starter stories left — then one free story a week")
+            return String(localized: "\(remaining) starter stories left, then one free story a week")
         case .starter:
             return nil
         case .weeklyReady:

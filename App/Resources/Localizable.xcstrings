@@ -46,19 +46,19 @@
         }
       }
     },
-    "%@ — that's %@ a month": {
+    "%@, that's %@ a month": {
       "comment": "Yearly price line: full price, then its monthly equivalent",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ – das sind %@ im Monat"
+            "value": "%@, das sind %@ im Monat"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ – son %@ al mes"
+            "value": "%@, son %@ al mes"
           }
         },
         "fr": {
@@ -76,7 +76,7 @@
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ – det er %@ i måneden"
+            "value": "%@, det er %@ i måneden"
           }
         },
         "pt-BR": {
@@ -519,7 +519,7 @@
         }
       }
     },
-    "%lld starter stories left — then one free story a week": {
+    "%lld starter stories left, then one free story a week": {
       "localizations": {
         "de": {
           "variations": {
@@ -527,13 +527,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "1 Startgeschichte übrig – danach eine Gratisgeschichte pro Woche"
+                  "value": "1 Startgeschichte übrig, danach eine Gratisgeschichte pro Woche"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lld Startgeschichten übrig – danach eine Gratisgeschichte pro Woche"
+                  "value": "%lld Startgeschichten übrig, danach eine Gratisgeschichte pro Woche"
                 }
               }
             }
@@ -545,13 +545,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "1 starter story left — then one free story a week"
+                  "value": "1 starter story left, then one free story a week"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lld starter stories left — then one free story a week"
+                  "value": "%lld starter stories left, then one free story a week"
                 }
               }
             }
@@ -563,13 +563,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Queda 1 cuento para empezar – luego, un cuento gratis a la semana"
+                  "value": "Queda 1 cuento para empezar, luego un cuento gratis a la semana"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "Quedan %lld cuentos para empezar – luego, un cuento gratis a la semana"
+                  "value": "Quedan %lld cuentos para empezar, luego un cuento gratis a la semana"
                 }
               }
             }
@@ -617,13 +617,13 @@
               "one": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "1 starthistorie igjen – så én gratis historie i uken"
+                  "value": "1 starthistorie igjen, så én gratis historie i uken"
                 }
               },
               "other": {
                 "stringUnit": {
                   "state": "translated",
-                  "value": "%lld starthistorier igjen – så én gratis historie i uken"
+                  "value": "%lld starthistorier igjen, så én gratis historie i uken"
                 }
               }
             }
@@ -1069,18 +1069,18 @@
         }
       }
     },
-    "A favorite friend or animal — skip it and a small brave fox steps in": {
+    "A favorite friend or animal. Skip it and a small brave fox steps in": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein Lieblingsfreund oder ein Tier – lässt du es frei, springt ein kleiner mutiger Fuchs ein"
+            "value": "Ein Lieblingsfreund oder ein Tier. Lässt du es frei, springt ein kleiner mutiger Fuchs ein"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un amigo favorito o un animal – si lo dejas en blanco, un pequeño zorro valiente ocupa su lugar"
+            "value": "Un amigo favorito o un animal. Si lo dejas en blanco, un pequeño zorro valiente ocupa su lugar"
           }
         },
         "fr": {
@@ -1098,7 +1098,7 @@
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "En yndlingsvenn eller et dyr – hopper du over, stiller en liten modig rev opp"
+            "value": "En yndlingsvenn eller et dyr. Hopper du over, stiller en liten modig rev opp"
           }
         },
         "pt-BR": {
@@ -2559,18 +2559,18 @@
         }
       }
     },
-    "Saved — continue it from the Tonight screen": {
+    "Saved. Continue it from the Tonight screen": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gespeichert – weiter geht es abends auf der Startseite"
+            "value": "Gespeichert. Weiter geht es abends auf der Startseite"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Guardado – continúa desde la pantalla de inicio"
+            "value": "Guardado. Continúa desde la pantalla de inicio"
           }
         },
         "fr": {
@@ -2588,7 +2588,7 @@
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lagret – fortsett fra forsiden en annen kveld"
+            "value": "Lagret. Fortsett fra forsiden en annen kveld"
           }
         },
         "pt-BR": {
@@ -2599,18 +2599,18 @@
         }
       }
     },
-    "Something cozy they sleep with — optional too": {
+    "Something cozy they sleep with, optional too": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Etwas Kuscheliges zum Einschlafen – auch das ist freiwillig"
+            "value": "Etwas Kuscheliges zum Einschlafen, auch das ist freiwillig"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Algo suave con lo que duerma – también opcional"
+            "value": "Algo suave con lo que duerma, también opcional"
           }
         },
         "fr": {
@@ -2628,7 +2628,7 @@
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Noe koselig de sover med – også valgfritt"
+            "value": "Noe koselig de sover med, også valgfritt"
           }
         },
         "pt-BR": {
@@ -2841,18 +2841,18 @@
         }
       }
     },
-    "Story series — adventures that continue night after night": {
+    "Story series: adventures that continue night after night": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Geschichtenserien – Abenteuer, die Abend für Abend weitergehen"
+            "value": "Geschichtenserien: Abenteuer, die Abend für Abend weitergehen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Series de cuentos – aventuras que continúan noche tras noche"
+            "value": "Series de cuentos: aventuras que continúan noche tras noche"
           }
         },
         "fr": {
@@ -2870,7 +2870,7 @@
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Historieserier – eventyr som fortsetter kveld etter kveld"
+            "value": "Historieserier: eventyr som fortsetter kveld etter kveld"
           }
         },
         "pt-BR": {
@@ -2922,18 +2922,18 @@
         }
       }
     },
-    "Subscriptions renew automatically until cancelled — cancel anytime in Settings. The free tier is yours forever: one new story every week, and every story you've told stays in your library.": {
+    "Subscriptions renew automatically until cancelled. You can cancel anytime in Settings. The free tier is yours forever: one new story every week, and every story you've told stays in your library.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Abo verlängert sich automatisch, bis es gekündigt wird – kündbar jederzeit in den Einstellungen. Die Gratisstufe gehört dir für immer: jede Woche eine neue Geschichte, und jede Geschichte, die du erzählt hast, bleibt in deinem Geschichtenbuch."
+            "value": "Das Abo verlängert sich automatisch, bis es gekündigt wird. Kündbar jederzeit in den Einstellungen. Die Gratisstufe gehört dir für immer: jede Woche eine neue Geschichte, und jede Geschichte, die du erzählt hast, bleibt in deinem Geschichtenbuch."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La suscripción se renueva automáticamente hasta que se cancele – puedes cancelarla cuando quieras en Ajustes. El nivel gratuito es tuyo para siempre: un cuento nuevo cada semana, y cada cuento que hayas contado se queda en tu biblioteca."
+            "value": "La suscripción se renueva automáticamente hasta que se cancele. Puedes cancelarla cuando quieras en Ajustes. El nivel gratuito es tuyo para siempre: un cuento nuevo cada semana, y cada cuento que hayas contado se queda en tu biblioteca."
           }
         },
         "fr": {
@@ -2951,7 +2951,7 @@
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Abonnementet fornyes automatisk til det sies opp – si opp når som helst i Innstillinger. Gratisnivået er ditt for alltid: én ny historie hver uke, og hver historie du har fortalt, blir stående i biblioteket."
+            "value": "Abonnementet fornyes automatisk til det sies opp. Si opp når som helst i Innstillinger. Gratisnivået er ditt for alltid: én ny historie hver uke, og hver historie du har fortalt, blir stående i biblioteket."
           }
         },
         "pt-BR": {
@@ -3891,18 +3891,18 @@
         }
       }
     },
-    "Your next free story is ready %@ — or make story time unlimited with Fable+.": {
+    "Your next free story is ready %@, or make story time unlimited with Fable+.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine nächste Gratisgeschichte ist %@ bereit – oder mach die Geschichtenzeit mit Fable+ unbegrenzt."
+            "value": "Deine nächste Gratisgeschichte ist %@ bereit, oder mach die Geschichtenzeit mit Fable+ unbegrenzt."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu próximo cuento gratis estará listo %@ – o haz que la hora del cuento no tenga límite con Fable+."
+            "value": "Tu próximo cuento gratis estará listo %@, o haz que la hora del cuento no tenga límite con Fable+."
           }
         },
         "fr": {
@@ -3920,7 +3920,7 @@
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Din neste gratishistorie er klar %@ – eller gjør eventyrstunden ubegrenset med Fable+."
+            "value": "Din neste gratishistorie er klar %@, eller gjør eventyrstunden ubegrenset med Fable+."
           }
         },
         "pt-BR": {
