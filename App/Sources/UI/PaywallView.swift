@@ -16,6 +16,10 @@ struct PaywallView: View {
     @State private var selectedPlan: FablePlus.Plan = .annual
     @State private var isPurchasing = false
     @State private var isRestoring = false
+    /// One calm line about what the store just said (Ask-to-Buy pending,
+    /// offline, nothing to restore). Nil when there is nothing to report —
+    /// quiet by default.
+    @State private var storeNote: LocalizedStringKey?
 
     var body: some View {
         ScrollView {
@@ -32,6 +36,15 @@ struct PaywallView: View {
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
         .presentationDragIndicator(.visible)
+        // A failed catalog load is not sticky: reopening the paywall retries
+        // (2026-07-24 money-path review). Also settles a cold-start .unknown.
+        .task { await subscriptions.refreshOnReturn() }
+        // Entitlement can arrive while the sheet is open — an Ask-to-Buy
+        // approval, a purchase on another device, cold-start resolution. The
+        // paywall's job is done the moment the family is subscribed.
+        .onChange(of: subscriptions.isSubscribed) { _, isSubscribed in
+            if isSubscribed { dismiss() }
+        }
     }
 
     private var header: some View {
@@ -87,6 +100,11 @@ struct PaywallView: View {
                         .font(.callout)
                         .foregroundStyle(FableTheme.creamDim)
                         .multilineTextAlignment(.center)
+                    Button("Try again") {
+                        Task { await subscriptions.loadProducts() }
+                    }
+                    .font(.callout.weight(.medium))
+                    .foregroundStyle(FableTheme.gold)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -176,6 +194,13 @@ struct PaywallView: View {
             .foregroundStyle(FableTheme.nightDeep)
             .disabled(isPurchasing || subscriptions.product(for: selectedPlan) == nil)
 
+            if let storeNote {
+                Text(storeNote)
+                    .font(.footnote)
+                    .foregroundStyle(FableTheme.creamDim)
+                    .multilineTextAlignment(.center)
+            }
+
             Button("Maybe later") { dismiss() }
                 .font(.subheadline)
                 .foregroundStyle(FableTheme.creamDim)
@@ -199,23 +224,38 @@ struct PaywallView: View {
 
     private func purchase() {
         isPurchasing = true
+        storeNote = nil
         Task {
             defer { isPurchasing = false }
-            // Cancelled sheets and pending Ask-to-Buy both land here quietly;
-            // only a completed purchase closes the paywall.
-            if (try? await subscriptions.purchase(selectedPlan)) == true {
+            // Each outcome gets an honest, calm word (2026-07-24 money-path
+            // review: pending and offline used to be indistinguishable from
+            // "nothing happened"). Only a cancelled sheet stays silent — the
+            // family just changed their mind.
+            switch await subscriptions.purchase(selectedPlan) {
+            case .subscribed:
                 dismiss()
+            case .pending:
+                storeNote = "Waiting for a parent to approve this purchase. Stories unlock the moment they do."
+            case .cancelled:
+                break
+            case .failed:
+                storeNote = "The App Store couldn't be reached. Please try again in a moment."
             }
         }
     }
 
     private func restore() {
         isRestoring = true
+        storeNote = nil
         Task {
             defer { isRestoring = false }
-            try? await subscriptions.restore()
-            if subscriptions.isSubscribed {
+            switch await subscriptions.restore() {
+            case .subscribed:
                 dismiss()
+            case .nothingToRestore:
+                storeNote = "No earlier purchase was found for this Apple Account."
+            case .failed:
+                storeNote = "Restore couldn't reach the App Store. Please check your connection and try again."
             }
         }
     }
