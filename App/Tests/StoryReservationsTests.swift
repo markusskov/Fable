@@ -1,4 +1,5 @@
 import Foundation
+import SwiftData
 import Testing
 @testable import Fable
 
@@ -62,5 +63,33 @@ struct StoryReservationsTests {
         #expect(reservations.dates.count == 1)
         reservations.release(twin)
         #expect(reservations.dates.isEmpty)
+    }
+}
+
+/// Settles the question the round-four review's third P1 turns on: does an
+/// inserted-but-unsaved Story already count toward the meter? SwiftData's
+/// fetches include pending changes, so the answer decides whether releasing
+/// the reservation after a failed save double-charges or is exactly right.
+@MainActor
+struct MeterHandoffTests {
+    @Test func anInsertedButUnsavedStoryIsAlreadyVisibleToTheMeter() throws {
+        let container = try ModelContainer(
+            for: Story.self, ChildProfile.self, StorySeries.self,
+            configurations: ModelConfiguration(isStoredInMemoryOnly: true)
+        )
+        let context = container.mainContext
+        let story = Story(
+            telling: StoryProvider.TellResult(
+                content: StoryContent(title: "T", pages: ["p"], moral: "m", language: .english),
+                engine: .curated,
+                heroName: "Nova"
+            ),
+            theme: .adventure
+        )
+        context.insert(story)
+        // Deliberately NOT saved.
+        #expect(context.hasChanges)
+        let fetched = try context.fetch(FetchDescriptor<Story>())
+        #expect(fetched.count == 1, "an unsaved insert is invisible to the meter")
     }
 }

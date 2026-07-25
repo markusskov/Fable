@@ -225,11 +225,7 @@ struct TonightView: View {
             }
             Divider()
             Button {
-                if subscriptions.isSubscribed {
-                    isAddingChild = true
-                } else {
-                    isShowingPaywall = true
-                }
+                whenSubscribed { isAddingChild = true }
             } label: {
                 Label("Add a child", systemImage: "plus")
             }
@@ -248,11 +244,7 @@ struct TonightView: View {
             // Authorize the ACTION, not just the card's existence: a
             // revocation can land before SwiftUI removes the row
             // (2026-07-24 review round two).
-            guard subscriptions.isSubscribed else {
-                isShowingPaywall = true
-                return
-            }
-            tellStory(continuing: adventure)
+            whenSubscribed { tellStory(continuing: adventure) }
         } label: {
             HStack(spacing: 12) {
                 Text(adventure.theme.emoji)
@@ -278,16 +270,28 @@ struct TonightView: View {
     }
 
     private func tellStoryTapped() {
-        if subscriptions.isSubscribed || allowance.isAllowed {
+        if allowance.isAllowed {
             tellStory(continuing: nil)
+        } else {
+            whenSubscribed { tellStory(continuing: nil) }
+        }
+    }
+
+    /// Runs a Fable+ action, or shows the paywall. An unresolved entitlement
+    /// is NOT free: during cold start the store is asked to settle first, so
+    /// a paying family is never shown a paywall they already passed
+    /// (round three for the story gate, round four for every other gate).
+    /// The settled continuation is dropped if the family has moved to
+    /// another child in the meantime, so a stale screen cannot start work.
+    private func whenSubscribed(_ action: @escaping () -> Void) {
+        if subscriptions.isSubscribed {
+            action()
         } else if case .unknown = subscriptions.status {
-            // Cold start with no free credit left: entitlement has not
-            // resolved yet, and a subscriber must not be shown a paywall
-            // they already passed (round three). Settle first, then decide.
             Task {
                 let settled = await subscriptions.refreshStatus()
-                if settled.isSubscribed || allowance.isAllowed {
-                    tellStory(continuing: nil)
+                guard writeServesActiveProfile else { return }
+                if settled.isSubscribed {
+                    action()
                 } else {
                     isShowingPaywall = true
                 }
@@ -343,19 +347,21 @@ struct TonightView: View {
             }
             story.profile = profile
             modelContext.insert(story)
-            // The claim hands off to the persisted row, so releasing it is
-            // conditional on the save actually succeeding (round three: a
-            // swallowed failure released the claim with no durable row, so
-            // a relaunch refunded a story the family already read). On
-            // failure the claim stays held: if autosave lands the row later
-            // this session the meter briefly counts both (safe direction);
-            // on relaunch exactly one of row-or-nothing exists and the
-            // in-memory claim is gone with the process either way.
+            // SwiftData fetches include pending changes, so the inserted row
+            // counts against the meter the instant it is inserted, saved or
+            // not (proved in MeterHandoffTests). The claim therefore hands
+            // off at insert: round three made release conditional on the
+            // save and so charged the row AND the claim for one story
+            // (round four, P1). Exactly one of the two counts at every
+            // instant, and if the save never lands, no row survives the
+            // relaunch that also discards the claim.
+            reservations.release(reservation)
             do {
                 try modelContext.save()
-                reservations.release(reservation)
             } catch {
-                // Tonight's story still happens; only the handoff waits.
+                // Bedtime is never broken for a storage fault: tonight's
+                // story is read from memory, and a story Fable could not
+                // keep is not charged beyond this session.
             }
             path.append(story)
         }

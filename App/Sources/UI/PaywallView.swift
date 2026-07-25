@@ -19,7 +19,7 @@ struct PaywallView: View {
     /// Ask-to-Buy keeps the buy button down instead of inviting a duplicate
     /// submission (2026-07-24 review round two).
     private enum StoreOperation: Equatable {
-        case idle, purchasing, restoring, awaitingApproval
+        case idle, purchasing, restoring
     }
     @State private var operation: StoreOperation = .idle
     /// One calm line about what the store just said (Ask-to-Buy pending,
@@ -211,8 +211,8 @@ struct PaywallView: View {
             .foregroundStyle(FableTheme.nightDeep)
             .disabled(operation != .idle || subscriptions.product(for: selectedPlan) == nil)
 
-            if let storeNote {
-                Text(storeNote)
+            if let note = storeNote ?? approvalNote {
+                Text(note)
                     .font(.footnote)
                     .foregroundStyle(FableTheme.creamDim)
                     .multilineTextAlignment(.center)
@@ -222,6 +222,14 @@ struct PaywallView: View {
                 .font(.subheadline)
                 .foregroundStyle(FableTheme.creamDim)
         }
+    }
+
+    /// Shown whenever an Ask-to-Buy approval is outstanding, including on a
+    /// freshly reopened sheet.
+    private var approvalNote: LocalizedStringKey? {
+        subscriptions.isAwaitingApproval
+            ? "Waiting for a parent to approve this purchase. Stories unlock the moment they do."
+            : nil
     }
 
     private var footer: some View {
@@ -262,8 +270,13 @@ struct PaywallView: View {
                 operation = .idle
                 dismiss()
             case .pending:
-                operation = .awaitingApproval
-                storeNote = "Waiting for a parent to approve this purchase. Stories unlock the moment they do."
+                // The waiting state lives on the store now, so it survives
+                // this sheet closing. The button returns to idle on purpose:
+                // Apple sends nothing when a parent DECLINES, so a family
+                // locked out until an event that never arrives could never
+                // try again (round four, P2).
+                operation = .idle
+                storeNote = nil
             case .cancelled:
                 operation = .idle
             case .failed:

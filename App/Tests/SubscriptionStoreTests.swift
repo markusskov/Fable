@@ -318,6 +318,29 @@ struct SubscriptionStoreTests {
         // The order Apple documents: access applied, THEN finish.
         let accessAtFinish = try #require(client.accessAtFinish.value)
         #expect(accessAtFinish, "the transaction was finished before access was granted")
+        // And it must SURVIVE the reconcile that follows. Round three
+        // granted, finished, then let the empty read revoke access while
+        // still reporting success: the paywall dismissed and the charged
+        // family landed back in free-tier gating (round four, P1).
+        #expect(store.isSubscribed, "the reconcile revoked access the family had just paid for")
+        #expect(await settles { store.isSubscribed }, "access was revoked moments after the purchase")
+    }
+
+    /// A verified purchase is not immortal: a refund arriving through the
+    /// update stream retires the unconfirmed grant.
+    @Test func arefundRetiresAnUnconfirmedPurchase() async {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.stubPurchase(.successVerified(Self.activeRecord(.annual), finish: {}))
+        let store = Self.makeStore(client)
+        store.start()
+        #expect(await store.purchase(.annual) == .subscribed)
+        #expect(store.isSubscribed)
+
+        var refunded = Self.activeRecord(.annual)
+        refunded.revocationDate = .now
+        client.signalUpdate(record: refunded)
+        #expect(await settles { store.status == .free }, "a refunded purchase kept its access")
     }
 
     /// An unverified purchase is never honoured and never finished, so
@@ -381,7 +404,9 @@ struct SubscriptionStoreTests {
 
         // The refund arrives while that read is suspended.
         let refund = Task { await store.refreshStatus() }
-        await Task.yield()
+        // Wait for the refund to actually JOIN the in-flight read: a
+        // single Task.yield() left the interleaving to the scheduler.
+        #expect(await settles { store.refreshJoinCount == 1 }, "the refund never joined the in-flight read")
         await client.releaseHeldReads()
 
         #expect(await restore.value == .nothingToRestore)
@@ -401,7 +426,7 @@ struct SubscriptionStoreTests {
         await client.waitForReadToStart()
 
         let approval = Task { await store.refreshStatus() }
-        await Task.yield()
+        #expect(await settles { store.refreshJoinCount == 1 }, "the approval never joined the in-flight read")
         await client.releaseHeldReads()
 
         #expect(await firstRefresh.value == .subscribed(.monthly))
@@ -430,6 +455,29 @@ struct SubscriptionStoreTests {
         #expect(await settles { store.isSubscribed }, "update-stream approval never granted access")
         #expect(await settles { accessAtFinish.value != nil }, "the update was never finished")
         #expect(try #require(accessAtFinish.value), "the update was finished before access was applied")
+    }
+
+    /// The update carries the authoritative verified transaction. Ignoring
+    /// it and trusting only a refresh means an Ask-to-Buy approval or a
+    /// renewal can be acknowledged without access ever being delivered
+    /// (round four, P1). Entitlement reads stay EMPTY here on purpose: the
+    /// previous test hid this by seeding the same record into them first.
+    @Test func averifiedApprovalGrantsAccessBeforeEntitlementsCatchUp() async throws {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        let store = Self.makeStore(client)
+        store.start()
+        #expect(await settles { store.status == .free })
+
+        let accessAtFinish = Cell<Bool?>(nil)
+        client.signalUpdate(record: Self.activeRecord(.annual), finish: {
+            let granted = await MainActor.run { store.isSubscribed }
+            accessAtFinish.with { $0 = granted }
+        })
+
+        #expect(await settles { store.isSubscribed }, "the approval's own record was ignored")
+        #expect(await settles { accessAtFinish.value != nil }, "the update was never finished")
+        #expect(try #require(accessAtFinish.value), "finished before access was applied")
     }
 
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {

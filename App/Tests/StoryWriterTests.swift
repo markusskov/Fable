@@ -40,10 +40,25 @@ struct StoryWriterTests {
     private actor Gate {
         private var continuation: CheckedContinuation<Void, Never>?
         private var isOpen = false
+        private var entryWaiters: [CheckedContinuation<Void, Never>] = []
+        private(set) var entries = 0
+        private(set) var exits = 0
 
         func wait() async {
+            entries += 1
+            entryWaiters.forEach { $0.resume() }
+            entryWaiters.removeAll()
+            defer { exits += 1 }
             guard !isOpen else { return }
             await withCheckedContinuation { continuation = $0 }
+        }
+
+        /// Suspends until a write has actually entered the gate — a real
+        /// signal, so abandonment is provably mid-flight rather than
+        /// scheduled and hoped for (round four, test verdict).
+        func waitUntilEntered() async {
+            guard entries == 0 else { return }
+            await withCheckedContinuation { entryWaiters.append($0) }
         }
 
         func open() {
@@ -141,11 +156,13 @@ struct StoryWriterTests {
                 done.resume()
             }
             Task {
-                await Task.yield()
+                // Abandon only once the engine is provably parked.
+                await gate.waitUntilEntered()
                 writer.abandon()
             }
         }
         // Delivered while the engine is STILL suspended on the gate.
+        #expect(await gate.exits == 0, "the engine returned before the outcome arrived")
         #expect(outcomes.count == 1)
         guard case .abandoned = outcomes.first else {
             Issue.record("an uncooperative write must still report abandoned")
@@ -153,10 +170,59 @@ struct StoryWriterTests {
         }
         #expect(!writer.isWriting)
 
-        // The engine finally returns; its result must go nowhere.
+        // The engine finally returns and the whole provider chain drains:
+        // two model attempts plus one curated attempt, all now instant.
         await gate.open()
-        for _ in 0..<10 { await Task.yield() }
+        let expectedExits = StoryProvider.modelAttempts + 1
+        while await gate.exits < expectedExits { await Task.yield() }
+        await Task.yield()
         #expect(outcomes.count == 1, "a straggler write delivered a second outcome")
+    }
+
+    /// The scenario round four found untested: an abandoned write's result
+    /// arrives AFTER a new write has started, and must not be delivered into
+    /// the new write's closure. Write identity, not just cancellation, is
+    /// what keeps them apart.
+    @Test func astragglerFromAnAbandonedWriteCannotHijackTheNextWrite() async {
+        let gate = Gate()
+        let writer = StoryWriter()
+        let stalled = StoryProvider(model: StubbornEngine(gate: gate), curated: StubbornEngine(gate: gate))
+        let ready = StoryProvider(model: GoodEngine(), curated: GoodEngine())
+
+        var first: [StoryWriter.Outcome] = []
+        await withCheckedContinuation { done in
+            writer.write(request, using: stalled, pacing: .zero) { outcome in
+                first.append(outcome)
+                done.resume()
+            }
+            Task {
+                await gate.waitUntilEntered()
+                writer.abandon()
+            }
+        }
+        #expect(first.count == 1)
+
+        // A new write starts and finishes while the first is still parked.
+        var second: [StoryWriter.Outcome] = []
+        await withCheckedContinuation { done in
+            writer.write(request, using: ready, pacing: .zero) { outcome in
+                second.append(outcome)
+                done.resume()
+            }
+        }
+        #expect(second.count == 1)
+        guard case .finished = second.first else {
+            Issue.record("the second write should have finished normally")
+            return
+        }
+
+        // Now the abandoned write's engine returns at last.
+        await gate.open()
+        let expectedExits = StoryProvider.modelAttempts + 1
+        while await gate.exits < expectedExits { await Task.yield() }
+        await Task.yield()
+        #expect(first.count == 1, "the abandoned write delivered twice")
+        #expect(second.count == 1, "a straggler was delivered into the next write's closure")
     }
 
     @Test func aRacingSecondWriteCannotProduceASecondOutcome() async {

@@ -69,6 +69,23 @@ final class SubscriptionStore {
     /// the purchase/restore that asked.)
     private var refreshTask: Task<SubscriptionStatus, Never>?
     private var refreshIsStale = false
+    /// Test observability for ordering proofs: how many callers have joined
+    /// an in-flight refresh. Behaviour-free.
+    private(set) var refreshJoinCount = 0
+    /// The most recent entitlement snapshot, kept so a verified transaction
+    /// arriving between reads can be folded in without another round trip.
+    private var lastRecords: [EntitlementRecord] = []
+    /// Verified transactions StoreKit has accepted but not yet reflected in
+    /// `currentEntitlements`. Its entitlement view can lag a sale it has
+    /// already signed, and granting-then-reconciling used to revoke access
+    /// moments after taking the money (2026-07-24 review round four, P1).
+    /// An entry is dropped the moment a read confirms it, or an update
+    /// revokes it. In memory only: a relaunch re-derives from entitlements
+    /// alone, so a purchase StoreKit never confirms cannot grant forever.
+    private var unconfirmedPurchases: [EntitlementRecord] = []
+    /// A parent's approval is outstanding (Ask to Buy). Store-level so it
+    /// survives the paywall being dismissed and reopened.
+    private(set) var isAwaitingApproval = false
     /// One money operation at a time, across paywall presentations.
     private var isTransacting = false
     /// Coalesces catalog loads so a retry can never race an in-flight
@@ -116,11 +133,15 @@ final class SubscriptionStore {
             // on another device all arrive here.
             for await update in updates {
                 guard let self else { return }
-                // Deliver, THEN finish (Apple's order; round-three P1): the
-                // refresh reads currentEntitlements, which already includes
-                // the unfinished transaction, so access is granted before
-                // delivery is acknowledged. Skipping finish on early exit is
-                // safe — StoreKit redelivers unfinished transactions.
+                // Apply the update's OWN verified facts first: a refresh
+                // alone can return an entitlement view that has not caught
+                // up yet, and finishing then acknowledges an approval or
+                // renewal Fable never delivered (round-four P1). Skipping
+                // finish on early exit is safe — StoreKit redelivers
+                // unfinished transactions.
+                if let record = update.record {
+                    self.applyVerified(record)
+                }
                 await self.refreshStatus()
                 await update.finish()
             }
@@ -160,8 +181,14 @@ final class SubscriptionStore {
         let task = Task<Void, Never> {
             do {
                 let loaded = try await Product.products(for: FablePlus.productIDs)
-                products = loaded.sorted { lhs, rhs in
+                let sorted = loaded.sorted { lhs, rhs in
                     Self.sortOrder(of: lhs) < Self.sortOrder(of: rhs)
+                }
+                // A SUCCESSFUL but partial response is a degradation too:
+                // it must not replace a catalog that already offers more
+                // (round four, P2 — only thrown failures were preserved).
+                if products.isEmpty || sorted.count >= products.count {
+                    products = sorted
                 }
                 if let subscription = products.first?.subscription {
                     isEligibleForIntroOffer = await subscription.isEligibleForIntroOffer
@@ -212,18 +239,17 @@ final class SubscriptionStore {
         do {
             switch try await client.purchase(productID: plan.productID, loaded: product(for: plan)) {
             case .successVerified(let record, let finish):
-                // Apple's order (round-three P1): grant access from the
-                // verified transaction's OWN facts, then finish, then
-                // reconcile. No later entitlement read gets to veto a
-                // verified sale — the previous shape finished first and let
-                // an empty re-read call a real purchase a failure.
-                let granted = SubscriptionStatus.derive(from: [record])
-                if granted.isSubscribed {
-                    status = granted
-                }
+                // Apple's order: grant access from the verified
+                // transaction's OWN facts, then finish, then reconcile. The
+                // grant is held as unconfirmed until an entitlement read
+                // actually shows it, so the reconcile cannot take back what
+                // the family just paid for (round four, P1: round three
+                // granted, finished, then let an empty read revoke it while
+                // still reporting success).
+                applyVerified(record)
                 await finish()
                 await refreshStatus()
-                return granted.isSubscribed ? .subscribed : .failed
+                return status.isSubscribed ? .subscribed : .failed
             case .successUnverified:
                 // Unfinished on purpose: it redelivers via updates once
                 // verification can succeed.
@@ -231,6 +257,11 @@ final class SubscriptionStore {
             case .pending:
                 // Ask to Buy: approval arrives later via the update stream,
                 // which refreshes status; the paywall auto-dismisses then.
+                // Remembered on the store so reopening the sheet still says
+                // so. Deliberately NOT a permanent block: Apple sends
+                // nothing when a parent declines, so a family that can never
+                // retry would be stuck forever (round four, P2).
+                isAwaitingApproval = true
                 return .pending
             case .cancelled:
                 return .cancelled
@@ -269,6 +300,7 @@ final class SubscriptionStore {
             // neighbours below, so there is no window where a caller can
             // attach to an already decided answer.
             refreshIsStale = true
+            refreshJoinCount += 1
             return await running.value
         }
         let task = Task<SubscriptionStatus, Never> { [weak self] in
@@ -280,8 +312,9 @@ final class SubscriptionStore {
                 // A newer cause arrived while we were reading: that read is
                 // stale by definition; read again rather than commit it.
                 if self.refreshIsStale { continue }
-                derived = SubscriptionStatus.derive(from: records)
-                self.status = derived
+                self.lastRecords = records
+                self.recompute()
+                derived = self.status
                 break
             }
             self.refreshTask = nil
@@ -289,6 +322,28 @@ final class SubscriptionStore {
         }
         refreshTask = task
         return await task.value
+    }
+
+    /// Folds a verified transaction's own facts into access immediately,
+    /// before StoreKit's entitlement view is asked to agree.
+    private func applyVerified(_ record: EntitlementRecord) {
+        unconfirmedPurchases.removeAll { $0.productID == record.productID }
+        if record.revocationDate == nil, !record.isUpgraded,
+           SubscriptionStatus.derive(from: [record]).isSubscribed {
+            unconfirmedPurchases.append(record)
+        }
+        recompute()
+    }
+
+    /// Access is the entitlement view plus any verified purchase it has not
+    /// caught up with yet. A read that finally reports the purchase retires
+    /// the unconfirmed copy; a revocation arriving through `updates` removes
+    /// it, so this cannot outlive a refund.
+    private func recompute() {
+        let confirmed = Set(lastRecords.map(\.productID))
+        unconfirmedPurchases.removeAll { confirmed.contains($0.productID) }
+        status = SubscriptionStatus.derive(from: lastRecords + unconfirmedPurchases)
+        if status.isSubscribed { isAwaitingApproval = false }
     }
 
     // MARK: - Paywall copy helpers
