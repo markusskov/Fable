@@ -85,10 +85,13 @@ final class SubscriptionStore {
     /// entitlement, which is re-read at launch and on every foreground, so a
     /// local mirror could only ever be wrong in a staler direction.
     private var unconfirmedPurchases: [EntitlementRecord] = []
-    /// Transactions an update has told us are revoked, held until the
-    /// entitlement view stops reporting them. Without this, a refund that
-    /// arrives before the read catches up is acknowledged with `finish()`
-    /// while the stale active snapshot keeps granting (round five, P1).
+    /// Transactions an update has told us are revoked. Kept for the life of
+    /// the process: a refund is irreversible for THAT transaction, and a
+    /// renewal always carries a new ID, so a tombstone can never wrongly
+    /// deny future access. Round five retired them against the entitlement
+    /// snapshot, which meant a refund arriving before the purchase had even
+    /// propagated deleted its own tombstone and let the next stale read
+    /// grant access back (round six, P1).
     private var revokedTransactionIDs: Set<UInt64> = []
     /// A parent's approval is outstanding (Ask to Buy). Store-level so it
     /// survives the paywall being dismissed and reopened.
@@ -166,6 +169,15 @@ final class SubscriptionStore {
     func refreshOnReturn() async {
         await refreshStatus()
         await ensureCatalog()
+        await refreshIntroEligibility()
+    }
+
+    /// Eligibility is a fact about the Apple Account, not about the catalog,
+    /// and it changes the moment a trial is used on any device. Re-asked on
+    /// every return so a stale yes cannot keep selling a free week.
+    func refreshIntroEligibility() async {
+        guard let subscription = products.first?.subscription else { return }
+        isEligibleForIntroOffer = await subscription.isEligibleForIntroOffer
     }
 
     /// Retries the catalog when it is missing or PARTIAL (one of two plans
@@ -256,6 +268,10 @@ final class SubscriptionStore {
                 applyVerified(record)
                 await finish()
                 await refreshStatus()
+                // The free week is spent the moment a subscription starts;
+                // the paywall must stop advertising it without waiting for
+                // the next catalog load (round six, P2).
+                isEligibleForIntroOffer = false
                 return status.isSubscribed ? .subscribed : .failed
             case .successUnverified:
                 // Unfinished on purpose: it redelivers via updates once
@@ -369,8 +385,6 @@ final class SubscriptionStore {
         unconfirmedPurchases.removeAll { confirmed.contains($0.transactionID) }
         // A bridge entry that expires mid-session stops bridging.
         unconfirmedPurchases.removeAll { !grantsAccessOnItsOwn($0, now: now) }
-        // Tombstones the entitlement view already agrees with are spent.
-        revokedTransactionIDs.formIntersection(Set(lastRecords.map(\.transactionID)))
         status = SubscriptionStatus.derive(from: live + unconfirmedPurchases)
         if status.isSubscribed { isAwaitingApproval = false }
     }

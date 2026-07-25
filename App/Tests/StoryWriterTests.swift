@@ -183,7 +183,9 @@ struct StoryWriterTests {
         // The engine finally returns and the whole provider chain drains:
         // two model attempts plus one curated attempt, all now instant.
         await gate.open()
-        await drain(gate, to: StoryProvider.modelAttempts, "abandoned chain")
+        // Only the already in-flight call completes: the provider now
+        // checks cancellation before each attempt, so no second one starts.
+        await drain(gate, to: 1, "abandoned chain")
         await Task.yield()
         #expect(outcomes.count == 1, "a straggler write delivered a second outcome")
     }
@@ -237,8 +239,11 @@ struct StoryWriterTests {
 
         // The abandoned write's engine finally returns, mid-replacement.
         await abandonedGate.open()
-        await drain(abandonedGate, to: StoryProvider.modelAttempts, "abandoned chain")
-        await Task.yield()
+        await drain(abandonedGate, to: 1, "abandoned chain")
+        // Wait for the straggler to actually LAND and be dropped: yielding
+        // and hoping proved nothing (round six, test verdict).
+        for _ in 0..<10_000 where writer.droppedOutcomes == 0 { await Task.yield() }
+        #expect(writer.droppedOutcomes == 1, "the straggler never arrived, so nothing was proved")
         #expect(first.count == 1, "the abandoned write delivered twice")
         #expect(second.isEmpty, "a straggler was delivered into a running write's closure")
         #expect(writer.isWriting, "a straggler ended the replacement write")
@@ -248,6 +253,12 @@ struct StoryWriterTests {
         await drain(replacementGate, to: StoryProvider.modelAttempts + 1, "live chain")
         for _ in 0..<10_000 where second.isEmpty { await Task.yield() }
         #expect(second.count == 1)
+        // The CASE matters: without the writeID guard a stale .abandoned
+        // could take this slot and a count-only assertion would pass.
+        guard case .finished = second.first else {
+            Issue.record("the replacement write received the straggler's outcome")
+            return
+        }
         #expect(!writer.isWriting)
     }
 

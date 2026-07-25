@@ -55,6 +55,11 @@ struct StoryProvider: Sendable {
         let safe = ContentSafetyCheck.neutralized(request)
         let seed = UInt64.random(in: UInt64.min...UInt64.max)
         for _ in 0..<Self.modelAttempts {
+            // Before every attempt, not only when the engine cooperates by
+            // throwing CancellationError: an engine that swallows
+            // cancellation and fails for its own reasons must not buy
+            // itself another attempt (round six, P2).
+            if Task.isCancelled { return Self.abandonedResult }
             do {
                 let content = try await model.makeStory(for: safe, seed: seed)
                 // The production model engine gates its own output, but the
@@ -69,15 +74,13 @@ struct StoryProvider: Sendable {
                 // curated render for a story nobody will read is waste, not
                 // safety (2026-07-24 review round five, P2). The caller
                 // discards this either way.
-                return TellResult(content: Self.inputFreeStory, engine: .floor, heroName: Self.floorHeroName)
+                return Self.abandonedResult
             } catch {
                 continue
             }
         }
 
-        if Task.isCancelled {
-            return TellResult(content: Self.inputFreeStory, engine: .floor, heroName: Self.floorHeroName)
-        }
+        if Task.isCancelled { return Self.abandonedResult }
         if let content = try? await curated.makeStory(for: safe, seed: seed),
            ContentSafetyCheck.isAcceptable(content, for: safe) {
             return TellResult(content: content, engine: .curated, heroName: safe.childName)
@@ -141,6 +144,12 @@ struct StoryProvider: Sendable {
     /// outranks language purity. Round three rightly flagged the earlier
     /// signature for taking a language it ignored.
     static let floorHeroName = "Little One"
+
+    /// What an abandoned write gets: the caller discards it, so the point is
+    /// to stop spending work, not to tell a story.
+    static var abandonedResult: TellResult {
+        TellResult(content: inputFreeStory, engine: .floor, heroName: floorHeroName)
+    }
 
     static let inputFreeStory = StoryContent(
         title: "A Quiet Goodnight",

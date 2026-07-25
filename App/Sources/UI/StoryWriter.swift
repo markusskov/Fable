@@ -21,6 +21,10 @@ final class StoryWriter {
     }
 
     private(set) var isWriting = false
+    /// Outcomes that arrived for a write nobody is waiting for any more.
+    /// Observable so a test can wait for a straggler to actually land
+    /// instead of yielding and hoping (round six, test verdict).
+    private(set) var droppedOutcomes = 0
     @ObservationIgnored private var task: Task<Void, Never>?
     @ObservationIgnored private var deliver: (@MainActor (Outcome) -> Void)?
     /// Identity of the write the stored `deliver` belongs to, so a straggler
@@ -66,7 +70,10 @@ final class StoryWriter {
     /// Delivers exactly once per write: whichever of task-completion or
     /// abandon() gets here first wins, and only for the write it belongs to.
     private func conclude(_ id: UUID, with outcome: Outcome) {
-        guard id == writeID, let deliver else { return }
+        guard id == writeID, let deliver else {
+            droppedOutcomes += 1
+            return
+        }
         self.deliver = nil
         isWriting = false
         task = nil

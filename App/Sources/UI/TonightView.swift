@@ -20,6 +20,10 @@ struct TonightView: View {
     @State private var writer = StoryWriter()
     @State private var isShowingPaywall = false
     @State private var isAddingChild = false
+    /// The cold-start entitlement settle. Owned so leaving this screen
+    /// cancels it: an unowned continuation could start work behind whatever
+    /// the family navigated to (round six, P2).
+    @State private var settlingTask: Task<Void, Never>?
     @State private var isShowingAbout = false
     @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
@@ -122,6 +126,11 @@ struct TonightView: View {
         // library is not a switch and must not abandon it.
         .onDisappear {
             if !writeServesActiveProfile { writer.abandon() }
+            // The settle exists only to decide THIS screen's next tap, so it
+            // never outlives the screen — a resumed continuation must not
+            // present a sheet behind wherever the family went.
+            settlingTask?.cancel()
+            settlingTask = nil
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -287,9 +296,10 @@ struct TonightView: View {
         if subscriptions.isSubscribed {
             action()
         } else if case .unknown = subscriptions.status {
-            Task {
+            settlingTask?.cancel()
+            settlingTask = Task {
                 _ = await subscriptions.refreshStatus()
-                guard writeServesActiveProfile else { return }
+                guard !Task.isCancelled, writeServesActiveProfile else { return }
                 // Authorize from the store's LIVE status, not the value that
                 // was true when this continuation was scheduled: a refund can
                 // commit in between (round five, P2).
@@ -367,8 +377,14 @@ struct TonightView: View {
                 // keep is not charged beyond this session. One retry, since
                 // the common cause (a momentary write conflict) clears on
                 // its own; after that the story is honestly session-only.
+                // Bounded, deliberate retries rather than one fire and
+                // forget: the common cause is a momentary write conflict
+                // that clears on its own (round six, P2).
                 Task { @MainActor in
-                    try? modelContext.save()
+                    for attempt in 1...3 {
+                        try? await Task.sleep(for: .milliseconds(120 * attempt))
+                        if (try? modelContext.save()) != nil { return }
+                    }
                 }
             }
             path.append(story)

@@ -494,14 +494,17 @@ struct SubscriptionStoreTests {
         store.start()
         #expect(await settles { store.status == .free })
 
-        client.signalUpdate(record: EntitlementRecord(
-            transactionID: 9,
-            originalID: 9,
-            productID: FablePlus.Plan.annual.productID,
-            expirationDate: .now.addingTimeInterval(-90 * 86_400)
-        ))
-        // Give the listener a chance to do the wrong thing.
-        #expect(await settles { client.readCount >= 2 })
+        let handled = Cell(false)
+        client.signalUpdate(
+            record: EntitlementRecord(
+                transactionID: 9,
+                originalID: 9,
+                productID: FablePlus.Plan.annual.productID,
+                expirationDate: .now.addingTimeInterval(-90 * 86_400)
+            ),
+            finish: { handled.with { $0 = true } }
+        )
+        #expect(await settles { handled.value }, "the update was never handled")
         #expect(store.status == .free, "a long expired replay was honoured as a live entitlement")
     }
 
@@ -522,12 +525,18 @@ struct SubscriptionStoreTests {
         store.start()
         #expect(await settles { store.isSubscribed })
 
-        client.signalUpdate(record: EntitlementRecord(
-            transactionID: 2, originalID: 1,
-            productID: FablePlus.Plan.monthly.productID,
-            expirationDate: .now.addingTimeInterval(30 * 86_400)
-        ))
-        #expect(await settles { client.readCount >= 2 })
+        let handled = Cell(false)
+        client.signalUpdate(
+            record: EntitlementRecord(
+                transactionID: 2, originalID: 1,
+                productID: FablePlus.Plan.monthly.productID,
+                expirationDate: .now.addingTimeInterval(30 * 86_400)
+            ),
+            finish: { handled.with { $0 = true } }
+        )
+        // finish() runs only after the listener's refresh has committed, so
+        // this observes the settled state, not a moment before it.
+        #expect(await settles { handled.value }, "the update was never handled")
         #expect(store.isSubscribed, "the renewal was discarded as a duplicate SKU and access lapsed")
     }
 
@@ -550,8 +559,53 @@ struct SubscriptionStoreTests {
 
         var revoked = active
         revoked.revocationDate = .now
-        client.signalUpdate(record: revoked)
-        #expect(await settles { store.status == .free }, "a refund lost to a stale active snapshot")
+        let handled = Cell(false)
+        client.signalUpdate(record: revoked, finish: { handled.with { $0 = true } })
+        #expect(await settles { handled.value }, "the refund was never handled")
+        #expect(store.status == .free, "a refund lost to a stale active snapshot")
+        // And it must STAY revoked: the entitlement view still reports the
+        // transaction as active, so a later refresh must not resurrect it.
+        _ = await store.refreshStatus()
+        #expect(store.status == .free, "a stale read resurrected a refunded subscription")
+    }
+
+    /// The crossing round six found: a refund can arrive BEFORE the purchase
+    /// it refunds has propagated into the entitlement view. Round five
+    /// retired the tombstone against the pre-refund snapshot (empty), so it
+    /// deleted itself, and the next read — which finally showed the purchase
+    /// as active — granted access back while `finish()` acknowledged the
+    /// refund. A tombstone now lives for the process: a refunded transaction
+    /// is refunded forever, and renewals carry new IDs.
+    @Test func arefundArrivingBeforeThePurchaseHasPropagatedStaysRevoked() async {
+        let purchased = EntitlementRecord(
+            transactionID: 42, originalID: 42,
+            productID: FablePlus.Plan.annual.productID,
+            expirationDate: .now.addingTimeInterval(300 * 86_400)
+        )
+        let client = StubStoreClient()
+        // Reads: empty while the purchase propagates, then it shows up as
+        // active — after the refund has already been reported.
+        await client.script(reads: [[], [], [purchased], [purchased], [purchased]])
+        await client.stubPurchase(.successVerified(purchased, finish: {}))
+        let store = Self.makeStore(client)
+        store.start()
+        client.observeAccess.with { $0 = { @Sendable in await MainActor.run { store.isSubscribed } } }
+        #expect(await settles { store.status == .free })
+
+        #expect(await store.purchase(.annual) == .subscribed)
+        #expect(store.isSubscribed)
+
+        var refunded = purchased
+        refunded.revocationDate = .now
+        let handled = Cell(false)
+        client.signalUpdate(record: refunded, finish: { handled.with { $0 = true } })
+        #expect(await settles { handled.value }, "the refund was never handled")
+        #expect(store.status == .free, "the refund was acknowledged but access survived")
+
+        // Every later read still reports the stale active transaction.
+        _ = await store.refreshStatus()
+        _ = await store.refreshStatus()
+        #expect(store.status == .free, "a stale read resurrected a refunded purchase")
     }
 
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {
