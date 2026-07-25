@@ -96,6 +96,16 @@ final class SubscriptionStore {
     /// Latest-wins for eligibility: a query that suspended before a purchase
     /// must not resume afterwards and re-advertise a spent free week.
     private var eligibilityGeneration = 0
+    /// Eligibility queries in flight. While any is outstanding the offer is
+    /// not advertisable: a cached `true` could otherwise keep promising a
+    /// free week that another device already consumed (round nine, P2).
+    private var eligibilityQueriesInFlight = 0
+
+    /// Whether the paywall may SAY there is a free week. Distinct from the
+    /// cached answer: settled, not subscribed, and not mid-query.
+    var canAdvertiseIntroOffer: Bool {
+        isEligibleForIntroOffer && eligibilityQueriesInFlight == 0 && !status.isSubscribed
+    }
     /// A parent's approval is outstanding (Ask to Buy). Store-level so it
     /// survives the paywall being dismissed and reopened.
     private(set) var isAwaitingApproval = false
@@ -181,6 +191,8 @@ final class SubscriptionStore {
     func refreshIntroEligibility() async {
         eligibilityGeneration += 1
         let generation = eligibilityGeneration
+        eligibilityQueriesInFlight += 1
+        defer { eligibilityQueriesInFlight -= 1 }
         let eligible = await client.isEligibleForIntroOffer(
             productID: FablePlus.Plan.annual.productID,
             loaded: product(for: .annual)
@@ -242,7 +254,7 @@ final class SubscriptionStore {
     /// The introductory free-trial line for a plan ("1 week free"), or nil
     /// when there is no free trial or the family already used it.
     func freeTrialText(for plan: FablePlus.Plan) -> String? {
-        guard isEligibleForIntroOffer,
+        guard canAdvertiseIntroOffer,
               let offer = product(for: plan)?.subscription?.introductoryOffer,
               offer.paymentMode == .freeTrial
         else { return nil }
@@ -379,18 +391,10 @@ final class SubscriptionStore {
             // no longer has (round seven, P1).
             if !revokedTransactionIDs.contains(record.transactionID) {
                 unconfirmedPurchases.append(record)
-                consumeIntroEligibility()
+                isEligibleForIntroOffer = false
             }
         }
         recompute()
-    }
-
-    /// A subscription has started, so the free week is spent. Applied before
-    /// any suspension, and it invalidates an in-flight eligibility query so
-    /// a stale `true` cannot land afterwards (round seven, P2).
-    private func consumeIntroEligibility() {
-        eligibilityGeneration += 1
-        isEligibleForIntroOffer = false
     }
 
     /// Whether a raw transaction, judged alone, should grant access.
@@ -414,15 +418,21 @@ final class SubscriptionStore {
         unconfirmedPurchases.removeAll { confirmed.contains($0.transactionID) }
         // A bridge entry that expires mid-session stops bridging.
         unconfirmedPurchases.removeAll { !grantsAccessOnItsOwn($0, now: now) }
+        let wasSubscribed = status.isSubscribed
         status = SubscriptionStatus.derive(from: live + unconfirmedPurchases)
+        if status.isSubscribed != wasSubscribed {
+            // BOTH directions invalidate an eligibility query that spans the
+            // transition. Round eight only invalidated on the way in, so an
+            // answer captured while subscribed could commit after a lapse
+            // (round nine, P2).
+            eligibilityGeneration += 1
+        }
         if status.isSubscribed {
             isAwaitingApproval = false
             // ANY active subscription spends the free week, including one
             // discovered only through the entitlement view (a restore, a
-            // cold launch, another device). Round seven consumed it solely
-            // on the bridge path, so a captured `true` could still commit
-            // after access began (round eight, P2).
-            consumeIntroEligibility()
+            // cold launch, another device).
+            isEligibleForIntroOffer = false
         }
     }
 

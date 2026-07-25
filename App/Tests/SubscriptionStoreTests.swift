@@ -446,14 +446,15 @@ struct SubscriptionStoreTests {
     /// are scripted differently on purpose: read 1 sees the pre-refund world,
     /// every later read sees the refund. The old shape returned that first,
     /// knowingly superseded snapshot to the caller and answered .subscribed.
-    @Test func aRestoreCannotReportSubscribedFromASupersededRead() async throws {
+    @Test(.timeLimit(.minutes(1)))
+    func aRestoreCannotReportSubscribedFromASupersededRead() async throws {
         let client = StubStoreClient()
         await client.script(reads: [[Self.activeRecord()], []])
         await client.holdNextRead()
         let store = Self.makeStore(client)
 
         let restore = Task { await store.restore() }
-        #expect(await client.waitForReadToStart(), "the seam was never reached")
+        try #require(await client.waitForReadToStart(), "the seam was never reached")
 
         // The refund arrives while that read is suspended.
         let refund = Task { await store.refreshStatus() }
@@ -469,14 +470,15 @@ struct SubscriptionStoreTests {
 
     /// The mirror: an approval landing mid-read must not be hidden, and the
     /// operation that asked must be told the winning truth.
-    @Test func arefreshCannotReportFreeFromASupersededRead() async {
+    @Test(.timeLimit(.minutes(1)))
+    func arefreshCannotReportFreeFromASupersededRead() async throws {
         let client = StubStoreClient()
         await client.script(reads: [[], [Self.activeRecord()]])
         await client.holdNextRead()
         let store = Self.makeStore(client)
 
         let firstRefresh = Task { await store.refreshStatus() }
-        #expect(await client.waitForReadToStart(), "the seam was never reached")
+        try #require(await client.waitForReadToStart(), "the seam was never reached")
 
         let approval = Task { await store.refreshStatus() }
         #expect(await settles { store.refreshJoinCount == 1 }, "the approval never joined the in-flight read")
@@ -673,7 +675,8 @@ struct SubscriptionStoreTests {
     /// result is still in flight. Its snapshot predates the refund, so
     /// honouring it re-granted access the account no longer has. A tombstone
     /// must dominate EVERY source, not only the entitlement view.
-    @Test func astalePurchaseResultCannotOutliveTheRefundThatBeatItHome() async {
+    @Test(.timeLimit(.minutes(1)))
+    func astalePurchaseResultCannotOutliveTheRefundThatBeatItHome() async throws {
         let purchased = EntitlementRecord(
             transactionID: 77, originalID: 77,
             productID: FablePlus.Plan.annual.productID,
@@ -689,7 +692,7 @@ struct SubscriptionStoreTests {
 
         // The purchase is decided but has not returned yet.
         let purchase = Task { await store.purchase(.annual) }
-        #expect(await client.waitForReadToStart(), "the seam was never reached")
+        try #require(await client.waitForReadToStart(), "the seam was never reached")
 
         // The refund arrives and is handled first.
         var refunded = purchased
@@ -705,86 +708,107 @@ struct SubscriptionStoreTests {
         #expect(store.status == .free, "a stale purchase result resurrected a refunded transaction")
         #expect(outcome != .subscribed, "a refunded purchase reported success")
         // And it must not have been acknowledged as delivered access either.
-        #expect(client.accessAtFinish.value != true,
-                "a refunded transaction was finished as though access had been granted")
+        // observeAccess is installed above, so this is a real observation:
+        // finish ran, and access was NOT live when it did (round nine: the
+        // previous version never installed it, so the default `false` made
+        // the assertion vacuous).
+        #expect(client.accessAtFinish.value == false,
+                "the refunded transaction's finish never ran, or ran with access granted")
     }
 
-    /// Round eight: the previous version awaited the `true` answer BEFORE
-    /// the subscription arrived, so no query ever crossed the transition and
-    /// deleting the guard left it green. Here the query is held across the
-    /// transition, which is the only shape that proves anything.
-    @Test func aneligibilityAnswerHeldAcrossAnUpdateCannotReadvertiseTheFreeWeek() async {
+    /// Discriminating test one: the query starts while ALREADY subscribed
+    /// and releases with no transition at all, so generation invalidation
+    /// cannot save it. Only the rule "never assert eligibility while access
+    /// is live" can (round nine).
+    @Test(.timeLimit(.minutes(1)))
+    func aneligibilityAnswerReleasedWhileSubscribedIsNeverAdvertised() async throws {
         let client = StubStoreClient()
         await client.setIntroEligible(true)
-        await client.set(entitlements: [])
-        await client.holdNextEligibilityRead()
-        let store = Self.makeStore(client)
-        store.start()
-
-        // The query snapshots "eligible" and suspends.
-        let query = Task { await store.refreshIntroEligibility() }
-        #expect(await client.waitForReadToStart(), "the eligibility seam was never reached")
-
-        // A subscription arrives through the update stream while it hangs.
-        let handled = Cell(false)
-        client.signalUpdate(
-            record: EntitlementRecord(
-                transactionID: 5, originalID: 5,
-                productID: FablePlus.Plan.annual.productID,
-                expirationDate: .now.addingTimeInterval(300 * 86_400)
-            ),
-            finish: { handled.with { $0 = true } }
-        )
-        #expect(await settles { handled.value })
-        #expect(store.isSubscribed)
-
-        // The stale "still eligible" answer comes home.
-        await client.releaseHeldEligibility()
-        await query.value
-        #expect(!store.isEligibleForIntroOffer, "the paywall would sell a free week to a subscriber")
-    }
-
-    /// The same crossing, but the subscription is discovered ONLY through the
-    /// entitlement view — the path that never touched the bridge and so
-    /// never consumed eligibility at all (round eight, P2 path one).
-    @Test func asubscriptionSeenOnlyInTheEntitlementViewAlsoSpendsTheFreeWeek() async {
-        let client = StubStoreClient()
-        await client.setIntroEligible(true)
-        await client.set(entitlements: [])
-        await client.holdNextEligibilityRead()
-        let store = Self.makeStore(client)
-
-        let query = Task { await store.refreshIntroEligibility() }
-        #expect(await client.waitForReadToStart(), "the eligibility seam was never reached")
-
-        // No update, no purchase: a restore or cold launch simply finds it.
-        await client.set(entitlements: [Self.activeRecord(.annual)])
-        _ = await store.refreshStatus()
-        #expect(store.isSubscribed)
-
-        await client.releaseHeldEligibility()
-        await query.value
-        #expect(!store.isEligibleForIntroOffer, "a restored subscriber was offered a free week")
-    }
-
-    /// And the offer is not permanently burned: a family that lapses without
-    /// ever using it can be eligible again (Apple's rule).
-    @Test func alapsedFamilyCanBecomeEligibleAgain() async {
-        let client = StubStoreClient()
-        await client.setIntroEligible(false)
         await client.set(entitlements: [Self.activeRecord(.annual)])
         let store = Self.makeStore(client)
         _ = await store.refreshStatus()
-        #expect(store.isSubscribed)
-        #expect(!store.isEligibleForIntroOffer)
+        try #require(store.isSubscribed)
 
-        // The subscription lapses, and the account turns out to be eligible.
-        await client.set(entitlements: [])
+        await client.holdNextEligibilityRead()
+        let query = Task { await store.refreshIntroEligibility() }
+        try #require(await client.waitForReadToStart(), "the eligibility seam was never reached")
+        // No transition happens while it is held.
+        await client.releaseHeldEligibility()
+        await query.value
+
+        #expect(!store.isEligibleForIntroOffer, "a subscriber was told they still have a free week")
+        #expect(!store.canAdvertiseIntroOffer)
+    }
+
+    /// Discriminating test two: the query crosses subscribed -> free, so the
+    /// status guard cannot reject it (the family IS free when it lands).
+    /// Only invalidating on the transition can.
+    @Test(.timeLimit(.minutes(1)))
+    func aneligibilityAnswerThatCrossesALapseIsRejectedNotCommitted() async throws {
+        let client = StubStoreClient()
+        await client.set(entitlements: [Self.activeRecord(.annual)])
         await client.setIntroEligible(true)
+        let store = Self.makeStore(client)
+        _ = await store.refreshStatus()
+        try #require(store.isSubscribed)
+
+        // The query snapshots its answer while subscribed, then suspends.
+        await client.holdNextEligibilityRead()
+        let query = Task { await store.refreshIntroEligibility() }
+        try #require(await client.waitForReadToStart(), "the eligibility seam was never reached")
+
+        // The subscription lapses while the query hangs.
+        await client.set(entitlements: [])
+        _ = await store.refreshStatus()
+        try #require(store.status == .free)
+
+        await client.releaseHeldEligibility()
+        await query.value
+        #expect(!store.isEligibleForIntroOffer, "a pre-lapse answer was committed after the lapse")
+
+        // A fresh query is what establishes the truth for a lapsed family.
+        await store.refreshIntroEligibility()
+        #expect(store.isEligibleForIntroOffer, "a lapsed family could never regain the offer")
+    }
+
+    /// Discriminating test three: a VISIBLE offer must vanish the moment
+    /// access is discovered through the entitlement view alone, with no
+    /// query, no update, and no purchase involved.
+    @Test func avisibleOfferDisappearsWhenAccessIsDiscoveredInTheEntitlementView() async {
+        let client = StubStoreClient()
+        await client.setIntroEligible(true)
+        await client.set(entitlements: [])
+        let store = Self.makeStore(client)
         _ = await store.refreshStatus()
         await store.refreshIntroEligibility()
-        #expect(store.status == .free)
-        #expect(store.isEligibleForIntroOffer, "eligibility was permanently burned")
+        #expect(store.isEligibleForIntroOffer, "the offer was never visible, so nothing is proved")
+
+        // A restore, a cold launch, another device: access simply appears.
+        await client.set(entitlements: [Self.activeRecord(.annual)])
+        _ = await store.refreshStatus()
+        #expect(store.isSubscribed)
+        #expect(!store.isEligibleForIntroOffer, "a subscriber kept a visible free-week offer")
+    }
+
+    /// While a query is settling, the offer is not advertisable at all: a
+    /// cached `true` must not keep promising a week another device spent.
+    @Test(.timeLimit(.minutes(1)))
+    func anOfferIsNotAdvertisedWhileItsAnswerIsStillSettling() async throws {
+        let client = StubStoreClient()
+        await client.setIntroEligible(true)
+        await client.set(entitlements: [])
+        let store = Self.makeStore(client)
+        await store.refreshIntroEligibility()
+        try #require(store.canAdvertiseIntroOffer)
+
+        await client.holdNextEligibilityRead()
+        let query = Task { await store.refreshIntroEligibility() }
+        try #require(await client.waitForReadToStart(), "the eligibility seam was never reached")
+        #expect(!store.canAdvertiseIntroOffer, "a stale yes was advertised while re-checking")
+
+        await client.releaseHeldEligibility()
+        await query.value
+        #expect(store.canAdvertiseIntroOffer)
     }
 
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {
@@ -818,7 +842,8 @@ struct SubscriptionStoreTests {
     /// One money operation at a time, ACROSS paywall presentations: the
     /// per-sheet flag reset on reopen, letting a second purchase start while
     /// the first was still running (round three, P2).
-    @Test func aSecondMoneyOperationIsRefusedWhileOneIsRunning() async throws {
+    @Test(.timeLimit(.minutes(1)))
+    func aSecondMoneyOperationIsRefusedWhileOneIsRunning() async throws {
         let client = StubStoreClient()
         await client.script(reads: [[], []])
         await client.stubPurchase(.successVerified(Self.activeRecord(), finish: {}))
@@ -828,7 +853,7 @@ struct SubscriptionStoreTests {
 
         // The first purchase suspends inside its post-grant reconcile read.
         let first = Task { await store.purchase(.annual) }
-        #expect(await client.waitForReadToStart(), "the seam was never reached")
+        try #require(await client.waitForReadToStart(), "the seam was never reached")
 
         #expect(await store.purchase(.monthly) == .alreadyInProgress)
         #expect(await store.restore() == .alreadyInProgress)

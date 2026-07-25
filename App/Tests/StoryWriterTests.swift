@@ -53,12 +53,17 @@ struct StoryWriterTests {
             await withCheckedContinuation { continuation = $0 }
         }
 
-        /// Suspends until a write has actually entered the gate — a real
-        /// signal, so abandonment is provably mid-flight rather than
-        /// scheduled and hoped for (round four, test verdict).
-        func waitUntilEntered() async {
-            guard entries == 0 else { return }
-            await withCheckedContinuation { entryWaiters.append($0) }
+        /// Suspends until a write has actually entered the gate, or gives
+        /// up. A real condition, so abandonment is provably mid-flight —
+        /// and bounded, so a regression in entry fails the test instead of
+        /// hanging CI forever (round nine).
+        @discardableResult
+        func waitUntilEntered(bound: Int = 100_000) async -> Bool {
+            for _ in 0..<bound {
+                if entries > 0 { return true }
+                await Task.yield()
+            }
+            return entries > 0
         }
 
         func open() {
@@ -121,7 +126,8 @@ struct StoryWriterTests {
         #expect(!writer.isWriting)
     }
 
-    @Test func anAbandonedWriteReportsAbandonedNotFinished() async {
+    @Test(.timeLimit(.minutes(1)))
+    func anAbandonedWriteReportsAbandonedNotFinished() async {
         let writer = StoryWriter()
         let provider = StoryProvider(
             model: NeverFinishingEngine(),
@@ -152,7 +158,8 @@ struct StoryWriterTests {
     /// Abandonment must not need the engine's cooperation: the outcome
     /// arrives while the engine is still parked, and the straggler result
     /// that shows up later is dropped rather than delivered twice.
-    @Test func abandoningAnUncooperativeWriteStillRefundsAtOnce() async {
+    @Test(.timeLimit(.minutes(1)))
+    func abandoningAnUncooperativeWriteStillRefundsAtOnce() async {
         let gate = Gate()
         let writer = StoryWriter()
         let provider = StoryProvider(
@@ -167,8 +174,7 @@ struct StoryWriterTests {
             }
             Task {
                 // Abandon only once the engine is provably parked.
-                await gate.waitUntilEntered()
-                writer.abandon()
+                if await gate.waitUntilEntered() { writer.abandon() }
             }
         }
         // Delivered while the engine is STILL suspended on the gate.
@@ -197,7 +203,8 @@ struct StoryWriterTests {
     /// The scenario round four flagged and round five sharpened: an
     /// abandoned write's result must not disturb a replacement write that is
     /// STILL RUNNING. Finishing the replacement first would prove nothing.
-    @Test func astragglerCannotDisturbAStillRunningReplacementWrite() async {
+    @Test(.timeLimit(.minutes(1)))
+    func astragglerCannotDisturbAStillRunningReplacementWrite() async {
         let abandonedGate = Gate()
         let replacementGate = Gate()
         let writer = StoryWriter()
@@ -216,8 +223,7 @@ struct StoryWriterTests {
                 done.resume()
             }
             Task {
-                await abandonedGate.waitUntilEntered()
-                writer.abandon()
+                if await abandonedGate.waitUntilEntered() { writer.abandon() }
             }
         }
         #expect(first.count == 1)
@@ -234,7 +240,7 @@ struct StoryWriterTests {
         ) { outcome in
             second.append(outcome)
         }
-        await replacementGate.waitUntilEntered()
+        #expect(await replacementGate.waitUntilEntered(), "the replacement never reached its engine")
         #expect(writer.isWriting, "the replacement write should still be running")
 
         // The abandoned write's engine finally returns, mid-replacement.
@@ -303,7 +309,8 @@ struct StoryWriterTests {
 
     /// The weak capture round seven added, actually observed: an abandoned
     /// writer must not be kept alive by an engine that never returns.
-    @Test func anAbandonedWriterDeallocatesWhileItsEngineIsStillParked() async {
+    @Test(.timeLimit(.minutes(1)))
+    func anAbandonedWriterDeallocatesWhileItsEngineIsStillParked() async {
         let gate = Gate()
         weak var weakWriter: StoryWriter?
 
