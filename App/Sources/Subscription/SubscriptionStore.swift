@@ -49,7 +49,13 @@ final class SubscriptionStore {
     /// True while the family can still claim the introductory free week.
     /// StoreKit applies the offer automatically at purchase; this only
     /// controls whether the paywall talks about it.
-    private(set) var isEligibleForIntroOffer = false
+    /// The last settled answer from Apple. PRIVATE on purpose: every
+    /// customer-facing decision must go through `canAdvertiseIntroOffer`, so
+    /// the raw flag cannot be wired back into copy by accident (round ten).
+    private var isEligibleForIntroOffer = false
+    /// False whenever we have reason to doubt the answer: before the first
+    /// query, while one is outstanding, and across any access transition.
+    private var eligibilityIsSettled = false
     /// Set when the store could not be reached. The paywall shows a quiet
     /// "try again later" rather than an error alert — never break bedtime.
     private(set) var productsUnavailable = false
@@ -96,15 +102,19 @@ final class SubscriptionStore {
     /// Latest-wins for eligibility: a query that suspended before a purchase
     /// must not resume afterwards and re-advertise a spent free week.
     private var eligibilityGeneration = 0
-    /// Eligibility queries in flight. While any is outstanding the offer is
-    /// not advertisable: a cached `true` could otherwise keep promising a
-    /// free week that another device already consumed (round nine, P2).
-    private var eligibilityQueriesInFlight = 0
-
-    /// Whether the paywall may SAY there is a free week. Distinct from the
-    /// cached answer: settled, not subscribed, and not mid-query.
+    /// Whether the paywall may SAY there is a free week: a settled answer,
+    /// still eligible, and no live access.
     var canAdvertiseIntroOffer: Bool {
-        isEligibleForIntroOffer && eligibilityQueriesInFlight == 0 && !status.isSubscribed
+        isEligibleForIntroOffer && eligibilityIsSettled && !status.isSubscribed
+    }
+
+    /// Marks the offer unsettled. Synchronous by contract: entry points call
+    /// it BEFORE their first suspension, so a cached "free week" is never on
+    /// screen while entitlement or catalog work is still in flight
+    /// (round ten, P2 — round nine only hid it once the query itself began).
+    func invalidateIntroEligibility() {
+        eligibilityGeneration += 1
+        eligibilityIsSettled = false
     }
     /// A parent's approval is outstanding (Ask to Buy). Store-level so it
     /// survives the paywall being dismissed and reopened.
@@ -180,6 +190,7 @@ final class SubscriptionStore {
     /// is not sticky until restart and a subscription that lapsed or renewed
     /// while backgrounded is noticed promptly.
     func refreshOnReturn() async {
+        invalidateIntroEligibility()
         await refreshStatus()
         await ensureCatalog()
         await refreshIntroEligibility()
@@ -189,10 +200,8 @@ final class SubscriptionStore {
     /// and it changes the moment a trial is used on any device. Re-asked on
     /// every return so a stale yes cannot keep selling a free week.
     func refreshIntroEligibility() async {
-        eligibilityGeneration += 1
+        invalidateIntroEligibility()
         let generation = eligibilityGeneration
-        eligibilityQueriesInFlight += 1
-        defer { eligibilityQueriesInFlight -= 1 }
         let eligible = await client.isEligibleForIntroOffer(
             productID: FablePlus.Plan.annual.productID,
             loaded: product(for: .annual)
@@ -206,6 +215,7 @@ final class SubscriptionStore {
         // a permanent local flag — a lapsed family that never used an offer
         // can become eligible again, and this re-asks whenever they are free.
         isEligibleForIntroOffer = eligible && !status.isSubscribed
+        eligibilityIsSettled = true
     }
 
     /// Retries the catalog when it is missing or PARTIAL (one of two plans
@@ -425,7 +435,7 @@ final class SubscriptionStore {
             // transition. Round eight only invalidated on the way in, so an
             // answer captured while subscribed could commit after a lapse
             // (round nine, P2).
-            eligibilityGeneration += 1
+            invalidateIntroEligibility()
         }
         if status.isSubscribed {
             isAwaitingApproval = false

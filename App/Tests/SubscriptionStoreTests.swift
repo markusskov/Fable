@@ -238,7 +238,32 @@ private actor StubStoreClient: StoreClient {
     private var heldPurchases: [CheckedContinuation<Void, Never>] = []
     private var holdNextPurchase = false
 
-    func setIntroEligible(_ eligible: Bool) { introEligible = eligible }
+    private var scriptedEligibility: [Bool] = []
+    private var eligibilityIndex = 0
+
+    func setIntroEligible(_ eligible: Bool) {
+        scriptedEligibility = [eligible]
+        eligibilityIndex = 0
+    }
+
+    /// Successive eligibility answers, so two overlapping queries can be
+    /// given DIFFERENT truths (round ten).
+    func scriptEligibility(_ answers: [Bool]) {
+        scriptedEligibility = answers
+        eligibilityIndex = 0
+    }
+
+    /// Cleanup: disarm every hold and resume anything already suspended, so
+    /// a test that aborts on a failed requirement cannot leak a task parked
+    /// on a continuation forever (round ten).
+    func disarmAndReleaseEverything() {
+        holdNextEligibility = false
+        holdNextPurchase = false
+        holdsRemaining = 0
+        releaseHeldEligibility()
+        releaseHeldPurchases()
+        releaseHeldReads()
+    }
 
     /// The next eligibility query snapshots its answer and suspends, so a
     /// query can be made to cross a subscription transition (round eight).
@@ -249,7 +274,10 @@ private actor StubStoreClient: StoreClient {
     }
 
     func isEligibleForIntroOffer(productID: String, loaded: Product?) async -> Bool {
-        let snapshot = introEligible
+        let snapshot = scriptedEligibility.isEmpty
+            ? introEligible
+            : scriptedEligibility[min(eligibilityIndex, scriptedEligibility.count - 1)]
+        eligibilityIndex += 1
         if holdNextEligibility {
             holdNextEligibility = false
             readStartedContinuation.yield()
@@ -687,6 +715,10 @@ struct SubscriptionStoreTests {
         await client.stubPurchase(.successVerified(purchased, finish: {}))
         await client.holdNextPurchaseResult()
         let store = Self.makeStore(client)
+        // Install the observer for real: without it the stub's wrapper
+        // records its default and the ordering assertion proves nothing
+        // (round ten).
+        client.observeAccess.with { $0 = { @Sendable in await MainActor.run { store.isSubscribed } } }
         store.start()
         #expect(await settles { store.status == .free })
 
@@ -736,7 +768,7 @@ struct SubscriptionStoreTests {
         await client.releaseHeldEligibility()
         await query.value
 
-        #expect(!store.isEligibleForIntroOffer, "a subscriber was told they still have a free week")
+        #expect(!store.canAdvertiseIntroOffer, "a subscriber was told they still have a free week")
         #expect(!store.canAdvertiseIntroOffer)
     }
 
@@ -764,11 +796,11 @@ struct SubscriptionStoreTests {
 
         await client.releaseHeldEligibility()
         await query.value
-        #expect(!store.isEligibleForIntroOffer, "a pre-lapse answer was committed after the lapse")
+        #expect(!store.canAdvertiseIntroOffer, "a pre-lapse answer was committed after the lapse")
 
         // A fresh query is what establishes the truth for a lapsed family.
         await store.refreshIntroEligibility()
-        #expect(store.isEligibleForIntroOffer, "a lapsed family could never regain the offer")
+        #expect(store.canAdvertiseIntroOffer, "a lapsed family could never regain the offer")
     }
 
     /// Discriminating test three: a VISIBLE offer must vanish the moment
@@ -781,13 +813,13 @@ struct SubscriptionStoreTests {
         let store = Self.makeStore(client)
         _ = await store.refreshStatus()
         await store.refreshIntroEligibility()
-        #expect(store.isEligibleForIntroOffer, "the offer was never visible, so nothing is proved")
+        #expect(store.canAdvertiseIntroOffer, "the offer was never visible, so nothing is proved")
 
         // A restore, a cold launch, another device: access simply appears.
         await client.set(entitlements: [Self.activeRecord(.annual)])
         _ = await store.refreshStatus()
         #expect(store.isSubscribed)
-        #expect(!store.isEligibleForIntroOffer, "a subscriber kept a visible free-week offer")
+        #expect(!store.canAdvertiseIntroOffer, "a subscriber kept a visible free-week offer")
     }
 
     /// While a query is settling, the offer is not advertisable at all: a
@@ -809,6 +841,72 @@ struct SubscriptionStoreTests {
         await client.releaseHeldEligibility()
         await query.value
         #expect(store.canAdvertiseIntroOffer)
+    }
+
+    /// Settled, free, and simply not eligible: the offer must not be
+    /// advertised. Without this, deleting the eligibility VALUE from the
+    /// predicate left every other test green (round ten).
+    @Test func asettledFreeFamilyWithNoOfferIsNotToldTheyHaveOne() async {
+        let client = StubStoreClient()
+        await client.setIntroEligible(false)
+        await client.set(entitlements: [])
+        let store = Self.makeStore(client)
+        _ = await store.refreshStatus()
+        await store.refreshIntroEligibility()
+        #expect(store.status == .free)
+        #expect(!store.canAdvertiseIntroOffer, "an ineligible family was offered a free week")
+    }
+
+    /// Two overlapping queries: the older captures `true`, the newer answers
+    /// `false` and commits. Releasing the older one must change nothing —
+    /// the per-query generation is the only thing that can reject it.
+    @Test(.timeLimit(.minutes(1)))
+    func anOlderEligibilityAnswerCannotOverwriteANewerOne() async throws {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.scriptEligibility([true, false])
+        let store = Self.makeStore(client)
+        defer { Task { await client.disarmAndReleaseEverything() } }
+        _ = await store.refreshStatus()
+
+        // Query one captures `true` and suspends.
+        await client.holdNextEligibilityRead()
+        let older = Task { await store.refreshIntroEligibility() }
+        try #require(await client.waitForReadToStart(), "the eligibility seam was never reached")
+
+        // Query two answers `false` and settles.
+        await store.refreshIntroEligibility()
+        #expect(!store.canAdvertiseIntroOffer)
+
+        // The older `true` comes home and must be discarded.
+        await client.releaseHeldEligibility()
+        await older.value
+        #expect(!store.canAdvertiseIntroOffer, "an older eligibility answer overwrote a newer one")
+    }
+
+    /// The round-ten production gap: a cached offer must be hidden BEFORE
+    /// the entitlement read, not only once the eligibility query starts.
+    @Test(.timeLimit(.minutes(1)))
+    func acachedOfferIsHiddenBeforeTheEntitlementReadEvenBegins() async throws {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.setIntroEligible(true)
+        let store = Self.makeStore(client)
+        defer { Task { await client.disarmAndReleaseEverything() } }
+        _ = await store.refreshStatus()
+        await store.refreshIntroEligibility()
+        try #require(store.canAdvertiseIntroOffer, "the offer was never visible, so nothing is proved")
+
+        // Foregrounding: hold the ENTITLEMENT read, which happens before any
+        // eligibility query.
+        await client.holdNextRead()
+        let returning = Task { await store.refreshOnReturn() }
+        try #require(await client.waitForReadToStart(), "the entitlement seam was never reached")
+        #expect(!store.canAdvertiseIntroOffer,
+                "a cached free-week offer was still on screen during the entitlement read")
+
+        await client.releaseHeldReads()
+        await returning.value
     }
 
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {

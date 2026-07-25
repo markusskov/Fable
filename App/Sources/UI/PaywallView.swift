@@ -45,6 +45,9 @@ struct PaywallView: View {
         // A failed catalog load is not sticky: reopening the paywall retries
         // (2026-07-24 money-path review). Also settles a cold-start .unknown.
         .task {
+            // Before the first suspension: a cached "free week" must not sit
+            // on screen while entitlement and catalog work run (round ten).
+            subscriptions.invalidateIntroEligibility()
             // Entitlement first, catalog second: an already subscribed
             // family's dismissal must not wait behind a product request
             // (round three). onChange below is not initial, so the mounted

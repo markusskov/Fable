@@ -167,39 +167,32 @@ struct StoryWriterTests {
             curated: StubbornEngine(gate: gate)
         )
         var outcomes: [StoryWriter.Outcome] = []
-        await withCheckedContinuation { done in
-            writer.write(request, using: provider, pacing: .zero) { outcome in
-                outcomes.append(outcome)
-                done.resume()
-            }
-            Task {
-                // Abandon only once the engine is provably parked.
-                if await gate.waitUntilEntered() { writer.abandon() }
-            }
-        }
-        // Delivered while the engine is STILL suspended on the gate.
+        writer.write(request, using: provider, pacing: .zero) { outcomes.append($0) }
+
+        // No callback continuation to strand: abandon() delivers
+        // synchronously, so entry can be REQUIRED and a failure to park
+        // fails the test instead of leaving a continuation unresumed
+        // (round ten).
+        let entered = await gate.waitUntilEntered()
+        #expect(entered, "the engine never parked, so abandonment proves nothing")
+        if entered { writer.abandon() }
+
         #expect(await gate.exits == 0, "the engine returned before the outcome arrived")
         #expect(outcomes.count == 1)
-        guard case .abandoned = outcomes.first else {
+        if case .abandoned = outcomes.first {} else {
             Issue.record("an uncooperative write must still report abandoned")
-            return
         }
         #expect(!writer.isWriting)
 
-        // The engine finally returns and the whole provider chain drains:
-        // two model attempts plus one curated attempt, all now instant.
+        // The engine finally returns; its result must go nowhere.
         await gate.open()
         // Only the already in-flight call completes: the provider now
         // checks cancellation before each attempt, so no second one starts.
         await drain(gate, to: 1, "abandoned chain")
-        await Task.yield()
+        for _ in 0..<10_000 where writer.droppedOutcomes == 0 { await Task.yield() }
         #expect(outcomes.count == 1, "a straggler write delivered a second outcome")
     }
 
-    /// The scenario round four found untested: an abandoned write's result
-    /// arrives AFTER a new write has started, and must not be delivered into
-    /// the new write's closure. Write identity, not just cancellation, is
-    /// what keeps them apart.
     /// The scenario round four flagged and round five sharpened: an
     /// abandoned write's result must not disturb a replacement write that is
     /// STILL RUNNING. Finishing the replacement first would prove nothing.
@@ -210,22 +203,17 @@ struct StoryWriterTests {
         let writer = StoryWriter()
 
         var first: [StoryWriter.Outcome] = []
-        await withCheckedContinuation { done in
-            writer.write(
-                request,
-                using: StoryProvider(
-                    model: StubbornEngine(gate: abandonedGate),
-                    curated: StubbornEngine(gate: abandonedGate)
-                ),
-                pacing: .zero
-            ) { outcome in
-                first.append(outcome)
-                done.resume()
-            }
-            Task {
-                if await abandonedGate.waitUntilEntered() { writer.abandon() }
-            }
-        }
+        writer.write(
+            request,
+            using: StoryProvider(
+                model: StubbornEngine(gate: abandonedGate),
+                curated: StubbornEngine(gate: abandonedGate)
+            ),
+            pacing: .zero
+        ) { first.append($0) }
+        let enteredFirst = await abandonedGate.waitUntilEntered()
+        #expect(enteredFirst, "the first write never reached its engine")
+        if enteredFirst { writer.abandon() }
         #expect(first.count == 1)
 
         // The replacement starts and parks: it is in flight, not finished.
@@ -313,31 +301,32 @@ struct StoryWriterTests {
     func anAbandonedWriterDeallocatesWhileItsEngineIsStillParked() async {
         let gate = Gate()
         weak var weakWriter: StoryWriter?
+        var parked = false
 
         await {
             let writer = StoryWriter()
             weakWriter = writer
-            await withCheckedContinuation { done in
-                writer.write(
-                    request,
-                    using: StoryProvider(
-                        model: StubbornEngine(gate: gate),
-                        curated: StubbornEngine(gate: gate)
-                    ),
-                    pacing: .zero
-                ) { _ in done.resume() }
-                Task {
-                    await gate.waitUntilEntered()
-                    writer.abandon()
-                }
-            }
+            writer.write(
+                request,
+                using: StoryProvider(
+                    model: StubbornEngine(gate: gate),
+                    curated: StubbornEngine(gate: gate)
+                ),
+                pacing: .zero
+            ) { _ in }
+            // REQUIRE the park: zero entries also yields zero exits, so
+            // without this the test could pass having never parked an
+            // engine at all (round ten).
+            parked = await gate.waitUntilEntered()
+            if parked { writer.abandon() }
         }()
 
-        // The engine is STILL parked; nothing but the task could retain it.
-        #expect(await gate.exits == 0)
+        #expect(parked, "no engine ever parked, so nothing about retention is proved")
+        #expect(await gate.exits == 0, "the engine returned before the writer was dropped")
         for _ in 0..<10_000 where weakWriter != nil { await Task.yield() }
         #expect(weakWriter == nil, "an abandoned writer was retained by its parked engine")
 
         await gate.open()
+        await drain(gate, to: 1, "orphaned chain")
     }
 }
