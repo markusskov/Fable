@@ -47,13 +47,17 @@ final class StoryWriter {
         self.deliver = deliver
         let id = UUID()
         writeID = id
-        task = Task {
+        // Weak: a non-cooperative engine can suspend forever, and the task
+        // outlives the write it belonged to. Retaining the writer across
+        // that suspension keeps an abandoned screen's object alive for the
+        // life of the process (round seven, P2).
+        task = Task { [weak self] in
             // The pause keeps the moment feeling authored even when the
             // curated engine answers instantly; abandonment cuts it short.
             async let pause: Void? = try? await Task.sleep(for: pacing)
             let result = await provider.makeStory(for: request)
             _ = await pause
-            conclude(id, with: Task.isCancelled ? .abandoned : .finished(result))
+            self?.conclude(id, with: Task.isCancelled ? .abandoned : .finished(result))
         }
     }
 

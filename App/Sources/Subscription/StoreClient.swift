@@ -25,6 +25,10 @@ protocol StoreClient: Sendable {
     /// product, when it has one — buying must not add a second network gate
     /// after the buy button was enabled (round three).
     func purchase(productID: String, loaded: Product?) async throws -> ClientPurchaseResult
+    /// Whether the Apple Account can still claim the introductory offer.
+    /// Behind the seam so "the paywall stopped advertising a spent free
+    /// week" is provable rather than reasoned (round seven, P2).
+    func isEligibleForIntroOffer(productID: String, loaded: Product?) async -> Bool
 }
 
 /// One entitlement-changing event, with delivery acknowledgement deferred to
@@ -103,6 +107,17 @@ struct LiveStoreClient: StoreClient {
 
     func sync() async throws {
         try await AppStore.sync()
+    }
+
+    func isEligibleForIntroOffer(productID: String, loaded: Product?) async -> Bool {
+        let product: Product?
+        if let loaded, loaded.id == productID {
+            product = loaded
+        } else {
+            product = try? await Product.products(for: [productID]).first
+        }
+        guard let subscription = product?.subscription else { return false }
+        return await subscription.isEligibleForIntroOffer
     }
 
     func purchase(productID: String, loaded: Product?) async throws -> ClientPurchaseResult {

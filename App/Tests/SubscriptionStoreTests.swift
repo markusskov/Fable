@@ -220,10 +220,34 @@ private actor StubStoreClient: StoreClient {
         if shouldFailSync { throw SubscriptionError.productUnavailable }
     }
 
+    private var introEligible = false
+    private var heldPurchases: [CheckedContinuation<Void, Never>] = []
+    private var holdNextPurchase = false
+
+    func setIntroEligible(_ eligible: Bool) { introEligible = eligible }
+    func isEligibleForIntroOffer(productID: String, loaded: Product?) async -> Bool {
+        introEligible
+    }
+
+    /// The next purchase suspends after its result is decided but before it
+    /// is returned — the shape of a result that was in flight while a refund
+    /// landed (round seven, P1).
+    func holdNextPurchaseResult() { holdNextPurchase = true }
+    var heldPurchaseCount: Int { heldPurchases.count }
+    func releaseHeldPurchases() {
+        heldPurchases.forEach { $0.resume() }
+        heldPurchases.removeAll()
+    }
+
     func purchase(productID: String, loaded: Product?) async throws -> ClientPurchaseResult {
         purchaseRequests.append(productID)
         purchasedWithLoadedProduct.append(loaded != nil)
         guard let purchaseResult else { throw SubscriptionError.productUnavailable }
+        if holdNextPurchase {
+            holdNextPurchase = false
+            readStartedContinuation.yield()
+            await withCheckedContinuation { heldPurchases.append($0) }
+        }
         // Verified results carry a finish hook; wrap it so the test can see
         // whether access was live at the moment it ran.
         if case .successVerified(let record, _) = purchaseResult {
@@ -525,18 +549,22 @@ struct SubscriptionStoreTests {
         store.start()
         #expect(await settles { store.isSubscribed })
 
-        let handled = Cell(false)
+        // Observe access INSIDE finish: a Boolean set by finish only proves
+        // ordering if the access check happens at that instant (round seven).
+        let accessAtFinish = Cell<Bool?>(nil)
         client.signalUpdate(
             record: EntitlementRecord(
                 transactionID: 2, originalID: 1,
                 productID: FablePlus.Plan.monthly.productID,
                 expirationDate: .now.addingTimeInterval(30 * 86_400)
             ),
-            finish: { handled.with { $0 = true } }
+            finish: {
+                let granted = await MainActor.run { store.isSubscribed }
+                accessAtFinish.with { $0 = granted }
+            }
         )
-        // finish() runs only after the listener's refresh has committed, so
-        // this observes the settled state, not a moment before it.
-        #expect(await settles { handled.value }, "the update was never handled")
+        #expect(await settles { accessAtFinish.value != nil }, "the update was never handled")
+        #expect(accessAtFinish.value == true, "the renewal was finished without access being delivered")
         #expect(store.isSubscribed, "the renewal was discarded as a duplicate SKU and access lapsed")
     }
 
@@ -559,9 +587,13 @@ struct SubscriptionStoreTests {
 
         var revoked = active
         revoked.revocationDate = .now
-        let handled = Cell(false)
-        client.signalUpdate(record: revoked, finish: { handled.with { $0 = true } })
-        #expect(await settles { handled.value }, "the refund was never handled")
+        let accessAtFinish = Cell<Bool?>(nil)
+        client.signalUpdate(record: revoked, finish: {
+            let granted = await MainActor.run { store.isSubscribed }
+            accessAtFinish.with { $0 = granted }
+        })
+        #expect(await settles { accessAtFinish.value != nil }, "the refund was never handled")
+        #expect(accessAtFinish.value == false, "the refund was acknowledged while access was still granted")
         #expect(store.status == .free, "a refund lost to a stale active snapshot")
         // And it must STAY revoked: the entitlement view still reports the
         // transaction as active, so a later refresh must not resurrect it.
@@ -606,6 +638,70 @@ struct SubscriptionStoreTests {
         _ = await store.refreshStatus()
         _ = await store.refreshStatus()
         #expect(store.status == .free, "a stale read resurrected a refunded purchase")
+    }
+
+    /// Round seven's crossing: the refund lands while a positive purchase
+    /// result is still in flight. Its snapshot predates the refund, so
+    /// honouring it re-granted access the account no longer has. A tombstone
+    /// must dominate EVERY source, not only the entitlement view.
+    @Test func astalePurchaseResultCannotOutliveTheRefundThatBeatItHome() async {
+        let purchased = EntitlementRecord(
+            transactionID: 77, originalID: 77,
+            productID: FablePlus.Plan.annual.productID,
+            expirationDate: .now.addingTimeInterval(300 * 86_400)
+        )
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.stubPurchase(.successVerified(purchased, finish: {}))
+        await client.holdNextPurchaseResult()
+        let store = Self.makeStore(client)
+        store.start()
+        #expect(await settles { store.status == .free })
+
+        // The purchase is decided but has not returned yet.
+        let purchase = Task { await store.purchase(.annual) }
+        await client.waitForReadToStart()
+
+        // The refund arrives and is handled first.
+        var refunded = purchased
+        refunded.revocationDate = .now
+        let handled = Cell(false)
+        client.signalUpdate(record: refunded, finish: { handled.with { $0 = true } })
+        #expect(await settles { handled.value }, "the refund was never handled")
+        #expect(store.status == .free)
+
+        // Now the stale positive result comes home.
+        await client.releaseHeldPurchases()
+        let outcome = await purchase.value
+        #expect(store.status == .free, "a stale purchase result resurrected a refunded transaction")
+        #expect(outcome != .subscribed, "a refunded purchase reported success")
+    }
+
+    /// A verified subscription spends the free week immediately, and an
+    /// eligibility query that suspended beforehand must not resurrect it
+    /// (round seven, P2).
+    @Test func astaleEligibilityAnswerCannotReadvertiseASpentFreeWeek() async {
+        let client = StubStoreClient()
+        await client.setIntroEligible(true)
+        let store = Self.makeStore(client)
+        await store.refreshIntroEligibility()
+        #expect(store.isEligibleForIntroOffer)
+
+        // A subscription arrives through the update stream, then the stale
+        // "still eligible" answer lands.
+        let handled = Cell(false)
+        client.signalUpdate(
+            record: EntitlementRecord(
+                transactionID: 5, originalID: 5,
+                productID: FablePlus.Plan.annual.productID,
+                expirationDate: .now.addingTimeInterval(300 * 86_400)
+            ),
+            finish: { handled.with { $0 = true } }
+        )
+        store.start()
+        #expect(await settles { handled.value })
+        #expect(store.isSubscribed)
+        #expect(!store.isEligibleForIntroOffer, "the paywall would still sell a spent free week")
     }
 
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {

@@ -93,6 +93,9 @@ final class SubscriptionStore {
     /// propagated deleted its own tombstone and let the next stale read
     /// grant access back (round six, P1).
     private var revokedTransactionIDs: Set<UInt64> = []
+    /// Latest-wins for eligibility: a query that suspended before a purchase
+    /// must not resume afterwards and re-advertise a spent free week.
+    private var eligibilityGeneration = 0
     /// A parent's approval is outstanding (Ask to Buy). Store-level so it
     /// survives the paywall being dismissed and reopened.
     private(set) var isAwaitingApproval = false
@@ -176,8 +179,16 @@ final class SubscriptionStore {
     /// and it changes the moment a trial is used on any device. Re-asked on
     /// every return so a stale yes cannot keep selling a free week.
     func refreshIntroEligibility() async {
-        guard let subscription = products.first?.subscription else { return }
-        isEligibleForIntroOffer = await subscription.isEligibleForIntroOffer
+        eligibilityGeneration += 1
+        let generation = eligibilityGeneration
+        let eligible = await client.isEligibleForIntroOffer(
+            productID: FablePlus.Plan.annual.productID,
+            loaded: product(for: .annual)
+        )
+        // A purchase (or any verified subscription) that landed while this
+        // query was suspended has already spent the offer.
+        guard generation == eligibilityGeneration else { return }
+        isEligibleForIntroOffer = eligible
     }
 
     /// Retries the catalog when it is missing or PARTIAL (one of two plans
@@ -199,7 +210,7 @@ final class SubscriptionStore {
         }
         let task = Task<Void, Never> {
             do {
-                let loaded = try await Product.products(for: FablePlus.productIDs)
+                let loaded = try await Product.products(for: FablePlus.productIDs)  // catalog only
                 let sorted = loaded.sorted { lhs, rhs in
                     Self.sortOrder(of: lhs) < Self.sortOrder(of: rhs)
                 }
@@ -209,9 +220,7 @@ final class SubscriptionStore {
                 if products.isEmpty || sorted.count >= products.count {
                     products = sorted
                 }
-                if let subscription = products.first?.subscription {
-                    isEligibleForIntroOffer = await subscription.isEligibleForIntroOffer
-                }
+                await refreshIntroEligibility()
             } catch {
                 // Keep whatever catalog we already have: a failed RETRY must
                 // not destroy a paywall that was already usable (round three).
@@ -268,10 +277,6 @@ final class SubscriptionStore {
                 applyVerified(record)
                 await finish()
                 await refreshStatus()
-                // The free week is spent the moment a subscription starts;
-                // the paywall must stop advertising it without waiting for
-                // the next catalog load (round six, P2).
-                isEligibleForIntroOffer = false
                 return status.isSubscribed ? .subscribed : .failed
             case .successUnverified:
                 // Unfinished on purpose: it redelivers via updates once
@@ -362,9 +367,25 @@ final class SubscriptionStore {
         if record.revocationDate != nil {
             revokedTransactionIDs.insert(record.transactionID)
         } else if grantsAccessOnItsOwn(record) {
-            unconfirmedPurchases.append(record)
+            // A revoked transaction stays revoked no matter which source
+            // reports it, or in what order. A purchase result that was
+            // suspended while the refund landed carries a snapshot from
+            // before the refund; honouring it re-granted access the account
+            // no longer has (round seven, P1).
+            if !revokedTransactionIDs.contains(record.transactionID) {
+                unconfirmedPurchases.append(record)
+                consumeIntroEligibility()
+            }
         }
         recompute()
+    }
+
+    /// A subscription has started, so the free week is spent. Applied before
+    /// any suspension, and it invalidates an in-flight eligibility query so
+    /// a stale `true` cannot land afterwards (round seven, P2).
+    private func consumeIntroEligibility() {
+        eligibilityGeneration += 1
+        isEligibleForIntroOffer = false
     }
 
     /// Whether a raw transaction, judged alone, should grant access.
@@ -379,6 +400,9 @@ final class SubscriptionStore {
     /// Access is the entitlement view, minus anything an update has revoked,
     /// plus any verified transaction the view has not caught up with yet.
     private func recompute(now: Date = .now) {
+        // Revocation dominates every source, so it is applied to both the
+        // entitlement view and the bridge before anything else.
+        unconfirmedPurchases.removeAll { revokedTransactionIDs.contains($0.transactionID) }
         let live = lastRecords.filter { !revokedTransactionIDs.contains($0.transactionID) }
         // Identity is the transaction, never the SKU.
         let confirmed = Set(live.map(\.transactionID))
