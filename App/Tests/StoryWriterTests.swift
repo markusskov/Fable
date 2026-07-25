@@ -300,4 +300,37 @@ struct StoryWriterTests {
             activeProfileUUID: UUID().uuidString, profile: child
         ))
     }
+
+    /// The weak capture round seven added, actually observed: an abandoned
+    /// writer must not be kept alive by an engine that never returns.
+    @Test func anAbandonedWriterDeallocatesWhileItsEngineIsStillParked() async {
+        let gate = Gate()
+        weak var weakWriter: StoryWriter?
+
+        await {
+            let writer = StoryWriter()
+            weakWriter = writer
+            await withCheckedContinuation { done in
+                writer.write(
+                    request,
+                    using: StoryProvider(
+                        model: StubbornEngine(gate: gate),
+                        curated: StubbornEngine(gate: gate)
+                    ),
+                    pacing: .zero
+                ) { _ in done.resume() }
+                Task {
+                    await gate.waitUntilEntered()
+                    writer.abandon()
+                }
+            }
+        }()
+
+        // The engine is STILL parked; nothing but the task could retain it.
+        #expect(await gate.exits == 0)
+        for _ in 0..<10_000 where weakWriter != nil { await Task.yield() }
+        #expect(weakWriter == nil, "an abandoned writer was retained by its parked engine")
+
+        await gate.open()
+    }
 }

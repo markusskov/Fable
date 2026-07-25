@@ -54,6 +54,36 @@ struct StoryProviderCancellationTests {
         }
     }
 
+    /// Cancels the calling task and then fails NORMALLY, so the loop would
+    /// retry if the in-loop guard were not there.
+    private actor SelfCancellingFailingEngine: StoryEngine {
+        private(set) var calls = 0
+
+        func makeStory(for request: StoryRequest, seed: UInt64) async throws -> StoryContent {
+            calls += 1
+            withUnsafeCurrentTask { $0?.cancel() }
+            throw StoryEngineError.generationFailed
+        }
+    }
+
+    /// A real gate-passing curated shelf, so "fell back to curated" can mean
+    /// delivery rather than merely invocation.
+    private struct WorkingCuratedEngine: StoryEngine {
+        func makeStory(for request: StoryRequest, seed: UInt64) async throws -> StoryContent {
+            StoryContent(
+                title: "The Gentle Evening",
+                pages: [
+                    "Once upon a time, \(request.childName) spent a long and lovely day playing in the sunshine with \(request.companionOrDefault), and now the sky was turning gold.",
+                    "Together they walked home slowly, watching the first star appear, talking softly about all the small wonderful things they had seen.",
+                    "At home, \(request.childName) washed up, put on the coziest pajamas, and snuggled deep under the covers with \(request.comfortObjectOrDefault) held close.",
+                    "The moon peeked in to say goodnight. Sleep well, \(request.childName), and have the sweetest dreams until morning comes.",
+                ],
+                moral: "A gentle day deserves a gentle night.",
+                language: .english
+            )
+        }
+    }
+
     private var request: StoryRequest {
         StoryRequest(childName: "Nova", ageBand: .little, theme: .adventure,
                      companion: "", comfortObject: "")
@@ -85,15 +115,28 @@ struct StoryProviderCancellationTests {
         #expect(await curated.calls == 0, "a cancelled write still rendered a curated story")
     }
 
-    /// And the guard is not overeager: an uncancelled write that hits the
-    /// same unavailable break still gets its curated story.
-    @Test func anUncancelledWriteStillFallsBackToCuratedOnUnavailable() async {
-        let model = CountingFailingEngine(error: StoryEngineError.unavailable)
+    /// The guard belongs INSIDE the retry loop, not only before it: an
+    /// engine that cancels the task and then fails normally must not buy
+    /// itself a second attempt (round eight).
+    @Test func acancellationDuringTheFirstAttemptStopsTheRetry() async {
+        let model = SelfCancellingFailingEngine()
         let curated = CountingFailingEngine()
         let provider = StoryProvider(model: model, curated: curated)
+        let result = await Task { await provider.makeStory(for: request) }.value
+        #expect(result.engine == .floor)
+        #expect(await model.calls == 1, "the model was retried after cancellation")
+        #expect(await curated.calls == 0, "a cancelled write still rendered a curated story")
+    }
+
+    /// And the guard is not overeager: an uncancelled write that hits the
+    /// same unavailable break still gets a real curated story DELIVERED,
+    /// not merely attempted (round eight).
+    @Test func anUncancelledWriteStillReceivesACuratedStoryOnUnavailable() async {
+        let model = CountingFailingEngine(error: StoryEngineError.unavailable)
+        let provider = StoryProvider(model: model, curated: WorkingCuratedEngine())
         let result = await provider.makeStory(for: request)
         #expect(await model.calls == 1)
-        #expect(await curated.calls == 1, "the curated shelf was skipped for a live write")
-        #expect(result.engine == .emergency)
+        #expect(result.engine == .curated, "the curated shelf did not deliver")
+        #expect(result.content.title == "The Gentle Evening")
     }
 }

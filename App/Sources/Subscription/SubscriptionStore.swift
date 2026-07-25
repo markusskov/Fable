@@ -188,7 +188,12 @@ final class SubscriptionStore {
         // A purchase (or any verified subscription) that landed while this
         // query was suspended has already spent the offer.
         guard generation == eligibilityGeneration else { return }
-        isEligibleForIntroOffer = eligible
+        // And a lagging `true` from a query that started AFTER the purchase
+        // carries the newest generation, so the generation guard cannot see
+        // it: eligibility may never contradict live access. Deliberately not
+        // a permanent local flag — a lapsed family that never used an offer
+        // can become eligible again, and this re-asks whenever they are free.
+        isEligibleForIntroOffer = eligible && !status.isSubscribed
     }
 
     /// Retries the catalog when it is missing or PARTIAL (one of two plans
@@ -410,7 +415,15 @@ final class SubscriptionStore {
         // A bridge entry that expires mid-session stops bridging.
         unconfirmedPurchases.removeAll { !grantsAccessOnItsOwn($0, now: now) }
         status = SubscriptionStatus.derive(from: live + unconfirmedPurchases)
-        if status.isSubscribed { isAwaitingApproval = false }
+        if status.isSubscribed {
+            isAwaitingApproval = false
+            // ANY active subscription spends the free week, including one
+            // discovered only through the entitlement view (a restore, a
+            // cold launch, another device). Round seven consumed it solely
+            // on the bridge path, so a captured `true` could still commit
+            // after access began (round eight, P2).
+            consumeIntroEligibility()
+        }
     }
 
     // MARK: - Paywall copy helpers

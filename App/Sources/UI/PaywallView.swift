@@ -55,6 +55,10 @@ struct PaywallView: View {
                 return
             }
             await subscriptions.ensureCatalog()
+            // Settled free with the sheet open: re-ask, whether or not the
+            // catalog needed loading, so the trial line reflects the account
+            // rather than whatever the last catalog load happened to see.
+            await subscriptions.refreshIntroEligibility()
         }
         // Entitlement can arrive while the sheet is open — an Ask-to-Buy
         // approval, a purchase on another device, cold-start resolution. The
