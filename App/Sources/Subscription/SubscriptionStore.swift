@@ -105,7 +105,15 @@ final class SubscriptionStore {
     /// Whether the paywall may SAY there is a free week: a settled answer,
     /// still eligible, and no live access.
     var canAdvertiseIntroOffer: Bool {
-        isEligibleForIntroOffer && eligibilityIsSettled && !status.isSubscribed
+        // Also: not while the authoritative entitlement read is outstanding.
+        // Generations order QUERIES, not whole refresh workflows, so an
+        // older catalog workflow could otherwise settle the offer against a
+        // status a newer read was already in the middle of replacing
+        // (round eleven, P2).
+        isEligibleForIntroOffer
+            && eligibilityIsSettled
+            && refreshTask == nil
+            && !status.isSubscribed
     }
 
     /// Marks the offer unsettled. Synchronous by contract: entry points call
@@ -181,7 +189,7 @@ final class SubscriptionStore {
         }
         Task {
             await refreshStatus()
-            if loadsCatalog { await loadProducts() }
+            await loadProducts()
         }
     }
 
@@ -229,6 +237,11 @@ final class SubscriptionStore {
     }
 
     func loadProducts() async {
+        // Tests opt out of the live catalog entirely: `loadsCatalog` gated
+        // only start() before, so refreshOnReturn still reached
+        // Product.products and made completion environment-dependent
+        // (round eleven, test finding).
+        guard loadsCatalog else { return }
         // Coalesce: a retry joins the in-flight request instead of being
         // dropped, so "request skipped while loading, then the load failed"
         // can no longer strand the paywall (round three).

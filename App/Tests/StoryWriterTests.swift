@@ -38,7 +38,10 @@ struct StoryWriterTests {
     /// A gate that is NOT cancellation-aware, so a write parked on it keeps
     /// running no matter what the task's cancellation flag says.
     private actor Gate {
-        private var continuation: CheckedContinuation<Void, Never>?
+        /// ALL waiters, not one: a second write parking before the gate
+        /// opened used to overwrite the first and strand it
+        /// (round eleven).
+        private var waiters: [CheckedContinuation<Void, Never>] = []
         private var isOpen = false
         private var entryWaiters: [CheckedContinuation<Void, Never>] = []
         private(set) var entries = 0
@@ -50,7 +53,7 @@ struct StoryWriterTests {
             entryWaiters.removeAll()
             defer { exits += 1 }
             guard !isOpen else { return }
-            await withCheckedContinuation { continuation = $0 }
+            await withCheckedContinuation { waiters.append($0) }
         }
 
         /// Suspends until a write has actually entered the gate, or gives
@@ -68,8 +71,8 @@ struct StoryWriterTests {
 
         func open() {
             isOpen = true
-            continuation?.resume()
-            continuation = nil
+            waiters.forEach { $0.resume() }
+            waiters.removeAll()
         }
     }
 
@@ -190,6 +193,10 @@ struct StoryWriterTests {
         // checks cancellation before each attempt, so no second one starts.
         await drain(gate, to: 1, "abandoned chain")
         for _ in 0..<10_000 where writer.droppedOutcomes == 0 { await Task.yield() }
+        // The verdict the poll was missing: the straggler must actually have
+        // ARRIVED and been dropped. Without this the single synchronous
+        // .abandoned outcome passes the count check on its own (round eleven).
+        #expect(writer.droppedOutcomes == 1, "the straggler never arrived, so nothing was proved")
         #expect(outcomes.count == 1, "a straggler write delivered a second outcome")
     }
 

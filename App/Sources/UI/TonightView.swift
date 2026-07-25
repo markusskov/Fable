@@ -278,6 +278,14 @@ struct TonightView: View {
         .buttonStyle(.plain)
     }
 
+    /// Presenting is the display boundary: the offer becomes unsettled here,
+    /// synchronously, so the sheet's first render cannot show a cached free
+    /// week before its .task gets a chance to run (round eleven, P2).
+    private func showPaywall() {
+        subscriptions.invalidateIntroEligibility()
+        isShowingPaywall = true
+    }
+
     private func tellStoryTapped() {
         if allowance.isAllowed {
             tellStory(continuing: nil)
@@ -306,11 +314,11 @@ struct TonightView: View {
                 if subscriptions.isSubscribed {
                     action()
                 } else {
-                    isShowingPaywall = true
+                    showPaywall()
                 }
             }
         } else {
-            isShowingPaywall = true
+            showPaywall()
         }
     }
 
