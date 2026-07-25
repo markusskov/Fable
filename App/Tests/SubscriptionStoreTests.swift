@@ -480,6 +480,80 @@ struct SubscriptionStoreTests {
         #expect(try #require(accessAtFinish.value), "finished before access was applied")
     }
 
+    // MARK: - The entitlement bridge is not a blank cheque (round five)
+
+    /// `Transaction.updates` can replay an unfinished transaction that
+    /// expired long ago. `currentEntitlements` membership is pre-vetted by
+    /// Apple (which is why grace periods must not be expiry-filtered), but a
+    /// RAW update is not: round five found a replayed expired transaction
+    /// granting Fable+ for the rest of the process.
+    @Test func anExpiredTransactionReplayedThroughUpdatesGrantsNothing() async {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        let store = Self.makeStore(client)
+        store.start()
+        #expect(await settles { store.status == .free })
+
+        client.signalUpdate(record: EntitlementRecord(
+            transactionID: 9,
+            originalID: 9,
+            productID: FablePlus.Plan.annual.productID,
+            expirationDate: .now.addingTimeInterval(-90 * 86_400)
+        ))
+        // Give the listener a chance to do the wrong thing.
+        #expect(await settles { client.readCount >= 2 })
+        #expect(store.status == .free, "a long expired replay was honoured as a live entitlement")
+    }
+
+    /// Every monthly renewal carries the same product ID, so reconciling by
+    /// SKU treated a fresh renewal as one already confirmed and discarded
+    /// the bridge covering it. Identity is the transaction (round five, P1).
+    @Test func arenewalIsNotMistakenForTheTransactionItReplaces() async {
+        let confirmed = EntitlementRecord(
+            transactionID: 1, originalID: 1,
+            productID: FablePlus.Plan.monthly.productID,
+            expirationDate: .now.addingTimeInterval(3_600)
+        )
+        let client = StubStoreClient()
+        // The renewal lands in the gap: the old transaction has dropped out
+        // of the entitlement view and the new one has not appeared yet.
+        await client.script(reads: [[confirmed], []])
+        let store = Self.makeStore(client)
+        store.start()
+        #expect(await settles { store.isSubscribed })
+
+        client.signalUpdate(record: EntitlementRecord(
+            transactionID: 2, originalID: 1,
+            productID: FablePlus.Plan.monthly.productID,
+            expirationDate: .now.addingTimeInterval(30 * 86_400)
+        ))
+        #expect(await settles { client.readCount >= 2 })
+        #expect(store.isSubscribed, "the renewal was discarded as a duplicate SKU and access lapsed")
+    }
+
+    /// A refund can arrive before the entitlement view stops reporting the
+    /// transaction. Without a tombstone, Fable acknowledged the refund with
+    /// `finish()` while the stale snapshot kept granting (round five, P1).
+    @Test func arefundBeatsAStaleActiveSnapshot() async {
+        let active = EntitlementRecord(
+            transactionID: 7, originalID: 7,
+            productID: FablePlus.Plan.annual.productID,
+            expirationDate: .now.addingTimeInterval(300 * 86_400)
+        )
+        let client = StubStoreClient()
+        // Both reads still report it as active: the refund is newer than
+        // anything the entitlement view knows.
+        await client.set(entitlements: [active])
+        let store = Self.makeStore(client)
+        store.start()
+        #expect(await settles { store.isSubscribed })
+
+        var revoked = active
+        revoked.revocationDate = .now
+        client.signalUpdate(record: revoked)
+        #expect(await settles { store.status == .free }, "a refund lost to a stale active snapshot")
+    }
+
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {
         let client = StubStoreClient()
         await client.set(entitlements: [Self.activeRecord()])

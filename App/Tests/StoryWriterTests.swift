@@ -91,6 +91,16 @@ struct StoryWriterTests {
         )
     }
 
+    /// Drains a gate to an exact expected number of engine exits. Bounded,
+    /// so a wrong expectation fails the test instead of hanging it.
+    private func drain(_ gate: Gate, to expected: Int, _ what: String) async {
+        for _ in 0..<10_000 {
+            if await gate.exits >= expected { break }
+            await Task.yield()
+        }
+        #expect(await gate.exits == expected, "\(what): expected \(expected) engine exits")
+    }
+
     @Test func aFinishedWriteDeliversItsStoryExactlyOnce() async {
         let writer = StoryWriter()
         let provider = StoryProvider(model: GoodEngine(), curated: GoodEngine())
@@ -173,8 +183,7 @@ struct StoryWriterTests {
         // The engine finally returns and the whole provider chain drains:
         // two model attempts plus one curated attempt, all now instant.
         await gate.open()
-        let expectedExits = StoryProvider.modelAttempts + 1
-        while await gate.exits < expectedExits { await Task.yield() }
+        await drain(gate, to: StoryProvider.modelAttempts, "abandoned chain")
         await Task.yield()
         #expect(outcomes.count == 1, "a straggler write delivered a second outcome")
     }
@@ -183,46 +192,63 @@ struct StoryWriterTests {
     /// arrives AFTER a new write has started, and must not be delivered into
     /// the new write's closure. Write identity, not just cancellation, is
     /// what keeps them apart.
-    @Test func astragglerFromAnAbandonedWriteCannotHijackTheNextWrite() async {
-        let gate = Gate()
+    /// The scenario round four flagged and round five sharpened: an
+    /// abandoned write's result must not disturb a replacement write that is
+    /// STILL RUNNING. Finishing the replacement first would prove nothing.
+    @Test func astragglerCannotDisturbAStillRunningReplacementWrite() async {
+        let abandonedGate = Gate()
+        let replacementGate = Gate()
         let writer = StoryWriter()
-        let stalled = StoryProvider(model: StubbornEngine(gate: gate), curated: StubbornEngine(gate: gate))
-        let ready = StoryProvider(model: GoodEngine(), curated: GoodEngine())
 
         var first: [StoryWriter.Outcome] = []
         await withCheckedContinuation { done in
-            writer.write(request, using: stalled, pacing: .zero) { outcome in
+            writer.write(
+                request,
+                using: StoryProvider(
+                    model: StubbornEngine(gate: abandonedGate),
+                    curated: StubbornEngine(gate: abandonedGate)
+                ),
+                pacing: .zero
+            ) { outcome in
                 first.append(outcome)
                 done.resume()
             }
             Task {
-                await gate.waitUntilEntered()
+                await abandonedGate.waitUntilEntered()
                 writer.abandon()
             }
         }
         #expect(first.count == 1)
 
-        // A new write starts and finishes while the first is still parked.
+        // The replacement starts and parks: it is in flight, not finished.
         var second: [StoryWriter.Outcome] = []
-        await withCheckedContinuation { done in
-            writer.write(request, using: ready, pacing: .zero) { outcome in
-                second.append(outcome)
-                done.resume()
-            }
+        writer.write(
+            request,
+            using: StoryProvider(
+                model: StubbornEngine(gate: replacementGate),
+                curated: StubbornEngine(gate: replacementGate)
+            ),
+            pacing: .zero
+        ) { outcome in
+            second.append(outcome)
         }
-        #expect(second.count == 1)
-        guard case .finished = second.first else {
-            Issue.record("the second write should have finished normally")
-            return
-        }
+        await replacementGate.waitUntilEntered()
+        #expect(writer.isWriting, "the replacement write should still be running")
 
-        // Now the abandoned write's engine returns at last.
-        await gate.open()
-        let expectedExits = StoryProvider.modelAttempts + 1
-        while await gate.exits < expectedExits { await Task.yield() }
+        // The abandoned write's engine finally returns, mid-replacement.
+        await abandonedGate.open()
+        await drain(abandonedGate, to: StoryProvider.modelAttempts, "abandoned chain")
         await Task.yield()
         #expect(first.count == 1, "the abandoned write delivered twice")
-        #expect(second.count == 1, "a straggler was delivered into the next write's closure")
+        #expect(second.isEmpty, "a straggler was delivered into a running write's closure")
+        #expect(writer.isWriting, "a straggler ended the replacement write")
+
+        // The replacement then finishes on its own terms.
+        await replacementGate.open()
+        await drain(replacementGate, to: StoryProvider.modelAttempts + 1, "live chain")
+        for _ in 0..<10_000 where second.isEmpty { await Task.yield() }
+        #expect(second.count == 1)
+        #expect(!writer.isWriting)
     }
 
     @Test func aRacingSecondWriteCannotProduceASecondOutcome() async {

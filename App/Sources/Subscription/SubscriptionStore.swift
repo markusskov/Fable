@@ -79,10 +79,17 @@ final class SubscriptionStore {
     /// `currentEntitlements`. Its entitlement view can lag a sale it has
     /// already signed, and granting-then-reconciling used to revoke access
     /// moments after taking the money (2026-07-24 review round four, P1).
-    /// An entry is dropped the moment a read confirms it, or an update
-    /// revokes it. In memory only: a relaunch re-derives from entitlements
-    /// alone, so a purchase StoreKit never confirms cannot grant forever.
+    /// Keyed by transaction ID, so a renewal is never mistaken for the
+    /// already confirmed transaction it replaces (round five, P1). In memory
+    /// only: for auto-renewable subscriptions the durable record is Apple's
+    /// entitlement, which is re-read at launch and on every foreground, so a
+    /// local mirror could only ever be wrong in a staler direction.
     private var unconfirmedPurchases: [EntitlementRecord] = []
+    /// Transactions an update has told us are revoked, held until the
+    /// entitlement view stops reporting them. Without this, a refund that
+    /// arrives before the read catches up is acknowledged with `finish()`
+    /// while the stale active snapshot keeps granting (round five, P1).
+    private var revokedTransactionIDs: Set<UInt64> = []
     /// A parent's approval is outstanding (Ask to Buy). Store-level so it
     /// survives the paywall being dismissed and reopened.
     private(set) var isAwaitingApproval = false
@@ -324,25 +331,47 @@ final class SubscriptionStore {
         return await task.value
     }
 
-    /// Folds a verified transaction's own facts into access immediately,
-    /// before StoreKit's entitlement view is asked to agree.
+    /// Folds a RAW verified transaction (an update, or a just completed
+    /// purchase) into access immediately, before StoreKit's entitlement view
+    /// is asked to agree.
+    ///
+    /// Raw transactions are not the same thing as `currentEntitlements`
+    /// membership: Apple pre-vets that view (which is why grace periods must
+    /// NOT be expiry-filtered), while `Transaction.updates` can replay an
+    /// unfinished transaction that expired long ago. Round five found such a
+    /// replay granting Fable+ for the rest of the process, so raw records
+    /// are vetted here and trusted records are not.
     private func applyVerified(_ record: EntitlementRecord) {
-        unconfirmedPurchases.removeAll { $0.productID == record.productID }
-        if record.revocationDate == nil, !record.isUpgraded,
-           SubscriptionStatus.derive(from: [record]).isSubscribed {
+        unconfirmedPurchases.removeAll { $0.transactionID == record.transactionID }
+        if record.revocationDate != nil {
+            revokedTransactionIDs.insert(record.transactionID)
+        } else if grantsAccessOnItsOwn(record) {
             unconfirmedPurchases.append(record)
         }
         recompute()
     }
 
-    /// Access is the entitlement view plus any verified purchase it has not
-    /// caught up with yet. A read that finally reports the purchase retires
-    /// the unconfirmed copy; a revocation arriving through `updates` removes
-    /// it, so this cannot outlive a refund.
-    private func recompute() {
-        let confirmed = Set(lastRecords.map(\.productID))
-        unconfirmedPurchases.removeAll { confirmed.contains($0.productID) }
-        status = SubscriptionStatus.derive(from: lastRecords + unconfirmedPurchases)
+    /// Whether a raw transaction, judged alone, should grant access.
+    private func grantsAccessOnItsOwn(_ record: EntitlementRecord, now: Date = .now) -> Bool {
+        guard record.revocationDate == nil, !record.isUpgraded else { return false }
+        // A raw record carries no grace-period context, so an elapsed
+        // expiry means exactly what it says.
+        if let expiry = record.expirationDate, expiry <= now { return false }
+        return FablePlus.plan(forProductID: record.productID) != nil
+    }
+
+    /// Access is the entitlement view, minus anything an update has revoked,
+    /// plus any verified transaction the view has not caught up with yet.
+    private func recompute(now: Date = .now) {
+        let live = lastRecords.filter { !revokedTransactionIDs.contains($0.transactionID) }
+        // Identity is the transaction, never the SKU.
+        let confirmed = Set(live.map(\.transactionID))
+        unconfirmedPurchases.removeAll { confirmed.contains($0.transactionID) }
+        // A bridge entry that expires mid-session stops bridging.
+        unconfirmedPurchases.removeAll { !grantsAccessOnItsOwn($0, now: now) }
+        // Tombstones the entitlement view already agrees with are spent.
+        revokedTransactionIDs.formIntersection(Set(lastRecords.map(\.transactionID)))
+        status = SubscriptionStatus.derive(from: live + unconfirmedPurchases)
         if status.isSubscribed { isAwaitingApproval = false }
     }
 

@@ -57,6 +57,8 @@ enum ClientPurchaseResult: Sendable {
 extension EntitlementRecord {
     init(_ transaction: Transaction) {
         self.init(
+            transactionID: transaction.id,
+            originalID: transaction.originalID,
             productID: transaction.productID,
             expirationDate: transaction.expirationDate,
             revocationDate: transaction.revocationDate,

@@ -288,9 +288,12 @@ struct TonightView: View {
             action()
         } else if case .unknown = subscriptions.status {
             Task {
-                let settled = await subscriptions.refreshStatus()
+                _ = await subscriptions.refreshStatus()
                 guard writeServesActiveProfile else { return }
-                if settled.isSubscribed {
+                // Authorize from the store's LIVE status, not the value that
+                // was true when this continuation was scheduled: a refund can
+                // commit in between (round five, P2).
+                if subscriptions.isSubscribed {
                     action()
                 } else {
                     isShowingPaywall = true
@@ -361,7 +364,12 @@ struct TonightView: View {
             } catch {
                 // Bedtime is never broken for a storage fault: tonight's
                 // story is read from memory, and a story Fable could not
-                // keep is not charged beyond this session.
+                // keep is not charged beyond this session. One retry, since
+                // the common cause (a momentary write conflict) clears on
+                // its own; after that the story is honestly session-only.
+                Task { @MainActor in
+                    try? modelContext.save()
+                }
             }
             path.append(story)
         }

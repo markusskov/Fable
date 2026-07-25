@@ -64,11 +64,20 @@ struct StoryProvider: Sendable {
                 return TellResult(content: content, engine: .model, heroName: safe.childName)
             } catch StoryEngineError.unavailable {
                 break
+            } catch is CancellationError {
+                // The family moved on. Burning a second model attempt and a
+                // curated render for a story nobody will read is waste, not
+                // safety (2026-07-24 review round five, P2). The caller
+                // discards this either way.
+                return TellResult(content: Self.inputFreeStory, engine: .floor, heroName: Self.floorHeroName)
             } catch {
                 continue
             }
         }
 
+        if Task.isCancelled {
+            return TellResult(content: Self.inputFreeStory, engine: .floor, heroName: Self.floorHeroName)
+        }
         if let content = try? await curated.makeStory(for: safe, seed: seed),
            ContentSafetyCheck.isAcceptable(content, for: safe) {
             return TellResult(content: content, engine: .curated, heroName: safe.childName)
