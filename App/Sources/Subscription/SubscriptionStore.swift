@@ -20,6 +20,10 @@ enum PurchaseOutcome: Equatable {
     case cancelled
     /// The App Store could not complete the purchase (offline, verification).
     case failed
+    /// Another money operation is still running — possibly started from a
+    /// previous paywall presentation (round three: the per-sheet guard
+    /// reset on reopen, letting operations overlap).
+    case alreadyInProgress
 }
 
 enum RestoreOutcome: Equatable {
@@ -27,6 +31,7 @@ enum RestoreOutcome: Equatable {
     case nothingToRestore
     /// The App Store could not be reached.
     case failed
+    case alreadyInProgress
 }
 
 /// Owns every StoreKit interaction in the app: loading the Fable+ products,
@@ -52,16 +57,29 @@ final class SubscriptionStore {
     private let client: any StoreClient
     private var updatesTask: Task<Void, Never>?
     private var hasStarted = false
-    /// Monotonic guard against interleaved refreshes: an entitlement snapshot
-    /// read before a newer refresh began must never overwrite the newer
-    /// truth (2026-07-24 external money-path review — a refund landing
-    /// mid-refresh could be undone by the stale first snapshot).
-    private var refreshGeneration = 0
+    /// The catalog is Product-based and cannot be stubbed; tests pass false
+    /// so start() stays fully deterministic (round three test verdict).
+    private let loadsCatalog: Bool
+    /// Single-flight entitlement refresh (round three, P1): all concurrent
+    /// callers await ONE reader; a request arriving mid-read marks it stale
+    /// so it loops once more before committing. Every caller therefore
+    /// receives the WINNING derivation — never a snapshot that a newer
+    /// cause has already invalidated. (The previous generation counter
+    /// protected only the global commit and returned the stale value to
+    /// the purchase/restore that asked.)
+    private var refreshTask: Task<SubscriptionStatus, Never>?
+    private var refreshIsStale = false
+    /// One money operation at a time, across paywall presentations.
+    private var isTransacting = false
+    /// Coalesces catalog loads so a retry can never race an in-flight
+    /// request or clobber its result.
+    private var catalogTask: Task<Void, Never>?
 
     /// The client is injectable so entitlement lifecycle transitions can be
     /// forced in tests; production always talks to the real App Store.
-    init(client: any StoreClient = LiveStoreClient()) {
+    init(client: any StoreClient = LiveStoreClient(), loadsCatalog: Bool = true) {
         self.client = client
+        self.loadsCatalog = loadsCatalog
     }
 
     // In the app this store lives as long as the process, but nothing should
@@ -96,14 +114,20 @@ final class SubscriptionStore {
         updatesTask = Task { [weak self] in
             // Renewals, refunds, Ask-to-Buy approvals, and purchases made
             // on another device all arrive here.
-            for await _ in updates {
+            for await update in updates {
                 guard let self else { return }
+                // Deliver, THEN finish (Apple's order; round-three P1): the
+                // refresh reads currentEntitlements, which already includes
+                // the unfinished transaction, so access is granted before
+                // delivery is acknowledged. Skipping finish on early exit is
+                // safe — StoreKit redelivers unfinished transactions.
                 await self.refreshStatus()
+                await update.finish()
             }
         }
         Task {
             await refreshStatus()
-            await loadProducts()
+            if loadsCatalog { await loadProducts() }
         }
     }
 
@@ -113,31 +137,46 @@ final class SubscriptionStore {
     /// while backgrounded is noticed promptly.
     func refreshOnReturn() async {
         await refreshStatus()
-        // A PARTIAL catalog is a failure too: with one of two plans loaded
-        // the paywall's default selection can be unbuyable with no retry
-        // route (2026-07-24 review round two).
-        if products.count < FablePlus.productIDs.count, !isLoadingProducts {
+        await ensureCatalog()
+    }
+
+    /// Retries the catalog when it is missing or PARTIAL (one of two plans
+    /// makes the paywall's default selection unbuyable). Callers that only
+    /// care about entitlement (the paywall's dismiss check) should refresh
+    /// first and not wait for this (round three).
+    func ensureCatalog() async {
+        if products.count < FablePlus.productIDs.count {
             await loadProducts()
         }
     }
 
     func loadProducts() async {
-        guard !isLoadingProducts else { return }
-        isLoadingProducts = true
-        defer { isLoadingProducts = false }
-        do {
-            let loaded = try await Product.products(for: FablePlus.productIDs)
-            products = loaded.sorted { lhs, rhs in
-                Self.sortOrder(of: lhs) < Self.sortOrder(of: rhs)
+        // Coalesce: a retry joins the in-flight request instead of being
+        // dropped, so "request skipped while loading, then the load failed"
+        // can no longer strand the paywall (round three).
+        if let running = catalogTask {
+            return await running.value
+        }
+        let task = Task<Void, Never> {
+            do {
+                let loaded = try await Product.products(for: FablePlus.productIDs)
+                products = loaded.sorted { lhs, rhs in
+                    Self.sortOrder(of: lhs) < Self.sortOrder(of: rhs)
+                }
+                if let subscription = products.first?.subscription {
+                    isEligibleForIntroOffer = await subscription.isEligibleForIntroOffer
+                }
+            } catch {
+                // Keep whatever catalog we already have: a failed RETRY must
+                // not destroy a paywall that was already usable (round three).
             }
             productsUnavailable = products.isEmpty
-            if let subscription = products.first?.subscription {
-                isEligibleForIntroOffer = await subscription.isEligibleForIntroOffer
-            }
-        } catch {
-            products = []
-            productsUnavailable = true
         }
+        catalogTask = task
+        isLoadingProducts = true
+        await task.value
+        isLoadingProducts = false
+        catalogTask = nil
     }
 
     /// The introductory free-trial line for a plan ("1 week free"), or nil
@@ -167,17 +206,27 @@ final class SubscriptionStore {
     /// What happened, honestly — the paywall narrates each outcome instead
     /// of collapsing pending/offline/verification into "nothing happened".
     func purchase(_ plan: FablePlus.Plan) async -> PurchaseOutcome {
-        // No local catalog guard: the client resolves the product itself and
-        // throws when it is unavailable, which maps to .failed below. This
-        // keeps every purchase path reachable through the injectable seam.
+        guard !isTransacting else { return .alreadyInProgress }
+        isTransacting = true
+        defer { isTransacting = false }
         do {
-            switch try await client.purchase(productID: plan.productID) {
-            case .successVerified:
-                // Judge by THIS refresh's answer, not the global status a
-                // concurrent newer refresh may own (round-two P1).
-                let refreshed = await refreshStatus()
-                return refreshed.isSubscribed ? .subscribed : .failed
+            switch try await client.purchase(productID: plan.productID, loaded: product(for: plan)) {
+            case .successVerified(let record, let finish):
+                // Apple's order (round-three P1): grant access from the
+                // verified transaction's OWN facts, then finish, then
+                // reconcile. No later entitlement read gets to veto a
+                // verified sale — the previous shape finished first and let
+                // an empty re-read call a real purchase a failure.
+                let granted = SubscriptionStatus.derive(from: [record])
+                if granted.isSubscribed {
+                    status = granted
+                }
+                await finish()
+                await refreshStatus()
+                return granted.isSubscribed ? .subscribed : .failed
             case .successUnverified:
+                // Unfinished on purpose: it redelivers via updates once
+                // verification can succeed.
                 return .failed
             case .pending:
                 // Ask to Buy: approval arrives later via the update stream,
@@ -193,6 +242,9 @@ final class SubscriptionStore {
 
     /// "Restore purchases" — required by App Review for any subscription app.
     func restore() async -> RestoreOutcome {
+        guard !isTransacting else { return .alreadyInProgress }
+        isTransacting = true
+        defer { isTransacting = false }
         do {
             try await client.sync()
         } catch {
@@ -203,23 +255,40 @@ final class SubscriptionStore {
     }
 
     /// Recomputes `status` from the entitlements StoreKit can currently
-    /// verify. Latest-wins for the GLOBAL state: if a newer refresh started
-    /// while this one was suspended reading entitlements, this snapshot
-    /// does not overwrite it. The locally derived status is still returned,
-    /// because the operation that asked (a purchase, a restore) read a
-    /// perfectly current answer for itself — discarding the commit must not
-    /// make a successful purchase report failure (2026-07-24 review round
-    /// two, P1: latest-wins protects final state, not operation outcomes).
+    /// verify. Single-flight with a stale-rerun: concurrent callers share
+    /// one reader, and a call arriving mid-read forces one more read before
+    /// the commit. Every caller gets the WINNING derivation — the round-two
+    /// shape returned a knowingly superseded snapshot to the operation that
+    /// asked, so a restore could report .subscribed after a refund had
+    /// already committed .free (round-three P1).
     @discardableResult
     func refreshStatus() async -> SubscriptionStatus {
-        refreshGeneration += 1
-        let generation = refreshGeneration
-        let records = await client.currentEntitlements()
-        let derived = SubscriptionStatus.derive(from: records)
-        if generation == refreshGeneration {
-            status = derived
+        if let running = refreshTask {
+            // Joining is only possible while a read is actually in flight:
+            // the leader's commit and its handle cleanup are synchronous
+            // neighbours below, so there is no window where a caller can
+            // attach to an already decided answer.
+            refreshIsStale = true
+            return await running.value
         }
-        return derived
+        let task = Task<SubscriptionStatus, Never> { [weak self] in
+            guard let self else { return .unknown }
+            var derived = SubscriptionStatus.unknown
+            while true {
+                self.refreshIsStale = false
+                let records = await self.client.currentEntitlements()
+                // A newer cause arrived while we were reading: that read is
+                // stale by definition; read again rather than commit it.
+                if self.refreshIsStale { continue }
+                derived = SubscriptionStatus.derive(from: records)
+                self.status = derived
+                break
+            }
+            self.refreshTask = nil
+            return derived
+        }
+        refreshTask = task
+        return await task.value
     }
 
     // MARK: - Paywall copy helpers

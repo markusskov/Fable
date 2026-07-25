@@ -2415,7 +2415,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "La restauration n'a pas abouti. Vérifiez votre connexion et réessayez."
+            "value": "La restauration n'a pas abouti. Vérifie ta connexion et réessaie."
           }
         },
         "it": {
@@ -2715,6 +2715,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comece sua semana grátis"
+          }
+        }
+      }
+    },
+    "Still finishing the previous request. One moment.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die vorherige Anfrage läuft noch. Einen Moment."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía estamos terminando la solicitud anterior. Un momento."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La demande précédente est encore en cours. Un instant."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stiamo ancora completando la richiesta precedente. Un momento."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forrige forespørsel holder fortsatt på. Et øyeblikk."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ainda estamos concluindo o pedido anterior. Um momento."
           }
         }
       }
@@ -3426,7 +3466,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "L'achat n'a pas pu être finalisé. Veuillez réessayer dans un instant."
+            "value": "L'achat n'a pas pu être finalisé. Réessaie dans un instant."
           }
         },
         "it": {

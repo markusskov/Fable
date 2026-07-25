@@ -35,6 +35,37 @@ struct StoryWriterTests {
         }
     }
 
+    /// A gate that is NOT cancellation-aware, so a write parked on it keeps
+    /// running no matter what the task's cancellation flag says.
+    private actor Gate {
+        private var continuation: CheckedContinuation<Void, Never>?
+        private var isOpen = false
+
+        func wait() async {
+            guard !isOpen else { return }
+            await withCheckedContinuation { continuation = $0 }
+        }
+
+        func open() {
+            isOpen = true
+            continuation?.resume()
+            continuation = nil
+        }
+    }
+
+    /// Ignores cancellation entirely — a real engine, or a framework call
+    /// inside one, that never checks `Task.isCancelled`. Abandoning such a
+    /// write must still return the family's meter claim at once
+    /// (2026-07-24 review round three, P2).
+    private struct StubbornEngine: StoryEngine {
+        let gate: Gate
+
+        func makeStory(for request: StoryRequest, seed: UInt64) async throws -> StoryContent {
+            await gate.wait()
+            throw StoryEngineError.generationFailed
+        }
+    }
+
     private var request: StoryRequest {
         StoryRequest(
             childName: "Nova",
@@ -91,6 +122,41 @@ struct StoryWriterTests {
             return
         }
         #expect(!writer.isWriting)
+    }
+
+    /// Abandonment must not need the engine's cooperation: the outcome
+    /// arrives while the engine is still parked, and the straggler result
+    /// that shows up later is dropped rather than delivered twice.
+    @Test func abandoningAnUncooperativeWriteStillRefundsAtOnce() async {
+        let gate = Gate()
+        let writer = StoryWriter()
+        let provider = StoryProvider(
+            model: StubbornEngine(gate: gate),
+            curated: StubbornEngine(gate: gate)
+        )
+        var outcomes: [StoryWriter.Outcome] = []
+        await withCheckedContinuation { done in
+            writer.write(request, using: provider, pacing: .zero) { outcome in
+                outcomes.append(outcome)
+                done.resume()
+            }
+            Task {
+                await Task.yield()
+                writer.abandon()
+            }
+        }
+        // Delivered while the engine is STILL suspended on the gate.
+        #expect(outcomes.count == 1)
+        guard case .abandoned = outcomes.first else {
+            Issue.record("an uncooperative write must still report abandoned")
+            return
+        }
+        #expect(!writer.isWriting)
+
+        // The engine finally returns; its result must go nowhere.
+        await gate.open()
+        for _ in 0..<10 { await Task.yield() }
+        #expect(outcomes.count == 1, "a straggler write delivered a second outcome")
     }
 
     @Test func aRacingSecondWriteCannotProduceASecondOutcome() async {

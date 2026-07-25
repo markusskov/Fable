@@ -45,11 +45,16 @@ struct PaywallView: View {
         // A failed catalog load is not sticky: reopening the paywall retries
         // (2026-07-24 money-path review). Also settles a cold-start .unknown.
         .task {
-            await subscriptions.refreshOnReturn()
-            // onChange below is not initial: a family whose entitlement
-            // resolved between presenting and mounting would otherwise sit
-            // on a paywall they already passed (review round two).
-            if subscriptions.isSubscribed { dismiss() }
+            // Entitlement first, catalog second: an already subscribed
+            // family's dismissal must not wait behind a product request
+            // (round three). onChange below is not initial, so the mounted
+            // check is explicit.
+            await subscriptions.refreshStatus()
+            if subscriptions.isSubscribed {
+                dismiss()
+                return
+            }
+            await subscriptions.ensureCatalog()
         }
         // Entitlement can arrive while the sheet is open — an Ask-to-Buy
         // approval, a purchase on another device, cold-start resolution. The
@@ -264,6 +269,11 @@ struct PaywallView: View {
             case .failed:
                 operation = .idle
                 storeNote = "The purchase couldn't be completed. Please try again in a moment."
+            case .alreadyInProgress:
+                // A money operation from a previous presentation is still
+                // running; the store-level guard refused the overlap.
+                operation = .idle
+                storeNote = "Still finishing the previous request. One moment."
             }
         }
     }
@@ -283,6 +293,8 @@ struct PaywallView: View {
                 storeNote = "No active subscription was found for this Apple Account."
             case .failed:
                 storeNote = "Restore didn't finish. Please check your connection and try again."
+            case .alreadyInProgress:
+                storeNote = "Still finishing the previous request. One moment."
             }
         }
     }

@@ -167,6 +167,9 @@ struct TonightView: View {
     /// mid-starter families with plenty left see nothing — quiet by default.
     private var meterCaption: String? {
         guard !subscriptions.isSubscribed else { return nil }
+        // Unresolved is not free: no free-tier copy for a family that may
+        // be subscribed once bootstrap settles (round three).
+        if case .unknown = subscriptions.status { return nil }
         switch allowance {
         case .starter(let remaining) where remaining < StoryMeter.starterStories:
             // Singular/plural lives in the string catalog's plural variations.
@@ -277,6 +280,18 @@ struct TonightView: View {
     private func tellStoryTapped() {
         if subscriptions.isSubscribed || allowance.isAllowed {
             tellStory(continuing: nil)
+        } else if case .unknown = subscriptions.status {
+            // Cold start with no free credit left: entitlement has not
+            // resolved yet, and a subscriber must not be shown a paywall
+            // they already passed (round three). Settle first, then decide.
+            Task {
+                let settled = await subscriptions.refreshStatus()
+                if settled.isSubscribed || allowance.isAllowed {
+                    tellStory(continuing: nil)
+                } else {
+                    isShowingPaywall = true
+                }
+            }
         } else {
             isShowingPaywall = true
         }
@@ -328,14 +343,20 @@ struct TonightView: View {
             }
             story.profile = profile
             modelContext.insert(story)
-            // Save explicitly BEFORE releasing: the claim hands off to the
-            // persisted row, so the row must actually be persisted first
-            // (2026-07-24 review round two). If the save throws, autosave
-            // will land the insert moments later; either way exactly one of
-            // claim-or-row holds the charge at every instant.
-            try? modelContext.save()
-            // The persisted row carries the meter charge from here on.
-            reservations.release(reservation)
+            // The claim hands off to the persisted row, so releasing it is
+            // conditional on the save actually succeeding (round three: a
+            // swallowed failure released the claim with no durable row, so
+            // a relaunch refunded a story the family already read). On
+            // failure the claim stays held: if autosave lands the row later
+            // this session the meter briefly counts both (safe direction);
+            // on relaunch exactly one of row-or-nothing exists and the
+            // in-memory claim is gone with the process either way.
+            do {
+                try modelContext.save()
+                reservations.release(reservation)
+            } catch {
+                // Tonight's story still happens; only the handoff waits.
+            }
             path.append(story)
         }
     }
