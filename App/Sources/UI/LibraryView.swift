@@ -9,7 +9,10 @@ struct LibraryView: View {
     /// navigate the same way the Tonight flow does: `path.append(story)`.
     @Binding var path: NavigationPath
 
+    @Environment(\.modelContext) private var modelContext
+    @Environment(PersistenceHealth.self) private var persistence
     @Query(sort: \Story.createdAt, order: .reverse) private var allStories: [Story]
+    @State private var storyPendingDeletion: Story?
 
     /// This child's storybook. Pre-profiles stories belong to everyone, but
     /// rows that predate the all-path gate remain stored and quarantined.
@@ -59,11 +62,41 @@ struct LibraryView: View {
                     }
                     .buttonStyle(.plain)
                     .listRowBackground(FableTheme.card)
+                    .swipeActions(edge: .trailing) {
+                        Button(role: .destructive) {
+                            storyPendingDeletion = story
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
                 .scrollContentBackground(.hidden)
             }
         }
         .fableBackground()
         .navigationTitle("Storybook")
+        // A story is a memory, so deleting one asks first — and says that it
+        // cannot be undone, because on a device-only app that is literally
+        // true (external review finding #6).
+        .confirmationDialog(
+            "Delete this story?",
+            isPresented: Binding(
+                get: { storyPendingDeletion != nil },
+                set: { if !$0 { storyPendingDeletion = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) { deletePendingStory() }
+            Button("Keep", role: .cancel) { storyPendingDeletion = nil }
+        } message: {
+            Text("This story will be gone for good. It only exists on this device.")
+        }
+    }
+
+    private func deletePendingStory() {
+        guard let story = storyPendingDeletion else { return }
+        storyPendingDeletion = nil
+        modelContext.delete(story)
+        Persistence.save(modelContext, whileDoing: "deleting this story", health: persistence)
     }
 }

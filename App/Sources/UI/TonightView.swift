@@ -12,6 +12,7 @@ struct TonightView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(SubscriptionStore.self) private var subscriptions
     @Environment(StoryReservations.self) private var reservations
+    @Environment(PersistenceHealth.self) private var persistence
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
     @Query private var stories: [Story]
     @Query(sort: \StorySeries.createdAt, order: .reverse) private var series: [StorySeries]
@@ -24,7 +25,7 @@ struct TonightView: View {
     /// cancels it: an unowned continuation could start work behind whatever
     /// the family navigated to (round six, P2).
     @State private var settlingTask: Task<Void, Never>?
-    @State private var isShowingAbout = false
+    @State private var isShowingSettings = false
     @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
     private let provider = StoryProvider()
@@ -148,15 +149,15 @@ struct TonightView: View {
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    isShowingAbout = true
+                    isShowingSettings = true
                 } label: {
-                    Image(systemName: "info.circle")
+                    Image(systemName: "gearshape")
                 }
-                .accessibilityLabel("About Fable")
+                .accessibilityLabel("Settings")
             }
         }
-        .sheet(isPresented: $isShowingAbout) {
-            AboutView()
+        .sheet(isPresented: $isShowingSettings) {
+            SettingsView()
         }
         .sheet(isPresented: $isAddingChild) {
             ProfileSetupView(isAddingAnotherChild: true)
@@ -377,9 +378,7 @@ struct TonightView: View {
             // instant, and if the save never lands, no row survives the
             // relaunch that also discards the claim.
             reservations.release(reservation)
-            do {
-                try modelContext.save()
-            } catch {
+            if !Persistence.save(modelContext, whileDoing: "saving tonight's story", health: persistence) {
                 // Bedtime is never broken for a storage fault: tonight's
                 // story is read from memory, and a story Fable could not
                 // keep is not charged beyond this session. One retry, since
@@ -391,7 +390,10 @@ struct TonightView: View {
                 Task { @MainActor in
                     for attempt in 1...3 {
                         try? await Task.sleep(for: .milliseconds(120 * attempt))
-                        if (try? modelContext.save()) != nil { return }
+                        if Persistence.save(modelContext, whileDoing: "saving tonight's story", health: persistence) {
+                            persistence.clearFailure()
+                            return
+                        }
                     }
                 }
             }

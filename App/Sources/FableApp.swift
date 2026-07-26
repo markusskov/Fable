@@ -5,6 +5,7 @@ import SwiftData
 struct FableApp: App {
     @State private var subscriptions = SubscriptionStore()
     @State private var reservations = StoryReservations()
+    @State private var persistence = PersistenceHealth()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -13,6 +14,7 @@ struct FableApp: App {
                 .preferredColorScheme(.dark)
                 .environment(subscriptions)
                 .environment(reservations)
+                .environment(persistence)
                 // Entitlements resolve in the background; nothing in the story
                 // flow waits on the store.
                 .task { subscriptions.start() }
