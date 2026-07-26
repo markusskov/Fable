@@ -53,9 +53,8 @@ final class SubscriptionStore {
     /// customer-facing decision must go through `canAdvertiseIntroOffer`, so
     /// the raw flag cannot be wired back into copy by accident (round ten).
     private var isEligibleForIntroOffer = false
-    /// False whenever we have reason to doubt the answer: before the first
-    /// query, while one is outstanding, and across any access transition.
-    private var eligibilityIsSettled = false
+    /// The epoch the current answer was obtained FOR. Nil means unsettled.
+    private var settledEpoch: Int?
     /// Set when the store could not be reached. The paywall shows a quiet
     /// "try again later" rather than an error alert — never break bedtime.
     private(set) var productsUnavailable = false
@@ -101,7 +100,25 @@ final class SubscriptionStore {
     private var revokedTransactionIDs: Set<UInt64> = []
     /// Latest-wins for eligibility: a query that suspended before a purchase
     /// must not resume afterwards and re-advertise a spent free week.
-    private var eligibilityGeneration = 0
+    /// Bumped by every event that casts doubt on the trial answer: a display
+    /// boundary, an access transition, any verified subscription-group
+    /// update. A query answers for the epoch it STARTED in and may only
+    /// commit if that epoch is still current — round eleven let the query
+    /// create its own newer generation, which meant any late workflow could
+    /// declare the offer settled and undo a boundary's invalidation
+    /// (round twelve, P2).
+    private var doubtEpoch = 0
+    /// Queries in flight. SEPARATE from the epoch on purpose: the epoch
+    /// decides whether an answer is still VALID, this decides whether we are
+    /// currently sure enough to say anything. Merging them was the round
+    /// eleven mistake — a query that minted its own epoch could declare the
+    /// offer settled and undo a boundary's invalidation (round twelve).
+    private var eligibilityQueriesInFlight = 0
+    /// Commit ORDER among concurrent queries, which is a third concern again:
+    /// two queries in the same epoch must still not let the older one
+    /// overwrite the newer one's answer.
+    private var nextEligibilityQueryID = 0
+    private var lastCommittedEligibilityQueryID = 0
     /// Whether the paywall may SAY there is a free week: a settled answer,
     /// still eligible, and no live access.
     var canAdvertiseIntroOffer: Bool {
@@ -111,7 +128,8 @@ final class SubscriptionStore {
         // status a newer read was already in the middle of replacing
         // (round eleven, P2).
         isEligibleForIntroOffer
-            && eligibilityIsSettled
+            && settledEpoch == doubtEpoch
+            && eligibilityQueriesInFlight == 0
             && refreshTask == nil
             && !status.isSubscribed
     }
@@ -121,8 +139,8 @@ final class SubscriptionStore {
     /// screen while entitlement or catalog work is still in flight
     /// (round ten, P2 — round nine only hid it once the query itself began).
     func invalidateIntroEligibility() {
-        eligibilityGeneration += 1
-        eligibilityIsSettled = false
+        doubtEpoch += 1
+        settledEpoch = nil
     }
     /// A parent's approval is outstanding (Ask to Buy). Store-level so it
     /// survives the paywall being dismissed and reopened.
@@ -208,22 +226,30 @@ final class SubscriptionStore {
     /// and it changes the moment a trial is used on any device. Re-asked on
     /// every return so a stale yes cannot keep selling a free week.
     func refreshIntroEligibility() async {
-        invalidateIntroEligibility()
-        let generation = eligibilityGeneration
+        // Answer FOR the current epoch; do not mint a new one. A query is
+        // never itself a reason to trust the answer.
+        let epoch = doubtEpoch
+        nextEligibilityQueryID += 1
+        let queryID = nextEligibilityQueryID
+        eligibilityQueriesInFlight += 1
+        defer { eligibilityQueriesInFlight -= 1 }
         let eligible = await client.isEligibleForIntroOffer(
             productID: FablePlus.Plan.annual.productID,
             loaded: product(for: .annual)
         )
         // A purchase (or any verified subscription) that landed while this
         // query was suspended has already spent the offer.
-        guard generation == eligibilityGeneration else { return }
+        // Valid for the current epoch AND not already superseded by a newer
+        // query that has committed.
+        guard epoch == doubtEpoch, queryID > lastCommittedEligibilityQueryID else { return }
+        lastCommittedEligibilityQueryID = queryID
         // And a lagging `true` from a query that started AFTER the purchase
         // carries the newest generation, so the generation guard cannot see
         // it: eligibility may never contradict live access. Deliberately not
         // a permanent local flag — a lapsed family that never used an offer
         // can become eligible again, and this re-asks whenever they are free.
         isEligibleForIntroOffer = eligible && !status.isSubscribed
-        eligibilityIsSettled = true
+        settledEpoch = epoch
     }
 
     /// Retries the catalog when it is missing or PARTIAL (one of two plans
@@ -403,6 +429,14 @@ final class SubscriptionStore {
     /// replay granting Fable+ for the rest of the process, so raw records
     /// are vetted here and trusted records are not.
     private func applyVerified(_ record: EntitlementRecord) {
+        // Any verified news about our subscription group — purchase, renewal,
+        // refund — makes the cached trial answer suspect, even when access
+        // does not change. A refund arriving while already free left the old
+        // `true` advertisable (round twelve, P2). An authoritative query
+        // re-establishes it afterwards.
+        if FablePlus.plan(forProductID: record.productID) != nil {
+            invalidateIntroEligibility()
+        }
         unconfirmedPurchases.removeAll { $0.transactionID == record.transactionID }
         if record.revocationDate != nil {
             revokedTransactionIDs.insert(record.transactionID)

@@ -189,14 +189,13 @@ struct StoryWriterTests {
 
         // The engine finally returns; its result must go nowhere.
         await gate.open()
-        // Only the already in-flight call completes: the provider now
-        // checks cancellation before each attempt, so no second one starts.
-        await drain(gate, to: 1, "abandoned chain")
-        for _ in 0..<10_000 where writer.droppedOutcomes == 0 { await Task.yield() }
-        // The verdict the poll was missing: the straggler must actually have
-        // ARRIVED and been dropped. Without this the single synchronous
-        // .abandoned outcome passes the count check on its own (round eleven).
+        // Wait for the TERMINAL event first — the straggler landing — then
+        // assert the counts. Draining to a count samples a transient value
+        // that a later retry could still increase (round twelve).
+        for _ in 0..<100_000 where writer.droppedOutcomes == 0 { await Task.yield() }
         #expect(writer.droppedOutcomes == 1, "the straggler never arrived, so nothing was proved")
+        #expect(await gate.entries == 1, "the cancelled write started another attempt")
+        #expect(await gate.exits == 1, "the cancelled write ran more engine calls than it entered")
         #expect(outcomes.count == 1, "a straggler write delivered a second outcome")
     }
 
@@ -240,11 +239,10 @@ struct StoryWriterTests {
 
         // The abandoned write's engine finally returns, mid-replacement.
         await abandonedGate.open()
-        await drain(abandonedGate, to: 1, "abandoned chain")
-        // Wait for the straggler to actually LAND and be dropped: yielding
-        // and hoping proved nothing (round six, test verdict).
-        for _ in 0..<10_000 where writer.droppedOutcomes == 0 { await Task.yield() }
+        for _ in 0..<100_000 where writer.droppedOutcomes == 0 { await Task.yield() }
         #expect(writer.droppedOutcomes == 1, "the straggler never arrived, so nothing was proved")
+        #expect(await abandonedGate.entries == 1, "the cancelled write started another attempt")
+        #expect(await abandonedGate.exits == 1)
         #expect(first.count == 1, "the abandoned write delivered twice")
         #expect(second.isEmpty, "a straggler was delivered into a running write's closure")
         #expect(writer.isWriting, "a straggler ended the replacement write")
@@ -334,6 +332,8 @@ struct StoryWriterTests {
         #expect(weakWriter == nil, "an abandoned writer was retained by its parked engine")
 
         await gate.open()
-        await drain(gate, to: 1, "orphaned chain")
+        for _ in 0..<100_000 where await gate.exits < 1 { await Task.yield() }
+        #expect(await gate.entries == 1)
+        #expect(await gate.exits == 1)
     }
 }
