@@ -249,9 +249,17 @@ struct StoryWriterTests {
 
         // The replacement then finishes on its own terms.
         await replacementGate.open()
-        await drain(replacementGate, to: StoryProvider.modelAttempts + 1, "live chain")
-        for _ in 0..<10_000 where second.isEmpty { await Task.yield() }
+        // The TERMINAL event first: the replacement's own callback. Sampling
+        // engine exits before it lets a further attempt escape afterwards
+        // (round thirteen).
+        for _ in 0..<100_000 where second.isEmpty { await Task.yield() }
         #expect(second.count == 1)
+        guard case .finished = second.first else {
+            Issue.record("the replacement write did not finish normally")
+            return
+        }
+        #expect(await replacementGate.entries == StoryProvider.modelAttempts + 1)
+        #expect(await replacementGate.exits == StoryProvider.modelAttempts + 1)
         // The CASE matters: without the writeID guard a stale .abandoned
         // could take this slot and a count-only assertion would pass.
         guard case .finished = second.first else {

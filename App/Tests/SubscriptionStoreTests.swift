@@ -877,6 +877,7 @@ struct SubscriptionStoreTests {
                 await client.setIntroEligible(true)
             await client.set(entitlements: [])
             let store = Self.makeStore(client)
+            _ = await store.refreshStatus()
             await store.refreshIntroEligibility()
             try #require(store.canAdvertiseIntroOffer)
 
@@ -1053,6 +1054,102 @@ struct SubscriptionStoreTests {
         // And an authoritative query re-establishes it.
         await store.refreshIntroEligibility()
         #expect(store.canAdvertiseIntroOffer)
+    }
+
+    /// Round thirteen's boundary case: a workflow that read entitlement
+    /// status BEFORE the boundary can still start its eligibility query
+    /// after it, so capturing the epoch at query start is too late. The
+    /// status-settled latch is what holds: an answer cannot speak for an
+    /// epoch whose access status has not been re-read.
+    @Test func anOfferCannotSettleForAnEpochWhoseStatusIsStale() async {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.setIntroEligible(true)
+        let store = Self.makeStore(client)
+        _ = await store.refreshStatus()
+        await store.refreshIntroEligibility()
+        #expect(store.canAdvertiseIntroOffer, "the offer was never visible, so nothing is proved")
+
+        // The boundary fires. Status has NOT been re-read since.
+        store.invalidateIntroEligibility()
+        // An older workflow, whose status read predates the boundary, now
+        // runs its eligibility query and would happily settle.
+        await store.refreshIntroEligibility()
+        #expect(!store.canAdvertiseIntroOffer,
+                "a pre-boundary workflow settled the offer against stale status")
+
+        // Only a fresh entitlement read in this epoch restores the claim.
+        _ = await store.refreshStatus()
+        await store.refreshIntroEligibility()
+        #expect(store.canAdvertiseIntroOffer, "the offer never returned after status settled")
+    }
+
+    /// A purchase the App Store accepted but Fable could not verify: access
+    /// stays closed, and the free-week CLAIM must stop being made, because
+    /// the offer may well have just been consumed (round thirteen, P2).
+    @Test func anUnverifiedPurchaseUnsettlesTheFreeWeekClaim() async {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.setIntroEligible(true)
+        await client.stubPurchase(.successUnverified)
+        let store = Self.makeStore(client)
+        _ = await store.refreshStatus()
+        await store.refreshIntroEligibility()
+        #expect(store.canAdvertiseIntroOffer, "the offer was never visible, so nothing is proved")
+
+        #expect(await store.purchase(.annual) == .failed)
+        #expect(!store.isSubscribed, "an unverified purchase must not grant access")
+        #expect(!store.canAdvertiseIntroOffer,
+                "the paywall kept selling a free week after an unverified purchase")
+    }
+
+    /// An unverified UPDATE carries no record, so it bypassed applyVerified
+    /// entirely and left the claim settled (round thirteen, P2).
+    @Test func anUnverifiedUpdateAlsoUnsettlesTheFreeWeekClaim() async {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.setIntroEligible(true)
+        let store = Self.makeStore(client)
+        store.start()
+        #expect(await settles { store.status == .free })
+        await store.refreshIntroEligibility()
+        #expect(store.canAdvertiseIntroOffer, "the offer was never visible, so nothing is proved")
+
+        let handled = Cell(false)
+        client.signalUpdate(record: nil, finish: { handled.with { $0 = true } })
+        #expect(await settles { handled.value })
+        #expect(!store.canAdvertiseIntroOffer,
+                "an unverified update left the free-week claim settled")
+    }
+
+    /// A stalled query from an OLD epoch must not keep hiding a valid current
+    /// answer: the in-flight count is scoped per epoch (round thirteen, P2).
+    @Test(.timeLimit(.minutes(1)))
+    func astalledQueryFromAnOldEpochDoesNotHideAValidCurrentAnswer() async {
+        let client = StubStoreClient()
+        await withHeldSeams(client) { operations in
+            await client.set(entitlements: [])
+            await client.setIntroEligible(true)
+            let store = Self.makeStore(client)
+            _ = await store.refreshStatus()
+
+            // An epoch-one query stalls.
+            await client.holdNextEligibilityRead()
+            let stalled = Task { await store.refreshIntroEligibility() }
+            operations.track(stalled)
+            try #require(await client.waitForReadToStart(), "the eligibility seam was never reached")
+
+            // A boundary moves us to epoch two, where everything settles.
+            store.invalidateIntroEligibility()
+            _ = await store.refreshStatus()
+            await store.refreshIntroEligibility()
+
+            #expect(store.canAdvertiseIntroOffer,
+                    "a stalled query from a dead epoch was still hiding a valid answer")
+            await client.releaseHeldEligibility()
+            _ = await stalled.value
+            #expect(store.canAdvertiseIntroOffer, "the stale answer overwrote a newer one")
+        }
     }
 
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {

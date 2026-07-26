@@ -113,12 +113,23 @@ final class SubscriptionStore {
     /// currently sure enough to say anything. Merging them was the round
     /// eleven mistake — a query that minted its own epoch could declare the
     /// offer settled and undo a boundary's invalidation (round twelve).
-    private var eligibilityQueriesInFlight = 0
     /// Commit ORDER among concurrent queries, which is a third concern again:
     /// two queries in the same epoch must still not let the older one
     /// overwrite the newer one's answer.
     private var nextEligibilityQueryID = 0
     private var lastCommittedEligibilityQueryID = 0
+    /// The epochs of queries currently in flight. Scoped, not a global count:
+    /// a stalled query from an old epoch must not keep hiding a valid current
+    /// answer forever (round thirteen, P2).
+    private var inFlightEligibilityEpochs: [Int] = []
+    /// The epoch in which ENTITLEMENT status was last committed. Advertising
+    /// requires this to be current, which is what makes the boundary hold:
+    /// an eligibility answer cannot speak for an epoch whose access status
+    /// has not been re-read yet, no matter when the query itself started
+    /// (round thirteen, P2 — capturing the epoch at query start was too
+    /// late, because a workflow that read status BEFORE the boundary could
+    /// still start its query after it).
+    private var statusSettledEpoch: Int?
     /// Whether the paywall may SAY there is a free week: a settled answer,
     /// still eligible, and no live access.
     var canAdvertiseIntroOffer: Bool {
@@ -129,7 +140,8 @@ final class SubscriptionStore {
         // (round eleven, P2).
         isEligibleForIntroOffer
             && settledEpoch == doubtEpoch
-            && eligibilityQueriesInFlight == 0
+            && statusSettledEpoch == doubtEpoch
+            && !inFlightEligibilityEpochs.contains(doubtEpoch)
             && refreshTask == nil
             && !status.isSubscribed
     }
@@ -200,6 +212,11 @@ final class SubscriptionStore {
                 // unfinished transactions.
                 if let record = update.record {
                     self.applyVerified(record)
+                } else {
+                    // An unverified update carries no facts to honour, but it
+                    // is still news about this account's purchases: the trial
+                    // claim becomes unsettled until re-queried.
+                    self.invalidateIntroEligibility()
                 }
                 await self.refreshStatus()
                 await update.finish()
@@ -231,8 +248,12 @@ final class SubscriptionStore {
         let epoch = doubtEpoch
         nextEligibilityQueryID += 1
         let queryID = nextEligibilityQueryID
-        eligibilityQueriesInFlight += 1
-        defer { eligibilityQueriesInFlight -= 1 }
+        inFlightEligibilityEpochs.append(epoch)
+        defer {
+            if let index = inFlightEligibilityEpochs.firstIndex(of: epoch) {
+                inFlightEligibilityEpochs.remove(at: index)
+            }
+        }
         let eligible = await client.isEligibleForIntroOffer(
             productID: FablePlus.Plan.annual.productID,
             loaded: product(for: .annual)
@@ -345,6 +366,11 @@ final class SubscriptionStore {
                 await refreshStatus()
                 return status.isSubscribed ? .subscribed : .failed
             case .successUnverified:
+                // Access stays fail-closed, but the App Store accepted a
+                // purchase we could not verify: the free week may well be
+                // spent now, so the CLAIM must stop being made until a
+                // fresh query says otherwise (round thirteen, P2).
+                invalidateIntroEligibility()
                 // Unfinished on purpose: it redelivers via updates once
                 // verification can succeed.
                 return .failed
@@ -408,6 +434,11 @@ final class SubscriptionStore {
                 if self.refreshIsStale { continue }
                 self.lastRecords = records
                 self.recompute()
+                // Stamped AFTER recompute: a transition discovered BY this
+                // read bumps the epoch, and this read is the very news that
+                // settles it. Stamping first left status permanently one
+                // epoch behind its own discovery.
+                self.statusSettledEpoch = self.doubtEpoch
                 derived = self.status
                 break
             }
