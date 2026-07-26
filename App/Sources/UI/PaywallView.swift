@@ -19,7 +19,7 @@ struct PaywallView: View {
     /// Ask-to-Buy keeps the buy button down instead of inviting a duplicate
     /// submission (2026-07-24 review round two).
     private enum StoreOperation: Equatable {
-        case idle, purchasing, restoring, awaitingApproval
+        case idle, purchasing, restoring
     }
     @State private var operation: StoreOperation = .idle
     /// One calm line about what the store just said (Ask-to-Buy pending,
@@ -45,11 +45,23 @@ struct PaywallView: View {
         // A failed catalog load is not sticky: reopening the paywall retries
         // (2026-07-24 money-path review). Also settles a cold-start .unknown.
         .task {
-            await subscriptions.refreshOnReturn()
-            // onChange below is not initial: a family whose entitlement
-            // resolved between presenting and mounting would otherwise sit
-            // on a paywall they already passed (review round two).
-            if subscriptions.isSubscribed { dismiss() }
+            // Before the first suspension: a cached "free week" must not sit
+            // on screen while entitlement and catalog work run (round ten).
+            subscriptions.invalidateIntroEligibility()
+            // Entitlement first, catalog second: an already subscribed
+            // family's dismissal must not wait behind a product request
+            // (round three). onChange below is not initial, so the mounted
+            // check is explicit.
+            await subscriptions.refreshStatus()
+            if subscriptions.isSubscribed {
+                dismiss()
+                return
+            }
+            await subscriptions.ensureCatalog()
+            // Settled free with the sheet open: re-ask, whether or not the
+            // catalog needed loading, so the trial line reflects the account
+            // rather than whatever the last catalog load happened to see.
+            await subscriptions.refreshIntroEligibility()
         }
         // Entitlement can arrive while the sheet is open — an Ask-to-Buy
         // approval, a purchase on another device, cold-start resolution. The
@@ -206,8 +218,8 @@ struct PaywallView: View {
             .foregroundStyle(FableTheme.nightDeep)
             .disabled(operation != .idle || subscriptions.product(for: selectedPlan) == nil)
 
-            if let storeNote {
-                Text(storeNote)
+            if let note = storeNote ?? approvalNote {
+                Text(note)
                     .font(.footnote)
                     .foregroundStyle(FableTheme.creamDim)
                     .multilineTextAlignment(.center)
@@ -217,6 +229,14 @@ struct PaywallView: View {
                 .font(.subheadline)
                 .foregroundStyle(FableTheme.creamDim)
         }
+    }
+
+    /// Shown whenever an Ask-to-Buy approval is outstanding, including on a
+    /// freshly reopened sheet.
+    private var approvalNote: LocalizedStringKey? {
+        subscriptions.isAwaitingApproval
+            ? "Waiting for a parent to approve this purchase. Stories unlock the moment they do."
+            : nil
     }
 
     private var footer: some View {
@@ -257,13 +277,23 @@ struct PaywallView: View {
                 operation = .idle
                 dismiss()
             case .pending:
-                operation = .awaitingApproval
-                storeNote = "Waiting for a parent to approve this purchase. Stories unlock the moment they do."
+                // The waiting state lives on the store now, so it survives
+                // this sheet closing. The button returns to idle on purpose:
+                // Apple sends nothing when a parent DECLINES, so a family
+                // locked out until an event that never arrives could never
+                // try again (round four, P2).
+                operation = .idle
+                storeNote = nil
             case .cancelled:
                 operation = .idle
             case .failed:
                 operation = .idle
                 storeNote = "The purchase couldn't be completed. Please try again in a moment."
+            case .alreadyInProgress:
+                // A money operation from a previous presentation is still
+                // running; the store-level guard refused the overlap.
+                operation = .idle
+                storeNote = "Still finishing the previous request. One moment."
             }
         }
     }
@@ -283,6 +313,8 @@ struct PaywallView: View {
                 storeNote = "No active subscription was found for this Apple Account."
             case .failed:
                 storeNote = "Restore didn't finish. Please check your connection and try again."
+            case .alreadyInProgress:
+                storeNote = "Still finishing the previous request. One moment."
             }
         }
     }

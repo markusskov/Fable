@@ -21,6 +21,12 @@ struct FableApp: App {
                 // is backgrounded) and retries a failed catalog load, so an
                 // offline first launch is not sticky until restart.
                 .onChange(of: scenePhase) { _, phase in
+                    // Synchronously, in the callback itself: a resumed render
+                    // can otherwise happen before the Task below runs and
+                    // show a cached "free week" (round eleven, P2). Every
+                    // phase change counts, so leaving the app already casts
+                    // the doubt that returning resolves.
+                    subscriptions.invalidateIntroEligibility()
                     if phase == .active {
                         Task { await subscriptions.refreshOnReturn() }
                     }

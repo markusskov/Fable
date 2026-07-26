@@ -105,13 +105,30 @@ enum SubscriptionStatus: Sendable, Equatable {
 /// The few facts we need from a verified StoreKit transaction, lifted into a
 /// plain value so status derivation can be tested exhaustively.
 struct EntitlementRecord: Sendable, Equatable {
+    /// THE identity. A product ID is not one: every monthly renewal shares
+    /// it, so reconciling by SKU mistook a fresh renewal for one already
+    /// confirmed and discarded the bridge covering it (2026-07-24 review
+    /// round five, P1).
+    var transactionID: UInt64
+    /// The subscription chain this transaction belongs to. Kept separate:
+    /// renewals share it while each renewal has its own `transactionID`.
+    var originalID: UInt64
     var productID: String
     var expirationDate: Date?
     var revocationDate: Date?
     /// StoreKit marks the superseded transaction when a plan is switched.
     var isUpgraded: Bool
 
-    init(productID: String, expirationDate: Date? = nil, revocationDate: Date? = nil, isUpgraded: Bool = false) {
+    init(
+        transactionID: UInt64 = 0,
+        originalID: UInt64 = 0,
+        productID: String,
+        expirationDate: Date? = nil,
+        revocationDate: Date? = nil,
+        isUpgraded: Bool = false
+    ) {
+        self.transactionID = transactionID
+        self.originalID = originalID
         self.productID = productID
         self.expirationDate = expirationDate
         self.revocationDate = revocationDate

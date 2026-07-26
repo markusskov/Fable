@@ -20,6 +20,10 @@ struct TonightView: View {
     @State private var writer = StoryWriter()
     @State private var isShowingPaywall = false
     @State private var isAddingChild = false
+    /// The cold-start entitlement settle. Owned so leaving this screen
+    /// cancels it: an unowned continuation could start work behind whatever
+    /// the family navigated to (round six, P2).
+    @State private var settlingTask: Task<Void, Never>?
     @State private var isShowingAbout = false
     @ScaledMetric(relativeTo: .title) private var themeEmojiSize = 30
 
@@ -122,6 +126,11 @@ struct TonightView: View {
         // library is not a switch and must not abandon it.
         .onDisappear {
             if !writeServesActiveProfile { writer.abandon() }
+            // The settle exists only to decide THIS screen's next tap, so it
+            // never outlives the screen — a resumed continuation must not
+            // present a sheet behind wherever the family went.
+            settlingTask?.cancel()
+            settlingTask = nil
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -167,6 +176,9 @@ struct TonightView: View {
     /// mid-starter families with plenty left see nothing — quiet by default.
     private var meterCaption: String? {
         guard !subscriptions.isSubscribed else { return nil }
+        // Unresolved is not free: no free-tier copy for a family that may
+        // be subscribed once bootstrap settles (round three).
+        if case .unknown = subscriptions.status { return nil }
         switch allowance {
         case .starter(let remaining) where remaining < StoryMeter.starterStories:
             // Singular/plural lives in the string catalog's plural variations.
@@ -222,11 +234,7 @@ struct TonightView: View {
             }
             Divider()
             Button {
-                if subscriptions.isSubscribed {
-                    isAddingChild = true
-                } else {
-                    isShowingPaywall = true
-                }
+                whenSubscribed { isAddingChild = true }
             } label: {
                 Label("Add a child", systemImage: "plus")
             }
@@ -245,11 +253,7 @@ struct TonightView: View {
             // Authorize the ACTION, not just the card's existence: a
             // revocation can land before SwiftUI removes the row
             // (2026-07-24 review round two).
-            guard subscriptions.isSubscribed else {
-                isShowingPaywall = true
-                return
-            }
-            tellStory(continuing: adventure)
+            whenSubscribed { tellStory(continuing: adventure) }
         } label: {
             HStack(spacing: 12) {
                 Text(adventure.theme.emoji)
@@ -274,11 +278,47 @@ struct TonightView: View {
         .buttonStyle(.plain)
     }
 
+    /// Presenting is the display boundary: the offer becomes unsettled here,
+    /// synchronously, so the sheet's first render cannot show a cached free
+    /// week before its .task gets a chance to run (round eleven, P2).
+    private func showPaywall() {
+        subscriptions.invalidateIntroEligibility()
+        isShowingPaywall = true
+    }
+
     private func tellStoryTapped() {
-        if subscriptions.isSubscribed || allowance.isAllowed {
+        if allowance.isAllowed {
             tellStory(continuing: nil)
         } else {
-            isShowingPaywall = true
+            whenSubscribed { tellStory(continuing: nil) }
+        }
+    }
+
+    /// Runs a Fable+ action, or shows the paywall. An unresolved entitlement
+    /// is NOT free: during cold start the store is asked to settle first, so
+    /// a paying family is never shown a paywall they already passed
+    /// (round three for the story gate, round four for every other gate).
+    /// The settled continuation is dropped if the family has moved to
+    /// another child in the meantime, so a stale screen cannot start work.
+    private func whenSubscribed(_ action: @escaping () -> Void) {
+        if subscriptions.isSubscribed {
+            action()
+        } else if case .unknown = subscriptions.status {
+            settlingTask?.cancel()
+            settlingTask = Task {
+                _ = await subscriptions.refreshStatus()
+                guard !Task.isCancelled, writeServesActiveProfile else { return }
+                // Authorize from the store's LIVE status, not the value that
+                // was true when this continuation was scheduled: a refund can
+                // commit in between (round five, P2).
+                if subscriptions.isSubscribed {
+                    action()
+                } else {
+                    showPaywall()
+                }
+            }
+        } else {
+            showPaywall()
         }
     }
 
@@ -328,14 +368,33 @@ struct TonightView: View {
             }
             story.profile = profile
             modelContext.insert(story)
-            // Save explicitly BEFORE releasing: the claim hands off to the
-            // persisted row, so the row must actually be persisted first
-            // (2026-07-24 review round two). If the save throws, autosave
-            // will land the insert moments later; either way exactly one of
-            // claim-or-row holds the charge at every instant.
-            try? modelContext.save()
-            // The persisted row carries the meter charge from here on.
+            // SwiftData fetches include pending changes, so the inserted row
+            // counts against the meter the instant it is inserted, saved or
+            // not (proved in MeterHandoffTests). The claim therefore hands
+            // off at insert: round three made release conditional on the
+            // save and so charged the row AND the claim for one story
+            // (round four, P1). Exactly one of the two counts at every
+            // instant, and if the save never lands, no row survives the
+            // relaunch that also discards the claim.
             reservations.release(reservation)
+            do {
+                try modelContext.save()
+            } catch {
+                // Bedtime is never broken for a storage fault: tonight's
+                // story is read from memory, and a story Fable could not
+                // keep is not charged beyond this session. One retry, since
+                // the common cause (a momentary write conflict) clears on
+                // its own; after that the story is honestly session-only.
+                // Bounded, deliberate retries rather than one fire and
+                // forget: the common cause is a momentary write conflict
+                // that clears on its own (round six, P2).
+                Task { @MainActor in
+                    for attempt in 1...3 {
+                        try? await Task.sleep(for: .milliseconds(120 * attempt))
+                        if (try? modelContext.save()) != nil { return }
+                    }
+                }
+            }
             path.append(story)
         }
     }
