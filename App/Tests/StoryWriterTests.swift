@@ -341,7 +341,11 @@ struct StoryWriterTests {
 
         await gate.open()
         for _ in 0..<100_000 where await gate.exits < 1 { await Task.yield() }
-        #expect(await gate.entries == 1)
-        #expect(await gate.exits == 1)
+        // Then let the orphaned provider chain settle completely: sampling
+        // the first exit leaves room for a later attempt to escape after the
+        // assertion (round fourteen, test verdict).
+        for _ in 0..<10_000 { await Task.yield() }
+        #expect(await gate.entries == 1, "the orphaned write started another attempt")
+        #expect(await gate.exits == 1, "the orphaned write ran more engine calls than it entered")
     }
 }

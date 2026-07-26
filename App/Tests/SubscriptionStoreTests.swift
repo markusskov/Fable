@@ -1152,6 +1152,92 @@ struct SubscriptionStoreTests {
         }
     }
 
+    /// Round fourteen: an entitlement read that SNAPSHOTTED before a
+    /// boundary must not stamp itself as fresh for the epoch after it. The
+    /// round-thirteen test completed its read before invalidating, so it
+    /// never crossed the boundary at all.
+    @Test(.timeLimit(.minutes(1)))
+    func areadThatPredatesABoundaryCannotCertifyTheEpochAfterIt() async {
+        let client = StubStoreClient()
+        await withHeldSeams(client) { operations in
+            await client.set(entitlements: [])
+            await client.setIntroEligible(true)
+            let store = Self.makeStore(client)
+            _ = await store.refreshStatus()
+            await store.refreshIntroEligibility()
+            try #require(store.canAdvertiseIntroOffer, "the offer was never visible")
+
+            // A read snapshots, then the boundary fires while it is suspended.
+            await client.holdNextRead()
+            let crossing = Task { await store.refreshStatus() }
+            operations.track(crossing)
+            try #require(await client.waitForReadToStart(), "the entitlement seam was never reached")
+            store.invalidateIntroEligibility()
+
+            await client.releaseHeldReads()
+            _ = await crossing.value
+            // Even after that read commits, it cannot vouch for this epoch.
+            await store.refreshIntroEligibility()
+            #expect(!store.canAdvertiseIntroOffer,
+                    "a pre-boundary read certified the epoch that invalidated it")
+
+            // A read that STARTS after the boundary settles it properly.
+            _ = await store.refreshStatus()
+            await store.refreshIntroEligibility()
+            #expect(store.canAdvertiseIntroOffer, "a fresh read never restored the offer")
+        }
+    }
+
+    /// A query that can no longer commit must stop hiding the answer: once a
+    /// newer query in the same epoch has committed, the older one is dead
+    /// weight and used to suppress a valid offer until it returned
+    /// (round fourteen, P2).
+    @Test(.timeLimit(.minutes(1)))
+    func asupersededQueryStopsHidingAValidOffer() async {
+        let client = StubStoreClient()
+        await withHeldSeams(client) { operations in
+            await client.set(entitlements: [])
+            // The stalled query answers false; the newer one answers true.
+            await client.scriptEligibility([false, true])
+            let store = Self.makeStore(client)
+            _ = await store.refreshStatus()
+
+            await client.holdNextEligibilityRead()
+            let stalled = Task { await store.refreshIntroEligibility() }
+            operations.track(stalled)
+            try #require(await client.waitForReadToStart(), "the eligibility seam was never reached")
+
+            // A newer query in the SAME epoch commits the real answer.
+            await store.refreshIntroEligibility()
+            #expect(store.canAdvertiseIntroOffer,
+                    "a superseded query kept hiding a valid offer while it stalled")
+
+            await client.releaseHeldEligibility()
+            _ = await stalled.value
+            #expect(store.canAdvertiseIntroOffer, "the superseded answer overwrote a newer one")
+        }
+    }
+
+    /// Restore changes account history without necessarily changing access,
+    /// so it must re-ask about the free week rather than keep the cached
+    /// claim (round fourteen, P2).
+    @Test func arestoreThatFindsNothingStillRevalidatesTheFreeWeek() async {
+        let client = StubStoreClient()
+        await client.set(entitlements: [])
+        await client.setIntroEligible(true)
+        let store = Self.makeStore(client)
+        _ = await store.refreshStatus()
+        await store.refreshIntroEligibility()
+        #expect(store.canAdvertiseIntroOffer, "the offer was never visible, so nothing is proved")
+
+        // The account turns out to have used the offer already.
+        await client.setIntroEligible(false)
+        #expect(await store.restore() == .nothingToRestore)
+        #expect(store.status == .free)
+        #expect(!store.canAdvertiseIntroOffer,
+                "restore kept selling a free week the account had already used")
+    }
+
     @Test func aRevocationArrivingThroughTheUpdateStreamRemovesAccess() async {
         let client = StubStoreClient()
         await client.set(entitlements: [Self.activeRecord()])

@@ -121,7 +121,7 @@ final class SubscriptionStore {
     /// The epochs of queries currently in flight. Scoped, not a global count:
     /// a stalled query from an old epoch must not keep hiding a valid current
     /// answer forever (round thirteen, P2).
-    private var inFlightEligibilityEpochs: [Int] = []
+    private var inFlightEligibilityQueries: [(epoch: Int, id: Int)] = []
     /// The epoch in which ENTITLEMENT status was last committed. Advertising
     /// requires this to be current, which is what makes the boundary hold:
     /// an eligibility answer cannot speak for an epoch whose access status
@@ -141,7 +141,13 @@ final class SubscriptionStore {
         isEligibleForIntroOffer
             && settledEpoch == doubtEpoch
             && statusSettledEpoch == doubtEpoch
-            && !inFlightEligibilityEpochs.contains(doubtEpoch)
+            && !inFlightEligibilityQueries.contains {
+                // Only a query that could STILL commit should hide the
+                // answer. One already superseded by a newer commit is dead
+                // weight, and used to hide a valid offer until it returned
+                // (round fourteen, P2).
+                $0.epoch == doubtEpoch && $0.id > lastCommittedEligibilityQueryID
+            }
             && refreshTask == nil
             && !status.isSubscribed
     }
@@ -248,12 +254,8 @@ final class SubscriptionStore {
         let epoch = doubtEpoch
         nextEligibilityQueryID += 1
         let queryID = nextEligibilityQueryID
-        inFlightEligibilityEpochs.append(epoch)
-        defer {
-            if let index = inFlightEligibilityEpochs.firstIndex(of: epoch) {
-                inFlightEligibilityEpochs.remove(at: index)
-            }
-        }
+        inFlightEligibilityQueries.append((epoch: epoch, id: queryID))
+        defer { inFlightEligibilityQueries.removeAll { $0.id == queryID } }
         let eligible = await client.isEligibleForIntroOffer(
             productID: FablePlus.Plan.annual.productID,
             loaded: product(for: .annual)
@@ -396,12 +398,20 @@ final class SubscriptionStore {
         guard !isTransacting else { return .alreadyInProgress }
         isTransacting = true
         defer { isTransacting = false }
+        // sync() refreshes transactions and subscription status, but
+        // introductory eligibility is a separate account-level question. A
+        // free-to-free restore changed nothing about access and so cast no
+        // doubt, leaving cached trial copy standing (round fourteen, P2).
+        invalidateIntroEligibility()
         do {
             try await client.sync()
         } catch {
             return .failed
         }
         let refreshed = await refreshStatus()
+        if !refreshed.isSubscribed {
+            await refreshIntroEligibility()
+        }
         return refreshed.isSubscribed ? .subscribed : .nothingToRestore
     }
 
@@ -428,17 +438,25 @@ final class SubscriptionStore {
             var derived = SubscriptionStatus.unknown
             while true {
                 self.refreshIsStale = false
+                let epochAtStart = self.doubtEpoch
                 let records = await self.client.currentEntitlements()
                 // A newer cause arrived while we were reading: that read is
                 // stale by definition; read again rather than commit it.
                 if self.refreshIsStale { continue }
+                // A boundary that fired WHILE this read was suspended means
+                // the snapshot predates it: the read may still be committed
+                // as status, but it cannot certify the new epoch as fresh
+                // (round fourteen, P2). A transition discovered BY this read
+                // is different — that bump is this read's own news.
+                let externalDoubtArose = self.doubtEpoch != epochAtStart
                 self.lastRecords = records
                 self.recompute()
-                // Stamped AFTER recompute: a transition discovered BY this
-                // read bumps the epoch, and this read is the very news that
-                // settles it. Stamping first left status permanently one
-                // epoch behind its own discovery.
-                self.statusSettledEpoch = self.doubtEpoch
+                if !externalDoubtArose {
+                    // Stamped AFTER recompute: a transition discovered BY
+                    // this read bumps the epoch, and this read is the very
+                    // news that settles it.
+                    self.statusSettledEpoch = self.doubtEpoch
+                }
                 derived = self.status
                 break
             }
