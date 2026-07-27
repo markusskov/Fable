@@ -77,6 +77,7 @@ struct ProfileSetupView: View {
 
                 field("Their name", problem: nameProblem) {
                     TextField("", text: $name, prompt: prompt("Nova"))
+                        .accessibilityIdentifier("field.name")
                         .textContentType(.givenName)
                         .textInputAutocapitalization(.words)
                         .autocorrectionDisabled()
@@ -97,6 +98,7 @@ struct ProfileSetupView: View {
 
                 field("A favorite friend or animal. Skip it and a small brave fox steps in", problem: companionProblem) {
                     TextField("", text: $companion, prompt: prompt("Bruno the dog"))
+                        .accessibilityIdentifier("field.companion")
                         .focused($focusedField, equals: .companion)
                         .submitLabel(.next)
                         .onSubmit { focusedField = .comfortObject }
@@ -104,6 +106,7 @@ struct ProfileSetupView: View {
 
                 field("Something cozy they sleep with, optional too", problem: comfortProblem) {
                     TextField("", text: $comfortObject, prompt: prompt("the yellow blanket"))
+                        .accessibilityIdentifier("field.comfort")
                         .focused($focusedField, equals: .comfortObject)
                         .submitLabel(.done)
                         .onSubmit { focusedField = nil }
@@ -116,6 +119,7 @@ struct ProfileSetupView: View {
                         .padding(.vertical, 14)
                 }
                 .buttonStyle(.borderedProminent)
+                .accessibilityIdentifier("button.primary")
                 .disabled(!canContinue)
                 .padding(.top, 8)
             }

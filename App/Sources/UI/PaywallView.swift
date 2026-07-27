@@ -42,6 +42,7 @@ struct PaywallView: View {
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
         .presentationDragIndicator(.visible)
+        .accessibilityIdentifier("paywall.root")
         // A failed catalog load is not sticky: reopening the paywall retries
         // (2026-07-24 money-path review). Also settles a cold-start .unknown.
         // If the catalog came back partial, the default selection can be a
@@ -103,7 +104,7 @@ struct PaywallView: View {
             benefit("moon.stars.fill", "A brand-new story every night, whenever you want one")
             benefit("books.vertical.fill", "Story series: adventures that continue night after night")
             benefit("person.2.fill", "Profiles for every child in the family")
-            benefit("lock.fill", "Still private: everything stays on this device")
+            benefit("lock.fill", "Still private: Fable never sends or collects it")
         }
     }
 

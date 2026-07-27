@@ -3398,42 +3398,42 @@
         }
       }
     },
-    "Still private: everything stays on this device": {
+    "Still private: Fable never sends or collects it": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weiterhin privat: Alles bleibt auf diesem Gerät"
+            "value": "Weiterhin privat: Fable sendet und sammelt es nie"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Privado como siempre: todo se queda en este dispositivo"
+            "value": "Sigue siendo privado: Fable nunca lo envía ni lo recopila"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toujours privé : tout reste sur cet appareil"
+            "value": "Toujours privé : Fable ne l'envoie ni ne le collecte jamais"
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sempre privato: tutto resta su questo dispositivo"
+            "value": "Sempre privato: Fable non lo invia né lo raccoglie mai"
           }
         },
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fortsatt privat: alt blir på denne enheten"
+            "value": "Fortsatt privat: Fable sender og samler det aldri inn"
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Continua privado: tudo fica neste aparelho"
+            "value": "Continua privado: o Fable nunca envia nem coleta isso"
           }
         }
       }

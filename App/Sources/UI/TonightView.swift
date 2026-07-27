@@ -108,6 +108,7 @@ struct TonightView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .foregroundStyle(FableTheme.nightDeep)
+                    .accessibilityIdentifier("button.tellStory")
                     .disabled(writer.isWriting)
 
                     if let caption = meterCaption {
@@ -146,6 +147,7 @@ struct TonightView: View {
                 // Icon-only control; without this VoiceOver reads the raw
                 // symbol name.
                 .accessibilityLabel("Storybook")
+                .accessibilityIdentifier("button.storybook")
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -154,6 +156,7 @@ struct TonightView: View {
                     Image(systemName: "gearshape")
                 }
                 .accessibilityLabel("Settings")
+                .accessibilityIdentifier("button.settings")
             }
         }
         .sheet(isPresented: $isShowingSettings) {
@@ -214,6 +217,7 @@ struct TonightView: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("theme.\(theme.rawValue)")
         .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .animation(reduceMotion ? nil : .snappy(duration: 0.2), value: selectedTheme)
     }
@@ -239,6 +243,7 @@ struct TonightView: View {
             } label: {
                 Label("Add a child", systemImage: "plus")
             }
+            .accessibilityIdentifier("menu.addChild")
         } label: {
             HStack(spacing: 4) {
                 Image(systemName: "person.circle")
@@ -247,6 +252,7 @@ struct TonightView: View {
             }
         }
         .accessibilityLabel("Switch child. \(displayName(for: profile)) is active.")
+        .accessibilityIdentifier("menu.profile")
     }
 
     private func seriesCard(_ adventure: StorySeries) -> some View {
@@ -277,6 +283,7 @@ struct TonightView: View {
             .background(FableTheme.card, in: RoundedRectangle(cornerRadius: 14))
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("card.series")
     }
 
     /// Presenting is the display boundary: the offer becomes unsettled here,
