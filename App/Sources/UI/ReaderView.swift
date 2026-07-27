@@ -77,6 +77,7 @@ struct ReaderView: View {
                     .foregroundStyle(FableTheme.gold)
             }
             Text("A story for \(story.childName)")
+                .accessibilityIdentifier("reader.titlePage")
                 .font(.callout)
                 .foregroundStyle(FableTheme.creamDim)
             Spacer()
@@ -101,6 +102,7 @@ struct ReaderView: View {
                 if isLast {
                     VStack(spacing: 10) {
                         Text("The End")
+                            .accessibilityIdentifier("reader.theEnd")
                             .font(.system(.title3, design: .serif, weight: .semibold))
                             .foregroundStyle(FableTheme.gold)
                         Text(story.moral)
@@ -124,6 +126,7 @@ struct ReaderView: View {
                             dismiss()
                         } label: {
                             Label("Close the storybook", systemImage: "book.closed")
+                                .accessibilityIdentifier("button.closeStorybook")
                                 .font(.footnote.weight(.medium))
                                 .foregroundStyle(FableTheme.cream)
                                 .padding(.horizontal, 16)
@@ -160,6 +163,7 @@ struct ReaderView: View {
                     startSeries()
                 } label: {
                     Label("Make this a continuing adventure", systemImage: "sparkles.rectangle.stack")
+                        .accessibilityIdentifier("button.makeSeries")
                         .font(.footnote.weight(.medium))
                         .foregroundStyle(FableTheme.nightDeep)
                         .padding(.horizontal, 16)

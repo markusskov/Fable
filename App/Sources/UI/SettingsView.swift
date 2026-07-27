@@ -40,6 +40,7 @@ struct SettingsView: View {
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
         .presentationDragIndicator(.visible)
+        .accessibilityIdentifier("settings.root")
         .sheet(item: $editingProfile) { profile in
             ProfileSetupView(editing: profile)
         }
