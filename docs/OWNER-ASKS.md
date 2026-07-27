@@ -9,7 +9,7 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 
    **a. Screenshots (your Figma set).** Reviewed your new five-frame English set 2026-07-27. It reads well: the caption/subcaption rhythm is consistent, the device frames are clean, and the story content on screen is real rather than mocked. Four things to fix before export:
    - **Typo, frame 1:** "Uniqe stories every time" should be "Unique".
-   - **Double period, frame 2:** "Create a new story every day.." has two periods.
+   - ~~Double period, frame 2~~ — not a typo: the ellipsis is a deliberate continuation into frame 3 ("Create a new story every day… / Or continue an adventure."). Now set as a true ellipsis glyph rather than two periods. ✅ 2026-07-27.
    - **Frame 4 was from an OLD build** (it showed "Everything stays on this device. No account, ever." and the em-dash field labels). Owner is re-framing it from `docs/appstore/screenshots/en/05-setup.png`, the fresh build-4 capture. ✅ in progress 2026-07-27.
    - **Frame 4 caption "Nothing leaves your phone"** is the absolute claim the audit asked us to retire, because ordinary Apple device backups may include app data. Everywhere else now says what we actually control. Suggest "Never sent, never collected" or "No accounts. No servers. No tracking."
 
