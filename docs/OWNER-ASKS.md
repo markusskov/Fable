@@ -7,7 +7,15 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 1. **Norwegian story-safety vocabulary — skim when you have 10 minutes (not blocking).** Story-language plumbing landed: when a device runs in Norwegian and Apple Intelligence supports it, model stories are written in bokmål and judged by Norwegian safety vocabularies. As the native speaker, skim the two lists in `App/Sources/StoryEngine/ContentSafetyCheck.swift` (`norwegianDeniedWords`, `norwegianSleepSignals`) and the bokmål directive in `App/Sources/StoryEngine/StoryLanguage.swift`. Deliberate calls to sanity-check: homonyms «dør»/«redde»/«kjempe» are NOT denied (false positives on door/rescue/giant); «redd» IS denied; a Norwegian story must wind down with Norwegian sleep words — an English "goodnight" ending is rejected on purpose.
 2. **SUBMISSION DAY — the App Store Connect work, in order.** Build 3 was withdrawn (it predated the safety fixes and had no in-app legal links). Everything on the code side for a replacement is done: build number is now **4**, the privacy manifest ships, and the listing text below is corrected. What is left is yours.
 
-   **a. Screenshots (your Figma set).** Two changes, then re-export:
+   **a. Screenshots (your Figma set).** Reviewed your new five-frame English set 2026-07-27. It reads well: the caption/subcaption rhythm is consistent, the device frames are clean, and the story content on screen is real rather than mocked. Four things to fix before export:
+   - **Typo, frame 1:** "Uniqe stories every time" should be "Unique".
+   - **Double period, frame 2:** "Create a new story every day.." has two periods.
+   - **Frame 4 was from an OLD build** (it showed "Everything stays on this device. No account, ever." and the em-dash field labels). Owner is re-framing it from `docs/appstore/screenshots/en/05-setup.png`, the fresh build-4 capture. ✅ in progress 2026-07-27.
+   - **Frame 4 caption "Nothing leaves your phone"** is the absolute claim the audit asked us to retire, because ordinary Apple device backups may include app data. Everywhere else now says what we actually control. Suggest "Never sent, never collected" or "No accounts. No servers. No tracking."
+
+   **Guideline 2.3.2 (marking Fable+ on screenshots): owner decided 2026-07-27 not to mark it**, after checking how comparable apps present premium features. Recorded rather than re-argued. Worth knowing for the risk calculus: if a reviewer does cite it, the fix is metadata-only, so the cost is a resubmission of the listing rather than a new binary and a new review cycle.
+
+   **Previously agreed, still needed:**
    - **Guideline 2.3.2 wording.** Screenshot 02 currently promises "A new story every night" and continuing stories as if they were free. They are Fable+ only. Change that caption to **"With Fable+: a new story every night"** and the series caption to **"Continue adventures with Fable+"**. Apple rejects listings that show premium capability without saying it needs a purchase.
    - **No transparency.** Every current file in `docs/appstore/store-ready/` carried an alpha channel, which ASC refuses. That is fixed in the repo now, and `scripts/prepare-store-images.sh` flattens automatically and fails loudly if any file still has alpha. Re-run it after you export, and upload from `store-ready/6.7/`.
 
