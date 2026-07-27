@@ -5,6 +5,7 @@ struct RootView: View {
     @Query(sort: \ChildProfile.createdAt) private var profiles: [ChildProfile]
     @Query private var stories: [Story]
     @Environment(\.modelContext) private var modelContext
+    @Environment(PersistenceHealth.self) private var persistence
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var path = NavigationPath()
@@ -88,11 +89,7 @@ struct RootView: View {
             }
         }
         if changed {
-            do {
-                try modelContext.save()
-            } catch {
-                assertionFailure("Could not persist safety repair: \(error)")
-            }
+            Persistence.save(modelContext, whileDoing: "tidying older profiles", health: persistence)
         }
     }
 }

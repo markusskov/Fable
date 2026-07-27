@@ -7,15 +7,21 @@ import SwiftData
 struct ProfileSetupView: View {
     /// True when presented as a sheet to add an additional child.
     var isAddingAnotherChild = false
+    /// Set to change an existing child instead of creating one. The same
+    /// screen, the same validation: a name that could not be stored today
+    /// must not survive just because it was stored yesterday.
+    var editing: ChildProfile?
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(PersistenceHealth.self) private var persistence
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
 
     @State private var name = ""
     @State private var ageBand: AgeBand = .little
     @State private var companion = ""
     @State private var comfortObject = ""
+    @State private var hasLoadedExisting = false
     @FocusState private var focusedField: Field?
     @ScaledMetric(relativeTo: .largeTitle) private var sparkleSize = 44
 
@@ -60,7 +66,7 @@ struct ProfileSetupView: View {
                     Text("✨")
                         .font(.system(size: sparkleSize))
                         .accessibilityHidden(true)
-                    Text(isAddingAnotherChild ? "Another hero\njoins the family" : "Who are tonight's\nstories for?")
+                    Text(titleText)
                         .font(.system(.largeTitle, design: .serif, weight: .semibold))
                         .foregroundStyle(FableTheme.cream)
                     Text("Everything stays on this device. No account, ever.")
@@ -104,7 +110,7 @@ struct ProfileSetupView: View {
                 }
 
                 Button(action: save) {
-                    Text(isAddingAnotherChild ? "Welcome them in" : "Begin the first story")
+                    Text(buttonText)
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -118,11 +124,34 @@ struct ProfileSetupView: View {
         .scrollDismissesKeyboard(.interactively)
         // Ready to type straight away — the name is the only required step
         // on the way to the first story.
-        .onAppear { focusedField = .name }
+        .onAppear {
+            loadExistingIfNeeded()
+            focusedField = .name
+        }
         // Soften scrolled text before it reaches the status bar — review
         // 2026-07-22 saw the title collide with the clock.
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()
+    }
+
+    private var titleText: LocalizedStringKey {
+        if editing != nil { return "Change these\ndetails" }
+        return isAddingAnotherChild ? "Another hero\njoins the family" : "Who are tonight's\nstories for?"
+    }
+
+    private var buttonText: LocalizedStringKey {
+        if editing != nil { return "Save changes" }
+        return isAddingAnotherChild ? "Welcome them in" : "Begin the first story"
+    }
+
+    /// Fills the fields from the child being changed, once.
+    private func loadExistingIfNeeded() {
+        guard let editing, !hasLoadedExisting else { return }
+        hasLoadedExisting = true
+        name = editing.name
+        ageBand = editing.ageBand
+        companion = editing.companion
+        comfortObject = editing.comfortObject
     }
 
     private func save() {
@@ -132,15 +161,32 @@ struct ProfileSetupView: View {
         // validation judged (round three: an invisible-only companion was
         // validated as empty but stored non-empty).
         guard canContinue else { return }
+        let safeName = ContentSafetyCheck.storableName(from: name)
+        let safeCompanion = ContentSafetyCheck.storableProfileField(from: companion)
+        let safeComfort = ContentSafetyCheck.storableProfileField(from: comfortObject)
+
+        if let editing {
+            editing.name = safeName
+            editing.ageBand = ageBand
+            editing.companion = safeCompanion
+            editing.comfortObject = safeComfort
+            // An edit that does not reach disk is a lie the parent can see:
+            // report it rather than swallowing it (finding #6).
+            Persistence.save(modelContext, whileDoing: "saving these details", health: persistence)
+            dismiss()
+            return
+        }
+
         let profile = ChildProfile(
-            name: ContentSafetyCheck.storableName(from: name),
+            name: safeName,
             ageBand: ageBand,
-            companion: ContentSafetyCheck.storableProfileField(from: companion),
-            comfortObject: ContentSafetyCheck.storableProfileField(from: comfortObject)
+            companion: safeCompanion,
+            comfortObject: safeComfort
         )
         modelContext.insert(profile)
         // The newest child takes the stage right away.
         activeProfileUUID = profile.uuid.uuidString
+        Persistence.save(modelContext, whileDoing: "adding this child", health: persistence)
         if isAddingAnotherChild {
             dismiss()
         }

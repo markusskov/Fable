@@ -1230,6 +1230,46 @@
         }
       }
     },
+    "Add a child (Fable+)": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kind hinzufügen (Fable+)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir un niño (Fable+)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajouter un enfant (Fable+)"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi un bambino (Fable+)"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legg til et barn (Fable+)"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adicionar uma criança (Fable+)"
+          }
+        }
+      }
+    },
     "Adventure": {
       "localizations": {
         "de": {
@@ -1472,6 +1512,126 @@
         }
       }
     },
+    "Change": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ändern"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endre"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alterar"
+          }
+        }
+      }
+    },
+    "Change these\ndetails": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Angaben\nändern"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambiar estos\ndatos"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifier ces\ninformations"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica questi\ndettagli"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endre disse\nopplysningene"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alterar estes\ndados"
+          }
+        }
+      }
+    },
+    "Children": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kinder"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niños"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enfants"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bambini"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barn"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crianças"
+          }
+        }
+      }
+    },
     "Close the storybook": {
       "localizations": {
         "de": {
@@ -1548,6 +1708,126 @@
           "stringUnit": {
             "state": "translated",
             "value": "Continuar"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Löschen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slett"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Excluir"
+          }
+        }
+      }
+    },
+    "Delete this child?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dieses Kind löschen?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar este niño?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer cet enfant ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare questo bambino?"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slette dette barnet?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Excluir esta criança?"
+          }
+        }
+      }
+    },
+    "Delete this story?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Geschichte löschen?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar esta historia?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer cette histoire ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare questa storia?"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slette denne historien?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Excluir esta história?"
           }
         }
       }
@@ -1752,6 +2032,126 @@
         }
       }
     },
+    "Fable writes on your device, using Apple Intelligence when it is available. When it is not, a hand-written story from Fable's own shelf steps in, so bedtime never waits. Every story is checked for calm, gentle language before you see it, and nothing is ever sent anywhere.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable schreibt auf deinem Gerät, mit Apple Intelligence, wenn sie verfügbar ist. Sonst springt eine handgeschriebene Geschichte aus Fables eigenem Regal ein, damit die Gutenachtgeschichte nie warten muss. Jede Geschichte wird auf ruhige, sanfte Sprache geprüft, bevor du sie siehst, und nichts wird jemals irgendwohin gesendet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable escribe en tu dispositivo, con Apple Intelligence cuando está disponible. Si no lo está, entra una historia escrita a mano del propio estante de Fable, para que la hora de dormir nunca espere. Cada historia se revisa en busca de un lenguaje tranquilo y suave antes de que la veas, y nunca se envía nada a ningún sitio."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable écrit sur ton appareil, avec Apple Intelligence quand elle est disponible. Sinon, une histoire écrite à la main venue de l'étagère de Fable prend le relais, pour que le coucher n'attende jamais. Chaque histoire est vérifiée pour son langage calme et doux avant que tu la voies, et rien n'est jamais envoyé nulle part."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable scrive sul tuo dispositivo, con Apple Intelligence quando è disponibile. Quando non lo è, entra in scena una storia scritta a mano dallo scaffale di Fable, così la nanna non aspetta mai. Ogni storia viene controllata per un linguaggio calmo e gentile prima che tu la veda, e nulla viene mai inviato da nessuna parte."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable skriver på enheten din, med Apple Intelligence når den er tilgjengelig. Når den ikke er det, trer en håndskrevet historie fra Fables egen hylle inn, slik at leggetid aldri venter. Hver historie sjekkes for rolig og mildt språk før du ser den, og ingenting sendes noensinne noe sted."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Fable escreve no seu dispositivo, usando a Apple Intelligence quando ela está disponível. Quando não está, entra uma história escrita à mão da própria estante do Fable, para que a hora de dormir nunca espere. Cada história é verificada em busca de uma linguagem calma e gentil antes de você vê-la, e nada é enviado para lugar nenhum."
+          }
+        }
+      }
+    },
+    "Fable+": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+"
+          }
+        }
+      }
+    },
+    "Fable+ is active. Thank you for supporting a small, quiet app.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+ ist aktiv. Danke, dass du eine kleine, ruhige App unterstützt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+ está activo. Gracias por apoyar una app pequeña y tranquila."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+ est actif. Merci de soutenir une petite application paisible."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+ è attivo. Grazie per sostenere una piccola app tranquilla."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fable+ er aktivt. Takk for at du støtter en liten, rolig app."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O Fable+ está ativo. Obrigado por apoiar um app pequeno e tranquilo."
+          }
+        }
+      }
+    },
     "Fable+ makes story time unlimited, every single night.": {
       "localizations": {
         "de": {
@@ -1872,6 +2272,86 @@
         }
       }
     },
+    "How stories are made": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie Geschichten entstehen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo se crean las historias"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comment naissent les histoires"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come nascono le storie"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slik blir historiene til"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Como as histórias são feitas"
+          }
+        }
+      }
+    },
+    "Keep": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Behalten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conservar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conserver"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantieni"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Behold"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manter"
+          }
+        }
+      }
+    },
     "Magic": {
       "localizations": {
         "de": {
@@ -1948,6 +2428,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Transformar em uma aventura em capítulos"
+          }
+        }
+      }
+    },
+    "Manage subscription": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abo verwalten"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestionar suscripción"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gérer l'abonnement"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestisci abbonamento"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Administrer abonnement"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerenciar assinatura"
           }
         }
       }
@@ -2559,6 +3079,46 @@
         }
       }
     },
+    "Save changes": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Änderungen sichern"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar cambios"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enregistrer"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salva modifiche"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lagre endringer"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salvar alterações"
+          }
+        }
+      }
+    },
     "Saved. Continue it from the Tonight screen": {
       "localizations": {
         "de": {
@@ -2595,6 +3155,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "Salva! Continue pela tela da noite"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einstellungen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Réglages"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Innstillinger"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes"
+          }
+        }
+      }
+    },
+    "Some changes couldn't be saved": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einige Änderungen konnten nicht gesichert werden"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algunos cambios no se pudieron guardar"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Certaines modifications n'ont pas pu être enregistrées"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcune modifiche non sono state salvate"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noen endringer kunne ikke lagres"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algumas alterações não puderam ser salvas"
           }
         }
       }
@@ -3448,6 +4088,46 @@
         }
       }
     },
+    "The free tier is yours forever: one new story every week.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die kostenlose Stufe bleibt dir für immer: jede Woche eine neue Geschichte."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El plan gratuito es tuyo para siempre: una historia nueva cada semana."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'offre gratuite est à toi pour toujours : une nouvelle histoire chaque semaine."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il piano gratuito è tuo per sempre: una nuova storia ogni settimana."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gratisnivået er ditt for alltid: én ny historie hver uke."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O plano gratuito é seu para sempre: uma história nova toda semana."
+          }
+        }
+      }
+    },
     "The purchase couldn't be completed. Please try again in a moment.": {
       "extractionState": "manual",
       "localizations": {
@@ -3606,6 +4286,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Esta história antiga não pode ser aberta com segurança."
+          }
+        }
+      }
+    },
+    "This story will be gone for good. It only exists on this device.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Geschichte ist dann für immer weg. Sie existiert nur auf diesem Gerät."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta historia desaparecerá para siempre. Solo existe en este dispositivo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cette histoire disparaîtra pour de bon. Elle n'existe que sur cet appareil."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa storia sparirà per sempre. Esiste solo su questo dispositivo."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denne historien blir borte for godt. Den finnes bare på denne enheten."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta história desaparecerá para sempre. Ela só existe neste dispositivo."
           }
         }
       }
@@ -3969,6 +4689,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Anual"
+          }
+        }
+      }
+    },
+    "Your device may be out of storage. Freeing some space and reopening Fable usually fixes it.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vielleicht ist der Speicher deines Geräts voll. Etwas Platz schaffen und Fable neu öffnen hilft meistens."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puede que tu dispositivo se haya quedado sin espacio. Liberar algo de espacio y volver a abrir Fable suele solucionarlo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ton appareil manque peut-être d'espace. Libérer un peu de place et rouvrir Fable règle souvent le problème."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tuo dispositivo potrebbe non avere più spazio. Liberare un po' di spazio e riaprire Fable di solito risolve."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enheten din kan være tom for lagringsplass. Å frigjøre litt plass og åpne Fable på nytt pleier å hjelpe."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seu dispositivo pode estar sem armazenamento. Liberar espaço e reabrir o Fable costuma resolver."
           }
         }
       }

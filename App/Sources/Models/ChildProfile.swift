@@ -15,7 +15,12 @@ final class ChildProfile {
     var comfortObject: String
     var createdAt: Date
 
-    @Relationship(deleteRule: .nullify, inverse: \Story.profile)
+    /// CASCADE, not nullify. A nil `Story.profile` means "told before there
+    /// were profiles", and `Story.belongs(to:)` shows those to every child —
+    /// so nullifying on delete would hand one child's whole library to their
+    /// siblings. Deleting a child deletes their stories with them, which the
+    /// confirmation says plainly (external review finding #6).
+    @Relationship(deleteRule: .cascade, inverse: \Story.profile)
     var stories: [Story] = []
 
     var ageBand: AgeBand {
