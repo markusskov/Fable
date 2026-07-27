@@ -62,9 +62,9 @@ parenting apps.
 
 ## Promotional text (max 170)
 
-> Cada noche un cuento nuevo con tu peque de protagonista, creado de forma
-> privada en el iPhone. Sin cuentas, sin publicidad, nada sale del
-> teléfono. (147)
+> Un cuento con tu peque de protagonista, creado de forma privada en el
+> iPhone. Gratis cada semana, y con Fable+ uno nuevo cada noche. Sin cuentas
+> ni publicidad. (159)
 
 ## What's new in this version
 

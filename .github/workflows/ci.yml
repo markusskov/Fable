@@ -24,6 +24,12 @@ jobs:
         run: |
           scripts/release.sh --dry-run patch
           scripts/release.sh --dry-run build
+      # App Store Connect rejects an over-length field on upload, which
+      # costs a round trip per language. Measure them here instead: the
+      # hand-written counts in the packs had already drifted (Italian
+      # promotional text was annotated 168 and was actually 172).
+      - name: Check App Store metadata field limits
+        run: scripts/check-store-metadata.py
 
   build-and-test:
     name: Build & test (iOS Simulator)

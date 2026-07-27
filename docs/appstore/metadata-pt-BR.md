@@ -47,13 +47,13 @@ não fala.
 
 ## Palavras-chave (máx. 100)
 
-`ninar,história,histórias,conto,contos,dormir,criança,crianças,noite,calma,família,personalizada` (95)
+`ninar,história,histórias,contos,dormir,criança,crianças,noite,calma,família,personalizada` (94 bytes)
 
 ## Texto promocional (máx. 170)
 
-> Uma história de ninar nova toda noite, com seu filho como protagonista,
-> criada com privacidade no iPhone. Sem contas, sem propaganda, nada sai do
-> telefone. (155)
+> Uma história de ninar com sua criança de protagonista, criada com
+> privacidade no iPhone. Grátis toda semana, e toda noite com o Fable+. Sem
+> contas, sem propaganda. (163)
 
 ## Novidades (v1.1)
 

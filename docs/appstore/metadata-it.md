@@ -53,9 +53,9 @@ ancora.
 
 ## Testo promozionale (max 170)
 
-> Una nuova storia della buonanotte ogni sera, con il tuo bambino come
-> protagonista, creata in privato su iPhone. Niente account, niente
-> pubblicità, nulla lascia il telefono. (168)
+> Una storia della buonanotte con il tuo bambino protagonista, creata in
+> privato su iPhone. Gratis ogni settimana, ogni sera con Fable+. Niente
+> account, niente pubblicità. (169)
 
 ## Novità (v1.1)
 
