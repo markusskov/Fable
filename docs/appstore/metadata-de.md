@@ -60,9 +60,9 @@ dashes anywhere in customer-facing text.
 
 ## Promotional text (max 170)
 
-> Jeden Abend eine neue Gutenachtgeschichte mit deinem Kind in der
-> Hauptrolle, privat auf dem iPhone erschaffen. Keine Konten, keine
-> Werbung, nichts verlässt das Telefon. (166)
+> Eine Gutenachtgeschichte mit deinem Kind in der Hauptrolle, privat auf dem
+> iPhone erdacht. Jede Woche gratis, mit Fable+ jeden Abend neu. Keine
+> Konten, keine Werbung. (166)
 
 ## What's new in this version
 

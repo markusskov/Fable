@@ -50,8 +50,8 @@ etter lansering og følger neste versjon).
 
 ## Kampanjetekst (maks 170)
 
-> En ny godnatthistorie hver kveld, med barnet ditt i hovedrollen, skapt
-> privat på iPhone. Ingen kontoer, ingen reklame, ingenting forlater telefonen. (149)
+> En godnatthistorie med barnet ditt i hovedrollen, skapt privat på iPhone.
+> Gratis hver uke, og hver kveld med Fable+. Ingen kontoer, ingen reklame. (146)
 
 ## Nyheter i denne versjonen (v1.1)
 

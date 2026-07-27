@@ -56,9 +56,9 @@ encore.
 
 ## Texte promotionnel (170 max)
 
-> Une nouvelle histoire chaque soir, avec ton enfant en héros, imaginée en
-> toute confidentialité sur iPhone. Aucun compte, aucune pub, rien ne quitte
-> le téléphone. (163)
+> Une histoire du soir avec ton enfant en vedette, imaginée en privé sur
+> iPhone. Gratuite chaque semaine, et chaque soir avec Fable+. Aucun compte,
+> aucune pub. (157)
 
 ## Nouveautés (v1.1)
 
