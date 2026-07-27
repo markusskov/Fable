@@ -614,7 +614,7 @@ enum TemplateLibrary {
             "Au bout du sentier des lanternes, blottie sous une racine couverte de mousse, elle était là : {treasure}. Elle luisait faiblement, comme si elle avait attendu très, très longtemps qu'on vienne la trouver.",
             "« Elle est tombée du ciel », chuchota {companion}. « Elle doit avoir le mal du pays. » {name} la ramassa avec mille précautions. Elle était tiède, comme un petit cœur qui battait doucement.",
             "Alors {name} la souleva haut, très haut, aussi haut que peuvent monter de petits bras. Et les lucioles se rassemblèrent dessous et la portèrent, plus haut, encore plus haut, jusqu'à ce qu'elle retrouve sa place exacte dans le ciel.",
-            "Le ciel scintilla pour dire merci. Les lucioles s'inclinèrent avec leurs petites lumières. Et {name} se sentit soudain merveilleusement fatigué, de la bonne fatigue, celle qui vient après une journée pleine de merveilles.",
+            "Le ciel scintilla pour dire merci. Les lucioles s'inclinèrent avec leurs petites lumières. Et {name} sentit monter une bonne fatigue, celle qui vient après une journée pleine de merveilles.",
             "De retour à la maison, {name} se glissa sous la couette, {comfort} tout près, et {companion} se roula en boule juste à côté. Dehors, une luciole resta près de la fenêtre pour veiller. Bonne nuit, {name}. Cette nuit, le ciel te sourit.",
         ],
         settings: [
@@ -660,7 +660,7 @@ enum TemplateLibrary {
             "« Regarde », chuchota {companion}. Devant eux, brillant doucement, flottait {treasure}. Cette douce visiteuse s'approcha, salua poliment, et fit route avec eux, comme une vieille amie qui connaissait le chemin.",
             "Le bateau se balançait. Les étoiles fredonnaient. Les yeux de {name} devenaient lourds, de plus en plus lourds, de la plus agréable des façons, comme des couvertures faites de chaud silence.",
             "Lentement, lentement, le petit bateau prit le chemin du retour, glissant à travers la douce obscurité, repassant par la fenêtre, pour se poser, tout doucement, exactement là où doit se trouver un lit.",
-            "Et voilà {name}, bien bordé, {comfort} tout près, {companion} déjà en train de rêver. Le voyage serait encore là demain soir. Dors maintenant, petit marin. Bonne nuit, {name}, les étoiles fredonnent pour toi.",
+            "Et voilà {name}, bien au chaud sous la couette, {comfort} tout près, {companion} déjà en train de rêver. Le voyage serait encore là demain soir. Dors maintenant. Bonne nuit, {name}, les étoiles fredonnent pour toi.",
         ],
         settings: [
             "le phare endormi",
@@ -680,7 +680,7 @@ enum TemplateLibrary {
         ],
         moralVariants: [
             "La douce obscurité est une amie qui nous porte doucement jusqu'au matin.",
-            "Dormir est un voyage, et chaque dormeur est un brave petit marin.",
+            "Dormir est un voyage, et la nuit nous emmène tout doucement.",
         ],
         recapVariants: [
             "Le lit de {name} devint un petit bateau qui vogua devant {setting}, et {treasure} se joignit au voyage.",
@@ -758,7 +758,7 @@ enum TemplateLibrary {
             "In fondo al sentiero delle lanterne, nascosta sotto una radice coperta di muschio, eccola lì: {treasure}. Brillava piano, come se avesse aspettato tanto, tanto tempo che qualcuno venisse a trovarla.",
             "«È caduta dal cielo», sussurrò {companion}. «Deve avere tanta nostalgia di casa.» {name} la raccolse con mille attenzioni. Era tiepida, come un piccolo cuore che batteva piano.",
             "Allora {name} la sollevò in alto, sempre più in alto, in alto quanto possono arrivare due piccole braccia. E le lucciole si raccolsero lì sotto e la portarono su, su, su, finché non ritrovò il suo posto esatto nel cielo.",
-            "Il cielo scintillò per dire grazie. Le lucciole si inchinarono con le loro piccole luci. E {name} si sentì all'improvviso meravigliosamente stanco, di quella stanchezza buona che viene dopo una giornata piena di meraviglie.",
+            "Il cielo scintillò per dire grazie. Le lucciole si inchinarono con le loro piccole luci. E a {name} venne addosso una stanchezza meravigliosa, di quelle buone, che arrivano dopo una giornata piena di meraviglie.",
             "Tornati a casa, {name} si infilò sotto le coperte, con {comfort} lì vicino, e {companion} si rannicchiò accanto. Fuori, una lucciola rimase alla finestra a fare la guardia. Buonanotte, {name}. Stanotte il cielo ti sorride.",
         ],
         settings: [
@@ -804,7 +804,7 @@ enum TemplateLibrary {
             "«Guarda», sussurrò {companion}. Davanti a loro, brillando piano, galleggiava {treasure}. Quella dolce visitatrice si avvicinò, salutò con garbo, e si unì al viaggio come una vecchia amica che conosceva la strada.",
             "La barchetta dondolava. Le stelle canticchiavano. Gli occhi di {name} si facevano pesanti, sempre più pesanti, nel modo più piacevole che ci sia, come coperte fatte di silenzio caldo.",
             "Lentamente, lentamente, la barchetta prese la via di casa, scivolando nel buio morbido, ripassando dalla finestra, fino a posarsi, piano piano, esattamente dove deve stare un letto.",
-            "Ed ecco {name}, ben rimboccato, con {comfort} lì accanto e {companion} che già sognava. Il viaggio sarebbe stato lì anche domani sera. Dormi adesso, piccolo marinaio. Buonanotte, {name}, le stelle canticchiano per te.",
+            "Ed ecco {name}, al calduccio sotto le coperte, con {comfort} lì accanto e {companion} che già sognava. Il viaggio sarebbe stato lì anche domani sera. Dormi adesso. Buonanotte, {name}, le stelle canticchiano per te.",
         ],
         settings: [
             "il faro addormentato",
@@ -824,7 +824,7 @@ enum TemplateLibrary {
         ],
         moralVariants: [
             "Il buio gentile è un amico che ci porta piano piano fino al mattino.",
-            "Riposare è un viaggio, e chi dorme è un piccolo marinaio coraggioso.",
+            "Riposare è un viaggio, e la notte ci accompagna piano piano.",
         ],
         recapVariants: [
             "Il letto di {name} diventò una barchetta che navigò oltre {setting}, e {treasure} si unì al viaggio.",
@@ -901,7 +901,7 @@ enum TemplateLibrary {
             "{name} saiu na ponta dos pés, abraçando {comfort} bem forte, e é claro que {companion} foi junto. Os vagalumes desenhavam uma trilha iluminada, como uma fita de lanterninhas minúsculas, serpenteando até {setting}.",
             "A trilha era macia sob os pés de {name}, e a noite estava morna e amiga. Em algum lugar bem longe, ouviu-se {sound}, um som doce e sonolento, como se o mundo inteiro estivesse bocejando devagarinho.",
             "No fim da trilha das lanterninhas, escondida embaixo de uma raiz coberta de musgo, lá estava ela: {treasure}. Brilhava baixinho, como se tivesse esperado muito, muito tempo para ser encontrada.",
-            "«Ela caiu do céu», sussurrou {companion}. «Deve estar com saudade de casa.» {name} pegou a luzinha com todo o cuidado do mundo. Era morna, como um coração pequenino batendo devagar.",
+            "“Ela caiu do céu”, sussurrou {companion}. “Deve estar com saudade de casa.” {name} pegou a luzinha com todo o cuidado do mundo. Era morna, como um coração pequenino batendo devagar.",
             "Então {name} levantou a estrelinha bem alto, cada vez mais alto, tão alto quanto dois bracinhos conseguem chegar. E os vagalumes se juntaram embaixo e a carregaram para cima, para cima, para cima, até que ela encontrou de novo o seu lugar certinho no céu.",
             "O céu cintilou um obrigado. Os vagalumes fizeram uma reverência com as suas luzinhas. E {name} sentiu de repente um cansaço maravilhoso, daquele cansaço bom que vem depois de um dia cheio de maravilhas.",
             "De volta em casa, {name} se aconchegou embaixo das cobertas, com {comfort} bem pertinho, e {companion} se enroscou logo ao lado. Lá fora, um vagalume ficou na janela, montando guarda. Boa noite, {name}. Hoje o céu sorri para você.",
@@ -946,10 +946,10 @@ enum TemplateLibrary {
             "O barquinho deslizou pela janela e entrou no escuro macio, que não tinha nada de preocupante. Era aconchegante, como se o céu inteiro estivesse ajeitando as suas cobertas. {companion} sentou na proa, e {comfort} virou o travesseiro perfeito.",
             "Velejaram cruzando {setting}, onde tudo já dormia. As ondas, ou será que eram nuvens, embalavam o barquinho devagar. Uma… duas… uma… duas…",
             "Uma família de estrelas saiu para vê-los passar. A estrelinha mais miudinha cantarolava {sound}, a canção que as estrelas cantam quando chega a hora de descansar. {name} cantarolou junto, bem baixinho.",
-            "«Olha», sussurrou {companion}. Lá na frente, brilhando de mansinho, flutuava {treasure}. Aquela doce visitante chegou perto, cumprimentou com jeitinho, e seguiu viagem com eles, como uma velha amiga que conhecia o caminho.",
+            "“Olha”, sussurrou {companion}. Lá na frente, brilhando de mansinho, flutuava {treasure}. Aquela doce visitante chegou perto, cumprimentou com jeitinho, e seguiu viagem com eles, como uma velha amiga que conhecia o caminho.",
             "O barquinho balançava. As estrelas cantarolavam. Os olhos de {name} foram ficando pesados, cada vez mais pesados, do jeitinho mais gostoso que existe, como cobertas feitas de silêncio quente.",
             "Devagar, devagarinho, o barquinho pegou o caminho de casa, deslizando pelo escuro macio, voltando pela janela, até pousar, de mansinho, exatamente onde uma cama deve ficar.",
-            "E lá estava {name}, bem coberto, com {comfort} pertinho e {companion} já sonhando. A viagem estaria ali de novo amanhã à noite. Durma agora, pequeno marinheiro. Boa noite, {name}, as estrelas cantarolam para você.",
+            "E lá estava {name}, já debaixo das cobertas, com {comfort} pertinho e {companion} já sonhando. A viagem estaria ali de novo amanhã à noite. Durma agora. Boa noite, {name}, as estrelas cantarolam para você.",
         ],
         settings: [
             "o farol adormecido",
@@ -969,7 +969,7 @@ enum TemplateLibrary {
         ],
         moralVariants: [
             "O escuro gentil é um amigo que nos carrega devagarinho até a manhã.",
-            "Descansar é uma viagem, e quem dorme é um pequeno marinheiro corajoso.",
+            "Descansar é uma viagem, e a noite leva a gente devagarinho.",
         ],
         recapVariants: [
             "A cama de {name} virou um barquinho que cruzou {setting}, e {treasure} acompanhou a viagem.",
@@ -989,11 +989,11 @@ enum TemplateLibrary {
         pages: [
             "Pouco antes da hora de dormir, {name} ouviu o barulhinho mais pequeno do mundo vindo da porta de casa: {sound}. {name} e {companion} foram espiar devagarinho.",
             "Ali, não maior que uma xícara de chá, estava um serzinho de olhos grandes e redondos. Ele tinha se perdido. A casa dele ficava do outro lado, depois que se cruzava {setting}, e a noite ia ficando cada vez mais funda.",
-            "«Não se preocupe», disse {name} com a voz macia que a gente guarda para as coisas pequenininhas. «A gente leva você.» {name} levou {comfort} junto, porque tudo fica mais fácil com {comfort}.",
+            "“Não se preocupe”, disse {name} com a voz macia que a gente guarda para as coisas pequenininhas. “A gente leva você.” {name} levou {comfort} junto, porque tudo fica mais fácil com {comfort}.",
             "O pequenino subiu nas costas de {companion} e se segurou firme. No caminho, ele fungou um pouquinho, então {name} contou para ele sobre {treasure}. Os olhos do pequenino ficaram redondos de encanto, e as preocupações dele voaram para longe.",
             "Cruzaram {setting}, um passinho de cada vez, devagarinho. O ar da noite cheirava a grama e a estrelas. O pequenino começou a cantarolar {sound}, mas mais alegre agora, um cantarolar de quem está voltando para casa.",
             "E lá estava ela: uma portinha embaixo de uma colininha, com uma luz quentinha lá dentro e uma família de pequeninos acenando. O visitante mais pequenininho apertou o polegar de {name} com força. Era o maior abraço que ele sabia dar.",
-            "«Obrigado», piou ele, «por me levar até em casa.» E deixou um presente para {name}: um carinho minúsculo de bigodinhos na ponta do nariz. Isso é uma honra enorme, entre os serzinhos.",
+            "“Obrigado”, piou ele, “por me levar até em casa.” E deixou um presente para {name}: um carinho minúsculo de bigodinhos na ponta do nariz. Isso é uma honra enorme, entre os serzinhos.",
             "{name} e {companion} voltaram para casa embaixo da boa e velha lua, bocejando o caminho inteiro. E quando {name} se enfiou na cama com {comfort}, a noite parecia amiga e cheia de casinhas felizes. Boa noite, {name}.",
         ],
         settings: [
