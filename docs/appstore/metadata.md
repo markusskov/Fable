@@ -21,13 +21,13 @@ feature change that alters what the store page promises.
 > **Tonight's story stars the person your child loves most: themselves.**
 >
 > Fable turns your child's name, their favorite sidekick, and the cozy thing
-> they sleep with into a brand-new bedtime story — imagined fresh on your
+> they sleep with into a brand-new bedtime story, imagined fresh on your
 > iPhone, every night.
 >
 > **Completely private.** Stories are generated entirely on your device with
-> Apple Intelligence. No account. No cloud. Nothing about your child ever
-> leaves the phone — we couldn't read it if we wanted to, and we designed it
-> that way on purpose.
+> Apple Intelligence. No account. No cloud. Fable never sends or collects
+> anything about your child, we couldn't read it if we wanted to, and we
+> designed it that way on purpose.
 >
 > **Calm by design.** A warm, quiet reading experience for the last fifteen
 > minutes of the day. Generous storybook type, a page-turn made for sleepy
@@ -35,19 +35,21 @@ feature change that alters what the store page promises.
 > while you read aloud.
 >
 > **Always a story.** Even without Apple Intelligence, Fable's hand-written
-> story library steps in — personalized, beautiful, and ready every night.
+> story library steps in, personalized, beautiful, and ready every night.
 >
 > **Free, forever:** three starter stories, then a fresh story every week,
 > and your whole library to re-read anytime.
 >
 > **Fable+** makes story time unlimited:
-> • A new story every night — as many as bedtime needs
+> • A new story every night, as many as bedtime needs
 > • Story series: continuing adventures, night after night
 > • A profile for every child in the family
 > • Family Sharing included
 >
-> Fable+ is $4.99/month, or $39.99/year with a 7-day free trial.
-> Subscriptions renew automatically until cancelled in Settings.
+> Fable+ is available monthly or yearly. The yearly plan includes a 7-day free
+> trial for eligible new subscribers. Prices are shown in the app in your own
+> currency before you subscribe, and subscriptions renew automatically until
+> cancelled in Settings.
 >
 > Sweet dreams.
 
@@ -63,15 +65,16 @@ feature change that alters what the store page promises.
 
 ## Promotional text (170 chars max)
 
-> A new bedtime story every night, starring your child — imagined privately on
-> your iPhone with Apple Intelligence. No accounts, no ads, nothing leaves the
-> device. (159)
+> A bedtime story starring your child, imagined privately on your iPhone. Free every week, and with Fable+ a new one every night. No accounts, no ads. (148)
+
+**Guideline 2.3.2:** premium-only capability must be marked. "A new story every
+night" is Fable+, never the free tier, so the marker stays in every language.
 
 ## What's New (v1.0)
 
 > The very first Fable. Personalized stories on-device, story series for
 > continuing adventures, profiles for every child, and a calm reader made for
-> reading aloud. Tell us what your family thinks — we read everything.
+> reading aloud. Tell us what your family thinks. We read everything.
 
 ## App Review notes
 
@@ -82,10 +85,20 @@ feature change that alters what the store page promises.
   (`App/Sources/StoryEngine/ContentSafetyCheck.swift`); any rejection falls
   back to a hand-written story library bundled with the app.
 - The app is operated by the parent, reading aloud to their child.
-- Subscription: Fable+ (monthly/annual, 7-day trial) unlocks unlimited
-  stories, story series, and additional child profiles. The free tier is
-  permanent: 3 starter stories, then one story per week, full library access.
-- Restore Purchases is on the paywall footer. No account or login exists.
+- Subscription: Fable+ unlocks unlimited stories, story series, and additional
+  child profiles. The free tier is permanent: 3 starter stories, then one story
+  per week, full library access.
+  - `com.markusskov.fable.plus.monthlyy` is monthly with NO introductory offer.
+  - `com.markusskov.fable.plus.annualy` is annual; eligible customers see a
+    seven-day free trial. The trial is on the annual plan only.
+- **To reach the paywall immediately** (three starter stories are granted on a
+  fresh install, so the meter will not surface it): tap the profile button in
+  the upper left, then "Add a child". Adding a second child is a Fable+
+  feature and opens the paywall directly. The Settings button (gear, upper
+  right) also has a "Manage subscription" row.
+- Restore Purchases is on the paywall footer, alongside the Privacy Policy and
+  Terms of Use links. The same links are in Settings. No account or login
+  exists anywhere in the app.
 - To review quickly: create a profile (any name), pick a theme, "Tell
   tonight's story". On review devices without Apple Intelligence the curated
   library serves the story — same flow, no error states.

@@ -69,7 +69,7 @@ struct ProfileSetupView: View {
                     Text(titleText)
                         .font(.system(.largeTitle, design: .serif, weight: .semibold))
                         .foregroundStyle(FableTheme.cream)
-                    Text("Everything stays on this device. No account, ever.")
+                    Text("Stays on this device. Fable never sends or collects it, and there is no account, ever.")
                         .font(.footnote)
                         .foregroundStyle(FableTheme.creamDim)
                 }
