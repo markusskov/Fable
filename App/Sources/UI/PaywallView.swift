@@ -44,6 +44,12 @@ struct PaywallView: View {
         .presentationDragIndicator(.visible)
         // A failed catalog load is not sticky: reopening the paywall retries
         // (2026-07-24 money-path review). Also settles a cold-start .unknown.
+        // If the catalog came back partial, the default selection can be a
+        // plan the family cannot see, leaving Continue disabled with no
+        // explanation (2026-07-26 App Review audit, P2).
+        .onChange(of: subscriptions.products.map(\.id)) { _, _ in
+            selectVisiblePlanIfNeeded()
+        }
         .task {
             // Before the first suspension: a cached "free week" must not sit
             // on screen while entitlement and catalog work run (round ten).
@@ -58,6 +64,7 @@ struct PaywallView: View {
                 return
             }
             await subscriptions.ensureCatalog()
+            selectVisiblePlanIfNeeded()
             // Settled free with the sheet open: re-ask, whether or not the
             // catalog needed loading, so the trial line reflects the account
             // rather than whatever the last catalog load happened to see.
@@ -260,6 +267,17 @@ struct PaywallView: View {
             .foregroundStyle(FableTheme.gold)
         }
         .padding(.bottom, 24)
+    }
+
+    /// Keeps the selection on a plan the family can actually see.
+    private func selectVisiblePlanIfNeeded() {
+        guard !subscriptions.products.isEmpty,
+              subscriptions.product(for: selectedPlan) == nil else { return }
+        if let visible = FablePlus.Plan.allCases
+            .sorted(by: { $0.sortOrder < $1.sortOrder })
+            .first(where: { subscriptions.product(for: $0) != nil }) {
+            selectedPlan = visible
+        }
     }
 
     private func purchase() {

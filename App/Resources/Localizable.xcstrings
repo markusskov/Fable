@@ -1390,43 +1390,42 @@
         }
       }
     },
-    "Bedtime stories, written on this device. Nothing ever leaves it.": {
-      "comment": "About sheet: the one-line privacy promise under the app name",
+    "Bedtime stories, written on this device. Fable never sends or collects your family's data.": {
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gutenachtgeschichten, geschrieben auf diesem Gerät. Nichts verlässt es je."
+            "value": "Gutenachtgeschichten, auf diesem Gerät geschrieben. Fable sendet und sammelt die Daten deiner Familie nie."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuentos para dormir, escritos en este dispositivo. Nada sale nunca de él."
+            "value": "Cuentos para dormir, escritos en este dispositivo. Fable nunca envía ni recopila los datos de tu familia."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Des histoires du soir, écrites sur cet appareil. Rien n'en sort jamais."
+            "value": "Des histoires du soir, écrites sur cet appareil. Fable n'envoie ni ne collecte jamais les données de ta famille."
           }
         },
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Storie della buonanotte, scritte su questo dispositivo. Nulla lo lascia mai."
+            "value": "Storie della buonanotte, scritte su questo dispositivo. Fable non invia né raccoglie mai i dati della tua famiglia."
           }
         },
         "nb": {
           "stringUnit": {
             "state": "translated",
-            "value": "Godnatthistorier, skrevet på denne enheten. Ingenting forlater den."
+            "value": "Godnatthistorier, skrevet på denne enheten. Fable sender og samler aldri inn familiens data."
           }
         },
         "pt-BR": {
           "stringUnit": {
             "state": "translated",
-            "value": "Histórias de ninar, escritas neste dispositivo. Nada sai dele."
+            "value": "Histórias para dormir, escritas neste dispositivo. O Fable nunca envia nem coleta os dados da sua família."
           }
         }
       }
@@ -1988,46 +1987,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Toda noite merece\numa história só sua"
-          }
-        }
-      }
-    },
-    "Everything stays on this device. No account, ever.": {
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alles bleibt auf diesem Gerät. Kein Konto, niemals."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Todo se queda en este dispositivo. Sin cuentas, nunca."
-          }
-        },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tout reste sur cet appareil. Aucun compte, jamais."
-          }
-        },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutto resta su questo dispositivo. Nessun account, mai."
-          }
-        },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alt blir værende på denne enheten. Ingen konto, aldri."
-          }
-        },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tudo fica neste aparelho. Sem conta, nunca."
           }
         }
       }
@@ -3355,6 +3314,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Comece sua semana grátis"
+          }
+        }
+      }
+    },
+    "Stays on this device. Fable never sends or collects it, and there is no account, ever.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bleibt auf diesem Gerät. Fable sendet und sammelt es nie, und es gibt nie ein Konto."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se queda en este dispositivo. Fable nunca lo envía ni lo recopila, y nunca hay cuenta."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reste sur cet appareil. Fable ne l'envoie ni ne le collecte jamais, et il n'y a jamais de compte."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resta su questo dispositivo. Fable non lo invia né lo raccoglie mai, e non serve mai un account."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blir på denne enheten. Fable sender og samler det aldri inn, og det finnes aldri en konto."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fica neste dispositivo. O Fable nunca envia nem coleta isso, e nunca há conta."
           }
         }
       }

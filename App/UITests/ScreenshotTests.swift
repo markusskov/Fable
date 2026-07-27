@@ -31,11 +31,11 @@ final class ScreenshotTests: XCTestCase {
         app.buttons["4–6 years"].tap()
 
         let companionField = app.textFields[
-            "A favorite friend or animal — skip it and a small brave fox steps in"]
+            "A favorite friend or animal. Skip it and a small brave fox steps in"]
         companionField.tap()
         companionField.typeText("Pip the penguin")
 
-        let comfortField = app.textFields["Something cozy they sleep with — optional too"]
+        let comfortField = app.textFields["Something cozy they sleep with, optional too"]
         comfortField.tap()
         comfortField.typeText("the star blanket")
         comfortField.typeText("\n") // .done — drops the keyboard for the shot

@@ -72,7 +72,7 @@ struct SettingsView: View {
             Text(verbatim: "Fable")
                 .font(.system(.largeTitle, design: .serif, weight: .semibold))
                 .foregroundStyle(FableTheme.cream)
-            Text("Bedtime stories, written on this device. Nothing ever leaves it.")
+            Text("Bedtime stories, written on this device. Fable never sends or collects your family's data.")
                 .font(.subheadline)
                 .foregroundStyle(FableTheme.creamDim)
             Text(verbatim: Self.versionLine)

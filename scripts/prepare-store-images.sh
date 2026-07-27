@@ -24,6 +24,9 @@ render() {
     cp "$SRC/$name.png" "$out"
     sips --resampleHeight "$height" "$out" >/dev/null
     sips --cropToHeightWidth "$height" "$width" "$out" >/dev/null
+    # App Store screenshots may not carry an alpha channel; sips cannot drop
+    # one, so a tiny CoreGraphics pass does it (2026-07-26 App Review audit).
+    swift "$(dirname "$0")/FlattenAlpha.swift" "$out"
     printf "%s -> %s (%s)\n" "$name" "$out" \
       "$(sips -g pixelWidth -g pixelHeight "$out" | awk '/pixelWidth/{w=$2}/pixelHeight/{h=$2}END{print w"x"h}')"
   done
@@ -31,4 +34,11 @@ render() {
 
 render "docs/appstore/store-ready/6.7" 2778 1284
 render "docs/appstore/store-ready/6.9" 2868 1320
+for f in docs/appstore/store-ready/6.7/*.png docs/appstore/store-ready/6.9/*.png; do
+  if sips -g hasAlpha "$f" | grep -q "hasAlpha: yes"; then
+    echo "STILL HAS ALPHA: $f" >&2
+    exit 1
+  fi
+done
 echo "Done. Upload the 6.7 set (1284x2778) to the record's iPhone slot in order."
+echo "All files verified free of alpha."
