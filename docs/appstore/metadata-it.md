@@ -39,9 +39,11 @@ ancora.
 > • Un profilo per ogni bambino della famiglia
 > • «In famiglia» incluso
 >
-> Fable+ costa 4,99 €/mese, oppure 39,99 €/anno con una settimana di prova
-> gratuita. L'abbonamento si rinnova automaticamente finché non viene
-> disdetto da Impostazioni.
+> Fable+ è disponibile con abbonamento mensile o annuale. Il piano annuale
+> include una settimana di prova gratuita per i nuovi abbonamenti idonei. I
+> prezzi vengono mostrati nell'app, nella tua valuta, prima di abbonarti.
+> L'abbonamento si rinnova automaticamente finché non viene disdetto da
+> Impostazioni.
 >
 > Sogni d'oro.
 

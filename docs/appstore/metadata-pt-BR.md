@@ -38,8 +38,9 @@ não fala.
 > • Um perfil para cada criança da família
 > • Compartilhamento Familiar incluído
 >
-> O Fable+ custa R$ 24,90/mês, ou R$ 199,90/ano com uma semana de teste
-> grátis (preços definidos pela Apple por região). A assinatura se renova
+> O Fable+ está disponível nos planos mensal e anual. O plano anual inclui
+> uma semana grátis para novas assinaturas elegíveis. Os preços aparecem no
+> app, na sua moeda, antes de você assinar. A assinatura se renova
 > automaticamente até ser cancelada nos Ajustes.
 >
 > Bons sonhos.

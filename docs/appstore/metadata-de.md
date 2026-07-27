@@ -46,14 +46,13 @@ dashes anywhere in customer-facing text.
 > • Ein eigenes Profil für jedes Kind der Familie
 > • Familienfreigabe inklusive
 >
-> Fable+ kostet 4,99 €/Monat oder 39,99 €/Jahr mit einer Gratiswoche zum
-> Ausprobieren. Das Abo verlängert sich automatisch, bis es in den
-> Einstellungen gekündigt wird.
+> Fable+ gibt es monatlich oder jährlich. Beim Jahresabo ist für neue
+> Abos eine Gratiswoche dabei. Die Preise siehst du vor dem Abschluss in
+> der App, in deiner Währung. Das Abo verlängert sich automatisch, bis es
+> in den Einstellungen gekündigt wird.
 >
 > Schlaf gut.
 
-(Prices assume the €4.99/€39.99 tiers that correspond to the $4.99/$39.99
-base — confirm against the ASC price schedule before pasting.)
 
 ## Keywords (max 100)
 

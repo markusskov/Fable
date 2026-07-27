@@ -37,7 +37,9 @@ etter lansering og følger neste versjon).
 > • Egen profil for hvert barn i familien
 > • Familiedeling inkludert
 >
-> Fable+ koster 59 kr/mnd, eller 499 kr/år med én ukes gratis prøveperiode.
+> Fable+ finnes som måneds- eller årsabonnement. Årsabonnementet inkluderer
+> én gratis uke for nye abonnementer som kvalifiserer. Prisene vises i appen,
+> i din egen valuta, før du abonnerer.
 > Abonnementet fornyes automatisk til det sies opp i Innstillinger.
 >
 > Sov godt.

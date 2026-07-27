@@ -48,14 +48,13 @@ parenting apps.
 > • Un perfil propio para cada peque de la familia
 > • Compartir en familia incluido
 >
-> Fable+ cuesta 4,99 €/mes o 39,99 €/año con una semana gratis para
-> probarlo. La suscripción se renueva automáticamente hasta que se cancele
-> en Ajustes.
+> Fable+ está disponible en plan mensual o anual. El plan anual incluye una
+> semana gratis para quienes cumplan los requisitos. Verás los precios en la
+> app, en tu moneda, antes de suscribirte. La suscripción se renueva
+> automáticamente hasta que se cancele en Ajustes.
 >
 > Dulces sueños.
 
-(Prices assume the €4.99/€39.99 tiers that correspond to the $4.99/$39.99
-base — confirm against the ASC price schedule before pasting.)
 
 ## Keywords (max 100)
 
