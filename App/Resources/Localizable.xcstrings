@@ -46,6 +46,126 @@
         }
       }
     },
+    "%@ has no stories yet. This can't be undone.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ hat noch keine Geschichten. Das lässt sich nicht rückgängig machen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ todavía no tiene historias. Esto no se puede deshacer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ n'a pas encore d'histoires. C'est définitif."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ non ha ancora storie. L'operazione non può essere annullata."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ har ingen historier ennå. Dette kan ikke angres."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ainda não tem histórias. Isso não pode ser desfeito."
+          }
+        }
+      }
+    },
+    "%@'s %lld stories will be deleted too. This can't be undone.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die %2$lld Geschichten von %1$@ werden ebenfalls gelöscht. Das lässt sich nicht rückgängig machen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las %2$lld historias de %1$@ también se eliminarán. Esto no se puede deshacer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Les %2$lld histoires de %1$@ seront également supprimées. C'est définitif."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anche le %2$lld storie di %1$@ verranno eliminate. L'operazione non può essere annullata."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De %2$lld historiene til %1$@ blir også slettet. Dette kan ikke angres."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As %2$lld histórias de %1$@ também serão excluídas. Isso não pode ser desfeito."
+          }
+        }
+      }
+    },
+    "%@'s story will be deleted too. This can't be undone.": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Geschichte von %@ wird ebenfalls gelöscht. Das lässt sich nicht rückgängig machen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La historia de %@ también se eliminará. Esto no se puede deshacer."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'histoire de %@ sera également supprimée. C'est définitif."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anche la storia di %@ verrà eliminata. L'operazione non può essere annullata."
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historien til %@ blir også slettet. Dette kan ikke angres."
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A história de %@ também será excluída. Isso não pode ser desfeito."
+          }
+        }
+      }
+    },
     "%@, that's %@ a month": {
       "comment": "Yearly price line: full price, then its monthly equivalent",
       "localizations": {
@@ -1747,6 +1867,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "Excluir"
+          }
+        }
+      }
+    },
+    "Delete %@": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ löschen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar a %@"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer %@"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elimina %@"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slett %@"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Excluir %@"
+          }
+        }
+      }
+    },
+    "Delete %@?": {
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ löschen?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar a %@?"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supprimer %@ ?"
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminare %@?"
+          }
+        },
+        "nb": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slette %@?"
+          }
+        },
+        "pt-BR": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Excluir %@?"
           }
         }
       }
