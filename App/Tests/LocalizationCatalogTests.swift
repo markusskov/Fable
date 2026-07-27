@@ -70,6 +70,32 @@ struct LocalizationCatalogTests {
         return string.matches(of: pattern).map { String($0.output) }
     }
 
+    /// The specifiers a translation actually SUPPLIES, in the key's argument
+    /// order. German and the Romance languages legitimately reorder ("Die 4
+    /// Geschichten von Emma"), which positional syntax exists for: `%2$lld`
+    /// means "argument two", wherever it appears in the sentence. Comparing
+    /// raw order would reject a correct translation, so positional forms are
+    /// resolved back to their argument slot before comparison.
+    private func specifiersByArgument(in string: String) -> [String] {
+        let matches = specifiers(in: string)
+        var positional: [Int: String] = [:]
+        var sequential: [String] = []
+        for match in matches {
+            let body = match.dropFirst() // drop "%"
+            if let dollar = body.firstIndex(of: "$"),
+               let index = Int(body[body.startIndex..<dollar]) {
+                positional[index] = "%" + String(body[body.index(after: dollar)...])
+            } else {
+                sequential.append(match)
+            }
+        }
+        guard !positional.isEmpty else { return sequential }
+        // A translation may not mix the two styles: that is ambiguous and
+        // formats unpredictably.
+        guard sequential.isEmpty else { return matches }
+        return positional.sorted { $0.key < $1.key }.map(\.value)
+    }
+
     @Test func sourceLanguageIsEnglish() {
         #expect(sourceLanguage == "en")
     }
@@ -117,10 +143,10 @@ struct LocalizationCatalogTests {
     /// drop the number ("1 uke gratis"); everything else must match exactly.
     @Test func formatSpecifiersMatchTheirKey() {
         for (key, entry) in strings where isTranslatable(entry) {
-            let expected = specifiers(in: key)
+            let expected = specifiersByArgument(in: key)
             for (language, localization) in localizations(entry) {
                 for (category, value) in values(of: localization) {
-                    let found = specifiers(in: value)
+                    let found = specifiersByArgument(in: value)
                     if category == "one" {
                         #expect(
                             found.count <= expected.count &&

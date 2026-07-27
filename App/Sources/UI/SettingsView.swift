@@ -209,10 +209,19 @@ struct SettingsView: View {
         guard let profile = profilePendingDeletion else { return "" }
         let impact = ProfileDeletion.impact(ofDeleting: profile, stories: stories, series: series)
         let name = ContentSafetyCheck.displayName(for: profile.name)
-        if impact.storyCount == 0 {
+        // Three plain sentences rather than one with a plural substitution:
+        // every language Fable ships has a simple one/other split, and the
+        // single-story case was ungrammatical in English too ("Emma's 1
+        // stories"). Also: the count and the name swap places in German and
+        // the Romance languages, which positional arguments handle.
+        switch impact.storyCount {
+        case 0:
             return String(localized: "\(name) has no stories yet. This can't be undone.")
+        case 1:
+            return String(localized: "\(name)'s story will be deleted too. This can't be undone.")
+        default:
+            return String(localized: "\(name)'s \(impact.storyCount) stories will be deleted too. This can't be undone.")
         }
-        return String(localized: "\(name)'s \(impact.storyCount) stories will be deleted too. This can't be undone.")
     }
 
     private func confirmDeletion() {
