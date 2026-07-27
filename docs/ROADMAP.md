@@ -72,6 +72,17 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 - [x] Model-language honesty check per locale: if Apple Intelligence can't write the language, that locale runs curated-only — same "never break bedtime" rule
   - Mechanism shipped with the language plumbing (`ModelStoryEngine.supportsLanguage` gate); each sprint language gets it for free by existing as a `StoryLanguage` case. One nuance: "curated-only" serves the *English* shelf until that language's curated templates land — honest fallback beats machine-translated prose.
 
+## Submission log
+
+- **2026-07-27: v1.0 build 5 submitted for App Store review**, manual release.
+  Build 3 was withdrawn (it predated the safety fail-open fix and had no
+  in-app legal links); build 4 was superseded before distribution. Build 5
+  carries: the provider-wide safety gate and its four review rounds, the
+  money path and its fourteen, in-app Privacy Policy and Terms, profile
+  management with the cascade delete rule, the required-reason privacy
+  manifest, honest premium marketing, and seven languages of UI and stories.
+  English, German and Norwegian store listings are live in App Store Connect.
+
 ## Milestone 4.5 — External review findings (Codex Sol Ultra, 2026-07-24) — release gate for public launch
 
 Verdict after verification: overwhelmingly correct. Fix order follows the reviewer's, with two paths already closed. **1.0 (build 3) contains findings 1–2, so even if Apple approves it, the Release button stays unpressed until a fixed build is approved.**

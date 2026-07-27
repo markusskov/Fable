@@ -4,6 +4,8 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 
 ## Open
 
+0. **v1.0 build 5 SUBMITTED for review 2026-07-27.** Release is set to Manual, so approval does not publish: the owner presses Release. Nothing is blocked on the repo while it is in review. If Apple comes back with a rejection, the two most likely citations are guideline 2.3.2 (marking Fable+ on screenshots, a decision the owner took deliberately) and subscription metadata. Both are metadata-only fixes: a listing edit and a resubmit, no new binary and no fresh build review.
+
 1. **Norwegian story-safety vocabulary — skim when you have 10 minutes (not blocking).** Story-language plumbing landed: when a device runs in Norwegian and Apple Intelligence supports it, model stories are written in bokmål and judged by Norwegian safety vocabularies. As the native speaker, skim the two lists in `App/Sources/StoryEngine/ContentSafetyCheck.swift` (`norwegianDeniedWords`, `norwegianSleepSignals`) and the bokmål directive in `App/Sources/StoryEngine/StoryLanguage.swift`. Deliberate calls to sanity-check: homonyms «dør»/«redde»/«kjempe» are NOT denied (false positives on door/rescue/giant); «redd» IS denied; a Norwegian story must wind down with Norwegian sleep words — an English "goodnight" ending is rejected on purpose.
 2. **SUBMISSION DAY — the App Store Connect work, in order.** Build 3 was withdrawn (it predated the safety fixes and had no in-app legal links). Everything on the code side for a replacement is done: build number is now **4**, the privacy manifest ships, and the listing text below is corrected. What is left is yours.
 
