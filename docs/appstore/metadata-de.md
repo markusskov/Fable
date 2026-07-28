@@ -51,6 +51,9 @@ dashes anywhere in customer-facing text.
 > der App, in deiner Währung. Das Abo verlängert sich automatisch, bis es
 > in den Einstellungen gekündigt wird.
 >
+> Nutzungsbedingungen (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Datenschutzerklärung: https://markusskov.github.io/Fable/privacy.html
+>
 > Schlaf gut.
 
 

@@ -74,6 +74,15 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 
 ## Submission log
 
+- **2026-07-28: build 5 REJECTED — automated, metadata-only, guideline 3.1.2**:
+  the App Description must carry a functional Terms of Use (EULA) link when
+  auto-renewable subscriptions are sold. The in-app links (finding #2) were
+  fine; the LISTING text never had one. Subscriptions and the binary were
+  returned only as associated items. Fix: legal-links block (standard-EULA +
+  privacy) appended to all seven metadata packs before the goodnight line;
+  owner re-pastes en/de/nb descriptions and resubmits the same build
+  (OWNER-ASKS item 0). Lesson recorded: 3.1.2 wants the EULA link in the
+  DESCRIPTION, not just in-app and not just the ASC EULA field.
 - **2026-07-27: v1.0 build 5 submitted for App Store review**, manual release.
   Build 3 was withdrawn (it predated the safety fail-open fix and had no
   in-app legal links); build 4 was superseded before distribution. Build 5

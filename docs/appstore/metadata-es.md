@@ -53,6 +53,9 @@ parenting apps.
 > app, en tu moneda, antes de suscribirte. La suscripción se renueva
 > automáticamente hasta que se cancele en Ajustes.
 >
+> Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Política de privacidad: https://markusskov.github.io/Fable/privacy.html
+>
 > Dulces sueños.
 
 
