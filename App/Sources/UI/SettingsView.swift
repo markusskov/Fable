@@ -186,6 +186,23 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: 12) {
             sectionTitle("Read aloud")
             VStack(alignment: .leading, spacing: 12) {
+                // Which voice actually reads, in this device's story
+                // language. iOS preinstalls only the robotic "compact"
+                // voice; when that is all there is, say where the warm one
+                // lives — Fable adopts it automatically once downloaded
+                // (owner feedback 2026-07-28: the default sounded robotic
+                // and the good voices seemed to be Siri's — those are not
+                // available to apps; the enhanced downloads are).
+                if let voice = currentNarrationVoice {
+                    Text("Story voice: \(voice.name)")
+                        .font(.callout)
+                        .foregroundStyle(FableTheme.cream)
+                    if voice.quality == .default, !voice.voiceTraits.contains(.isPersonalVoice) {
+                        Text("For a warmer voice, download an enhanced voice free of charge in iOS Settings, under Accessibility, Spoken Content, Voices. Fable uses the best installed voice automatically.")
+                            .font(.footnote)
+                            .foregroundStyle(FableTheme.creamDim)
+                    }
+                }
                 Text("Personal Voice lets a story be read in the voice of someone who loves you. It is recorded in iOS Settings, stays on this device, and appears here once allowed.")
                     .font(.footnote)
                     .foregroundStyle(FableTheme.creamDim)
@@ -217,6 +234,15 @@ struct SettingsView: View {
             personalVoiceStatus = AVSpeechSynthesizer.personalVoiceAuthorizationStatus
             personalVoices = SynthesizerSpeechEngine.personalVoices
         }
+    }
+
+    /// The voice narration would use right now for this device's story
+    /// language, honoring the family's Personal Voice choice.
+    private var currentNarrationVoice: AVSpeechSynthesisVoice? {
+        SynthesizerSpeechEngine.voice(
+            for: .deviceDefault,
+            preferredVoiceID: narrationVoiceID.isEmpty ? nil : narrationVoiceID
+        )
     }
 
     private func voiceRow(name: String, id: String) -> some View {

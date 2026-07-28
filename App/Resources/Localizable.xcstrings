@@ -1108,6 +1108,46 @@
         }
       }
     },
+    "For a warmer voice, download an enhanced voice free of charge in iOS Settings, under Accessibility, Spoken Content, Voices. Fable uses the best installed voice automatically." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vil du ha en varmere stemme? Last ned en forbedret stemme gratis i Innstillinger i iOS, under Tilgjengelighet, Opplest innhold, Stemmer. Fable bruker automatisk den beste stemmen som er installert."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für eine wärmere Stimme kannst du in den iOS Einstellungen unter Bedienungshilfen, Gesprochene Inhalte, Stimmen gratis eine verbesserte Stimme laden. Fable nimmt automatisch die beste installierte Stimme."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para una voz más cálida, descarga gratis una voz mejorada en Ajustes de iOS, en Accesibilidad, Contenido leído, Voces. Fable usa automáticamente la mejor voz instalada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour une voix plus chaleureuse, téléchargez gratuitement une voix améliorée dans Réglages, sous Accessibilité, Contenu énoncé, Voix. Fable utilise automatiquement la meilleure voix installée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per una voce più calda, scarica gratuitamente una voce migliorata in Impostazioni, sotto Accessibilità, Contenuto letto, Voci. Fable usa automaticamente la migliore voce installata."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para uma voz mais acolhedora, baixe de graça uma voz aprimorada nos Ajustes do iOS, em Acessibilidade, Conteúdo Falado, Vozes. O Fable usa automaticamente a melhor voz instalada."
+          }
+        }
+      }
+    },
     "Or something special tonight" : {
       "localizations" : {
         "nb" : {
@@ -1264,6 +1304,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ler em voz alta"
+          }
+        }
+      }
+    },
+    "Story voice: %@" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fortellerstemme: %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlesestimme: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voz del cuento: %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voix de lecture : %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voce narrante: %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voz da história: %@"
           }
         }
       }
