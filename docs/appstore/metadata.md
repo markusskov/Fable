@@ -52,7 +52,7 @@ feature change that alters what the store page promises.
 > cancelled in Settings.
 >
 > Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-> Privacy Policy: https://markusskov.github.io/Fable/privacy.html
+> Privacy Policy: https://markusskov.github.io/Fable/privacy
 >
 > Sweet dreams.
 

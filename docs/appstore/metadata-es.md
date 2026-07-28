@@ -54,7 +54,7 @@ parenting apps.
 > automáticamente hasta que se cancele en Ajustes.
 >
 > Términos de uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-> Política de privacidad: https://markusskov.github.io/Fable/privacy.html
+> Política de privacidad: https://markusskov.github.io/Fable/privacy
 >
 > Dulces sueños.
 

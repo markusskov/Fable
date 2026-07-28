@@ -49,7 +49,7 @@ encore.
 > Réglages.
 >
 > Conditions d'utilisation (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-> Politique de confidentialité: https://markusskov.github.io/Fable/privacy.html
+> Politique de confidentialité: https://markusskov.github.io/Fable/privacy
 >
 > Fais de beaux rêves.
 

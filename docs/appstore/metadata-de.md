@@ -52,7 +52,7 @@ dashes anywhere in customer-facing text.
 > in den Einstellungen gekündigt wird.
 >
 > Nutzungsbedingungen (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-> Datenschutzerklärung: https://markusskov.github.io/Fable/privacy.html
+> Datenschutzerklärung: https://markusskov.github.io/Fable/privacy
 >
 > Schlaf gut.
 
