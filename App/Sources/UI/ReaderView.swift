@@ -15,6 +15,8 @@ struct ReaderView: View {
     /// swap in over the emoji on the start screen (owner feedback
     /// 2026-07-28); now it simply greets the family on the next open.
     @State private var emblemCover: Data?
+    @State private var narrator = StoryNarrator(engine: SynthesizerSpeechEngine())
+    @AppStorage("narrationVoiceID") private var narrationVoiceID = ""
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dismiss) private var dismiss
@@ -44,13 +46,54 @@ struct ReaderView: View {
         }
         .readerBackground()
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                narrationButton
+            }
+        }
         // Bedtime pages stay up for minutes at a time; don't let the screen
         // sleep mid-story. Restored on the way out.
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = true
             emblemCover = story.coverArt
+            narrator.onPageChange = { index in
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.35)) {
+                    pageIndex = index
+                }
+            }
         }
-        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+        .onDisappear {
+            UIApplication.shared.isIdleTimerDisabled = false
+            narrator.stop()
+        }
+        // A hand turning the page outranks the voice: narration follows.
+        .onChange(of: pageIndex) { _, newIndex in
+            narrator.pageWasTurned(to: newIndex)
+        }
+    }
+
+    /// Read-aloud toggle. Quiet by design: one small symbol, no sheet, no
+    /// autoplay. The voice reads from the page on screen and turns pages
+    /// as it goes; stopping is instant.
+    private var narrationButton: some View {
+        Button {
+            if narrator.isReading {
+                narrator.stop()
+            } else {
+                narrator.startReading(
+                    [story.title] + story.pages,
+                    from: pageIndex,
+                    language: story.contentLanguage ?? .english,
+                    preferredVoiceID: narrationVoiceID.isEmpty ? nil : narrationVoiceID
+                )
+            }
+        } label: {
+            Image(systemName: narrator.isReading ? "pause.circle" : "speaker.wave.2")
+        }
+        .accessibilityLabel(narrator.isReading
+                            ? Text("Pause reading")
+                            : Text("Read aloud"))
+        .accessibilityIdentifier("button.readAloud")
     }
 
     private func tapToTurn(pageWidth: CGFloat) -> some Gesture {
