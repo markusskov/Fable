@@ -66,13 +66,28 @@ final class SynthesizerSpeechEngine: NSObject, SpeechEngine {
         }
         // Best installed voice for the language: highest quality wins
         // (premium > enhanced > default), ties broken stably by identifier.
+        // iOS preinstalls only the "compact" default voice per language;
+        // the warmer enhanced/premium voices exist as free downloads under
+        // Accessibility > Spoken Content > Voices, and appear here the
+        // moment they are installed. Siri's own voices are not available
+        // to apps at all (owner asked 2026-07-28) — the download is the
+        // best any third-party app can offer.
         let tag = speechLanguageTag(for: language)
         let candidates = AVSpeechSynthesisVoice.speechVoices()
             .filter { $0.language.prefix(2) == tag.prefix(2) && !$0.voiceTraits.contains(.isNoveltyVoice) }
-        let best = candidates.max {
-            ($0.quality.rawValue, $1.identifier) < ($1.quality.rawValue, $0.identifier)
-        }
+        let best = bestVoiceIdentifier(
+            among: candidates.map { ($0.identifier, $0.quality.rawValue) }
+        ).flatMap { id in candidates.first { $0.identifier == id } }
         return best ?? AVSpeechSynthesisVoice(language: tag)
+    }
+
+    /// Highest quality wins; a quality tie breaks stably to the smallest
+    /// identifier so the choice never flips between launches. Pure so the
+    /// ordering is testable without installed voices.
+    static func bestVoiceIdentifier(among voices: [(identifier: String, quality: Int)]) -> String? {
+        voices.max {
+            ($0.quality, $1.identifier) < ($1.quality, $0.identifier)
+        }?.identifier
     }
 
     /// The parent's own recorded voices, once iOS has been asked and the

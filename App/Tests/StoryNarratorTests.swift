@@ -119,6 +119,32 @@ struct NarrationVoiceTests {
         #expect(tag.prefix(2) == language.rawValue.prefix(2))
     }
 
+    /// iOS preinstalls only the robotic compact voice; the moment a family
+    /// downloads an enhanced or premium voice it must win automatically —
+    /// this ordering is the whole "warmer voice" story (owner feedback
+    /// 2026-07-28). Ties break stably so the choice never flips.
+    @Test func theBestInstalledVoiceWinsAndTiesAreStable() {
+        typealias V = (identifier: String, quality: Int)
+        let compactOnly: [V] = [("com.apple.voice.compact.nb-NO.Nora", 1)]
+        #expect(SynthesizerSpeechEngine.bestVoiceIdentifier(among: compactOnly)
+                == "com.apple.voice.compact.nb-NO.Nora")
+
+        let withEnhanced: [V] = [
+            ("com.apple.voice.compact.nb-NO.Nora", 1),
+            ("com.apple.voice.enhanced.nb-NO.Nora", 2),
+        ]
+        #expect(SynthesizerSpeechEngine.bestVoiceIdentifier(among: withEnhanced)
+                == "com.apple.voice.enhanced.nb-NO.Nora")
+
+        let withPremium: [V] = withEnhanced + [("com.apple.voice.premium.nb-NO.Nora", 3)]
+        #expect(SynthesizerSpeechEngine.bestVoiceIdentifier(among: withPremium)
+                == "com.apple.voice.premium.nb-NO.Nora")
+
+        let tie: [V] = [("b.voice", 2), ("a.voice", 2)]
+        #expect(SynthesizerSpeechEngine.bestVoiceIdentifier(among: tie) == "a.voice")
+        #expect(SynthesizerSpeechEngine.bestVoiceIdentifier(among: []) == nil)
+    }
+
     /// A chosen voice only speaks languages it actually has: an English
     /// Personal Voice must not mangle a Norwegian story.
     @Test func aPreferredVoiceIsHonoredOnlyInItsOwnLanguage() {
