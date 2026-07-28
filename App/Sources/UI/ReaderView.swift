@@ -9,6 +9,12 @@ struct ReaderView: View {
 
     @State private var pageIndex = 0
     @State private var didStartSeries = false
+    /// The title-page emblem is decided once, when the reader opens: the
+    /// cover if it is already painted, the emoji otherwise — and it stays
+    /// put for the whole reading. A cover that finishes mid-read used to
+    /// swap in over the emoji on the start screen (owner feedback
+    /// 2026-07-28); now it simply greets the family on the next open.
+    @State private var emblemCover: Data?
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dismiss) private var dismiss
@@ -40,7 +46,10 @@ struct ReaderView: View {
         .navigationBarTitleDisplayMode(.inline)
         // Bedtime pages stay up for minutes at a time; don't let the screen
         // sleep mid-story. Restored on the way out.
-        .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = true
+            emblemCover = story.coverArt
+        }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
     }
 
@@ -63,26 +72,23 @@ struct ReaderView: View {
     private var titlePage: some View {
         VStack(spacing: 18) {
             Spacer()
-            // Cover art when tonight's paint landed (or an older re-read
-            // already has one); the emoji emblem otherwise and always as
-            // the silent fallback. Decorative either way — the title below
-            // carries the meaning.
+            // Cover art when it was already painted at open; the emoji
+            // emblem otherwise and always as the silent fallback.
+            // Decorative either way — the title below carries the meaning.
             Group {
-                if let cover = story.coverArt, let image = UIImage(data: cover) {
+                if let cover = emblemCover, let image = UIImage(data: cover) {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
                         .frame(width: 216, height: 216)
                         .clipShape(RoundedRectangle(cornerRadius: 28))
                         .shadow(color: .black.opacity(0.35), radius: 18, y: 8)
-                        .transition(.opacity)
                 } else {
                     Text(story.theme.emoji)
                         .font(.system(size: emblemSize))
                         .background(FableTheme.titleGlow.frame(width: 260, height: 260))
                 }
             }
-            .animation(reduceMotion ? nil : .easeInOut(duration: 0.6), value: story.coverArt == nil)
             .accessibilityHidden(true)
             Text(story.title)
                 .font(.system(.largeTitle, design: .serif, weight: .semibold))
