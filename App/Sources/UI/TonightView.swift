@@ -78,6 +78,22 @@ struct TonightView: View {
                     }
                 }
 
+                // In-season collections, visible to every tier with an
+                // honest Fable+ mark; telling is gated at the action like
+                // series continuation (ADR 0005). No countdowns, no urgency
+                // copy — the season simply is.
+                let seasonal = SeasonalCollections.active()
+                if !seasonal.isEmpty {
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Or something special tonight")
+                            .font(.subheadline)
+                            .foregroundStyle(FableTheme.creamDim)
+                        ForEach(seasonal) { collection in
+                            seasonalCard(collection)
+                        }
+                    }
+                }
+
                 let childSeries = series.filter {
                     $0.belongs(to: profile) && !$0.isSafetyQuarantined
                 }
@@ -256,6 +272,44 @@ struct TonightView: View {
         .accessibilityIdentifier("menu.profile")
     }
 
+    /// UI names for collection ids, as literals so catalog extraction sees
+    /// them (the StoryTheme.displayName pattern). Story titles come from
+    /// the templates and are already per-language.
+    private func displayName(for collection: SeasonalCollection) -> String {
+        switch collection.id {
+        case "summer-nights": String(localized: "Summer Nights")
+        default: collection.id
+        }
+    }
+
+    private func seasonalCard(_ collection: SeasonalCollection) -> some View {
+        Button {
+            whenSubscribed { tellStory(continuing: nil, collection: collection) }
+        } label: {
+            HStack(spacing: 12) {
+                Text(collection.emoji)
+                    .font(.title3)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(displayName(for: collection))
+                        .font(.system(.callout, design: .serif, weight: .medium))
+                        .foregroundStyle(FableTheme.cream)
+                        .lineLimit(1)
+                    Text("A seasonal story with Fable+")
+                        .font(.caption)
+                        .foregroundStyle(FableTheme.creamDim)
+                }
+                Spacer()
+                Image(systemName: "sparkles")
+                    .foregroundStyle(FableTheme.gold)
+            }
+            .padding(14)
+            .background(FableTheme.card, in: RoundedRectangle(cornerRadius: 14))
+        }
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("card.seasonal.\(collection.id)")
+    }
+
     private func seriesCard(_ adventure: StorySeries) -> some View {
         Button {
             // Authorize the ACTION, not just the card's existence: a
@@ -331,14 +385,16 @@ struct TonightView: View {
         }
     }
 
-    private func tellStory(continuing adventure: StorySeries?) {
+    private func tellStory(continuing adventure: StorySeries?, collection: SeasonalCollection? = nil) {
         guard !writer.isWriting else { return }
         // Claim the meter slot NOW, synchronously with the allowance check
         // and before any suspension. The household-wide reservation is what
         // stops the same weekly credit being spent once per profile
         // (2026-07-24 money-path review, P1).
         let reservation = reservations.reserve()
-        let theme = adventure?.theme ?? selectedTheme
+        // A collection story is filed under the collection's declared theme
+        // so the library and reader emblems stay meaningful.
+        let theme = adventure?.theme ?? collection?.theme ?? selectedTheme
         var request = StoryRequest(
             childName: displayName(for: profile),
             ageBand: profile.ageBand,
@@ -347,6 +403,7 @@ struct TonightView: View {
             comfortObject: profile.comfortObject,
             language: .deviceDefault
         )
+        request.collectionID = collection?.id
         if let adventure {
             request.series = StoryRequest.SeriesContext(
                 title: adventure.title,

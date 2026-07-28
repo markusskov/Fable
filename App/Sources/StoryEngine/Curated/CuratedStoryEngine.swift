@@ -20,6 +20,21 @@ struct CuratedStoryEngine: StoryEngine {
         // story in the wrong language beats breaking bedtime. The content is
         // stamped with the language actually served, so nothing downstream
         // mistakes it for a translation.
+        // A collection request forces that collection's template, with the
+        // same language honesty as the shelves: the requested language if
+        // the collection carries it, English otherwise. An unknown id falls
+        // through to the normal shelf — never break bedtime outranks
+        // merchandising (ADR 0005).
+        if let id = request.collectionID,
+           let collection = SeasonalCollections.collection(withID: id) {
+            let served: StoryLanguage =
+                collection.templatesByLanguage[request.language] != nil ? request.language : .english
+            if let template = collection.templatesByLanguage[served] {
+                var rendered = template.render(for: request, rng: &rng)
+                rendered.language = served
+                return CuratedSeriesFraming.framed(rendered, for: request)
+            }
+        }
         let language: StoryLanguage =
             (libraries[request.language]?.isEmpty == false) ? request.language : .english
         let library = libraries[language] ?? []

@@ -22,6 +22,11 @@ struct StoryRequest: Sendable, Equatable {
     var language: StoryLanguage = .english
     /// Present when tonight's story continues an adventure (Fable+).
     var series: SeriesContext?
+    /// Present when tonight's story comes from a seasonal collection
+    /// (Fable+). App-controlled: only ever set from a tapped collection's
+    /// own id, never typed. Collection stories are curated-only — the
+    /// provider skips the model entirely (ADR 0005).
+    var collectionID: String?
 
     /// What an engine needs to continue a series: pure data lifted from the
     /// `StorySeries` model so engines stay free of SwiftData.
