@@ -74,6 +74,13 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 
 ## Submission log
 
+- **2026-07-29: v1.0 build 5 APPROVED for distribution.** One cycle: submitted
+  2026-07-27, automated 3.1.2 metadata rejection 2026-07-28, EULA links added
+  to all descriptions, resubmitted same day, approved. Release is Manual —
+  the owner presses Release; the first-day checklist's approved branch
+  (docs/launch/first-day-checklist.md) governs launch day. v1.1 train and
+  the launch material fire after 1.0 is live, on the owner's word.
+
 - **2026-07-28: build 5 REJECTED — automated, metadata-only, guideline 3.1.2**:
   the App Description must carry a functional Terms of Use (EULA) link when
   auto-renewable subscriptions are sold. The in-app links (finding #2) were
