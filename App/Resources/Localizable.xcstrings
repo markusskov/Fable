@@ -1068,6 +1068,46 @@
         }
       }
     },
+    "Allow Personal Voice" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillat Personlig stemme"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eigene Stimme erlauben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir Voz personal"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autoriser Voix personnelle"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consenti Voce personale"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permitir Voz Pessoal"
+          }
+        }
+      }
+    },
     "Or something special tonight" : {
       "localizations" : {
         "nb" : {
@@ -1108,6 +1148,126 @@
         }
       }
     },
+    "Pause reading" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sett lesingen på pause"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlesen anhalten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar la lectura"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettre la lecture en pause"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metti in pausa la lettura"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar a leitura"
+          }
+        }
+      }
+    },
+    "Personal Voice lets a story be read in the voice of someone who loves you. It is recorded in iOS Settings, stays on this device, and appears here once allowed." : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med Personlig stemme kan historien leses med stemmen til noen som er glad i deg. Den spilles inn i Innstillinger i iOS, blir på denne enheten, og dukker opp her når du har gitt tillatelse."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit „Eigene Stimme“ kann eine Geschichte mit der Stimme von jemandem vorgelesen werden, der dich lieb hat. Sie wird in den iOS Einstellungen aufgenommen, bleibt auf diesem Gerät und erscheint hier, sobald du es erlaubst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Voz personal, un cuento puede leerse con la voz de alguien que te quiere. Se graba en los ajustes de iOS, se queda en este dispositivo y aparece aquí cuando des permiso."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avec Voix personnelle, une histoire peut être lue avec la voix de quelqu'un qui vous aime. Elle s'enregistre dans les réglages d'iOS, reste sur cet appareil et apparaît ici une fois l'autorisation donnée."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Voce personale, una storia può essere letta con la voce di qualcuno che ti vuole bene. Si registra nelle impostazioni di iOS, resta su questo dispositivo e compare qui dopo il permesso."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com a Voz Pessoal, a história pode ser lida com a voz de alguém que ama você. Ela é gravada nos Ajustes do iOS, fica neste aparelho e aparece aqui depois da permissão."
+          }
+        }
+      }
+    },
+    "Read aloud" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les høyt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorlesen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leer en voz alta"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lire à voix haute"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leggi ad alta voce"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ler em voz alta"
+          }
+        }
+      }
+    },
     "Summer Nights" : {
       "localizations" : {
         "nb" : {
@@ -1144,6 +1304,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Noites de verão"
+          }
+        }
+      }
+    },
+    "System voice" : {
+      "localizations" : {
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemstemme"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Systemstimme"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voz del sistema"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voix du système"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voce di sistema"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voz do sistema"
           }
         }
       }

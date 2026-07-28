@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import StoreKit
+import AVFoundation
 
 /// The one place a parent goes when they want to change something: who the
 /// stories are for, what Fable+ costs, where the legal pages live, and an
@@ -13,6 +14,9 @@ struct SettingsView: View {
     @Environment(SubscriptionStore.self) private var subscriptions
     @Environment(PersistenceHealth.self) private var persistence
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
+    @AppStorage("narrationVoiceID") private var narrationVoiceID = ""
+    @State private var personalVoiceStatus: AVSpeechSynthesizer.PersonalVoiceAuthorizationStatus = .notDetermined
+    @State private var personalVoices: [AVSpeechSynthesisVoice] = []
 
     @Query(sort: \ChildProfile.createdAt) private var profiles: [ChildProfile]
     @Query private var stories: [Story]
@@ -30,6 +34,7 @@ struct SettingsView: View {
                 if persistence.lastFailure != nil { storageWarning }
                 children
                 subscription
+                narration
                 howStoriesAreMade
                 links
             }
@@ -172,6 +177,65 @@ struct SettingsView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(FableTheme.card, in: RoundedRectangle(cornerRadius: 16))
         }
+    }
+
+    /// Read-aloud voice. The system voice needs no setup; Personal Voice is
+    /// the "parental voice option" — a parent's own recorded voice, made in
+    /// iOS Settings, authorized once here, never leaving the device.
+    private var narration: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            sectionTitle("Read aloud")
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Personal Voice lets a story be read in the voice of someone who loves you. It is recorded in iOS Settings, stays on this device, and appears here once allowed.")
+                    .font(.footnote)
+                    .foregroundStyle(FableTheme.creamDim)
+                if personalVoiceStatus == .notDetermined {
+                    Button("Allow Personal Voice") {
+                        AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
+                            Task { @MainActor in
+                                personalVoiceStatus = status
+                                personalVoices = SynthesizerSpeechEngine.personalVoices
+                            }
+                        }
+                    }
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(FableTheme.gold)
+                    .buttonStyle(.plain)
+                }
+                if !personalVoices.isEmpty {
+                    voiceRow(name: String(localized: "System voice"), id: "")
+                    ForEach(personalVoices, id: \.identifier) { voice in
+                        voiceRow(name: voice.name, id: voice.identifier)
+                    }
+                }
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(FableTheme.card, in: RoundedRectangle(cornerRadius: 16))
+        }
+        .onAppear {
+            personalVoiceStatus = AVSpeechSynthesizer.personalVoiceAuthorizationStatus
+            personalVoices = SynthesizerSpeechEngine.personalVoices
+        }
+    }
+
+    private func voiceRow(name: String, id: String) -> some View {
+        Button {
+            narrationVoiceID = id
+        } label: {
+            HStack {
+                Text(name)
+                    .font(.callout)
+                    .foregroundStyle(FableTheme.cream)
+                Spacer()
+                if narrationVoiceID == id {
+                    Image(systemName: "checkmark")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(FableTheme.gold)
+                }
+            }
+        }
+        .buttonStyle(.plain)
     }
 
     /// Transparency the roadmap asked for: families should know that some
