@@ -43,7 +43,7 @@ etter lansering og følger neste versjon).
 > Abonnementet fornyes automatisk til det sies opp i Innstillinger.
 >
 > Bruksvilkår (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-> Personvernerklæring: https://markusskov.github.io/Fable/privacy.html
+> Personvernerklæring: https://markusskov.github.io/Fable/privacy
 >
 > Sov godt.
 

@@ -46,7 +46,7 @@ ancora.
 > Impostazioni.
 >
 > Termini d'uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
-> Informativa sulla privacy: https://markusskov.github.io/Fable/privacy.html
+> Informativa sulla privacy: https://markusskov.github.io/Fable/privacy
 >
 > Sogni d'oro.
 
