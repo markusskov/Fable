@@ -261,6 +261,109 @@ struct ModelStoryEngineTests {
         print("==============================")
     }
 
+    /// Prose-quality sweep: real generations in every supported language,
+    /// linted for artifacts the GATE does not judge — apostrophe
+    /// lookalikes (the "Pelle‚s" bug, owner device report 2026-07-28),
+    /// stray braces, control characters, double spaces, unbalanced quote
+    /// pairs, and English function words leaking into non-English prose.
+    /// Findings are recorded as issues so a run that finds anything fails
+    /// loudly with excerpts. Slow and env-gated like the yield harness:
+    ///   TEST_RUNNER_FABLE_PROSE_SWEEP=1 xcodebuild ... test \
+    ///     -only-testing:"FableTests/ModelStoryEngineTests/sweepsModelProseForArtifactsPerLanguage()"
+    @Test(
+        .enabled(if: ProcessInfo.processInfo.environment["FABLE_PROSE_SWEEP"] != nil, "Set FABLE_PROSE_SWEEP=1 to run"),
+        .enabled(if: ModelStoryEngine.isAvailable, "Requires Apple Intelligence")
+    )
+    func sweepsModelProseForArtifactsPerLanguage() async throws {
+        let engine = ModelStoryEngine()
+        let themes = StoryTheme.allCases
+        let attemptsPerLanguage = 4
+        // Optional focus: FABLE_PROSE_SWEEP_LANG=de sweeps one language.
+        let only = ProcessInfo.processInfo.environment["FABLE_PROSE_SWEEP_LANG"]
+        var report: [String] = []
+        for language in StoryLanguage.allCases where only == nil || only == language.rawValue {
+            guard ModelStoryEngine.supportsLanguage(language) else {
+                report.append("\(language.rawValue): curated-only by design")
+                continue
+            }
+            var artifactCount = 0
+            var generationFailures = 0
+            for attempt in 0..<attemptsPerLanguage {
+                // Proper nouns in every slot, because possessives around
+                // names are where the apostrophe bug lived.
+                let baited = StoryRequest(
+                    childName: "Markus", ageBand: .little, theme: themes[attempt % themes.count],
+                    companion: "Pelle", comfortObject: "Fluff", language: language
+                )
+                let raw: StoryContent
+                do {
+                    raw = try await engine.rawStory(for: baited)
+                } catch {
+                    // A throw means no prose to lint; in production the
+                    // provider retries and falls back to curated. Counted,
+                    // not fatal — this sweep judges prose, the yield
+                    // harness judges pass rates.
+                    generationFailures += 1
+                    print("[sweep:\(language.rawValue)] generation failed: \(error)")
+                    continue
+                }
+                let content = ModelStoryEngine.repaginated(raw, for: baited)
+                let findings = Self.proseArtifacts(in: content)
+                artifactCount += findings.count
+                for finding in findings {
+                    Issue.record("[\(language.rawValue) attempt \(attempt + 1)] \(finding)")
+                }
+            }
+            report.append("\(language.rawValue): \(attemptsPerLanguage - generationFailures) stories, "
+                + "\(artifactCount) artifacts"
+                + (generationFailures > 0 ? ", \(generationFailures) generation failures" : ""))
+        }
+        print("===== PROSE ARTIFACT SWEEP =====")
+        report.forEach { print($0) }
+        print("================================")
+    }
+
+    /// The linter itself: everything here is a defect worth a human look,
+    /// with enough excerpt to find it.
+    static func proseArtifacts(in content: StoryContent) -> [String] {
+        var findings: [String] = []
+        let fields = [("title", content.title)]
+            + content.pages.enumerated().map { ("page \($0.offset + 1)", $0.element) }
+            + [("moral", content.moral), ("recap", content.recap)]
+
+        let lookalikes: [Character] = ["\u{2018}", "\u{201A}", "\u{201B}", "\u{02BC}", "\u{02BB}",
+                                       "\u{00B4}", "\u{0060}", "\u{FF07}", "\u{00B8}", "\u{FFFD}"]
+        // "was" is an ordinary German word ("what") — the same false-friend
+        // class the German safety vocabulary exempts for die/dies/war.
+        let englishLeaks = [" the ", " and ", " was ", " said ", " with "]
+            .filter { content.language != .german || $0 != " was " }
+
+        for (name, text) in fields {
+            func flag(_ what: String) {
+                findings.append("\(what) in \(name): “\(text.prefix(90))…”")
+            }
+            for ch in lookalikes where text.contains(ch) {
+                flag("apostrophe lookalike/artifact \(ch.unicodeScalars.map { String(format: "U+%04X", $0.value) }.joined())")
+            }
+            if text.contains("{") || text.contains("}") { flag("template brace") }
+            if text.contains("  ") { flag("double space") }
+            if text.unicodeScalars.contains(where: {
+                $0.properties.generalCategory == .control && $0 != "\n"
+            }) { flag("control character") }
+            if text != text.trimmingCharacters(in: .whitespacesAndNewlines) { flag("untrimmed whitespace") }
+            for pair in [("«", "»"), ("„", "“")] where
+                text.count(where: { String($0) == pair.0 }) != text.count(where: { String($0) == pair.1 }) {
+                flag("unbalanced \(pair.0)\(pair.1) quotes")
+            }
+            if content.language != .english {
+                for leak in englishLeaks where text.lowercased().contains(leak) {
+                    flag("english leakage '\(leak.trimmingCharacters(in: .whitespaces))'")
+                }
+            }
+        }
+        return findings
+    }
+
     private func expectAcceptableStory(from base: StoryRequest) async throws {
         let engine = ModelStoryEngine()
         var rejections: [String] = []
