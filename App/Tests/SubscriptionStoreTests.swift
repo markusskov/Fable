@@ -164,6 +164,31 @@ private actor StubStoreClient: StoreClient {
 
     nonisolated var updatesAccessCount: Int { updatesAccesses.value }
     nonisolated var wasTerminated: Bool { terminated.value }
+    // Catalog seam: fakes cannot fabricate Product values, so the stub
+    // proves the CALL SHAPE — how many requests, held in flight, or made
+    // to fail. Content-dependent rules stay with the live-config test.
+    private nonisolated let catalogCalls = Cell(0)
+    nonisolated var catalogRequestCount: Int { catalogCalls.value }
+    private var catalogHolds: [CheckedContinuation<Void, Never>] = []
+    private var holdsCatalog = false
+    private var shouldFailCatalog = false
+
+    func setHoldCatalog(_ hold: Bool) { holdsCatalog = hold }
+    func failCatalog() { shouldFailCatalog = true }
+    func releaseCatalog() {
+        holdsCatalog = false
+        catalogHolds.forEach { $0.resume() }
+        catalogHolds.removeAll()
+    }
+
+    func loadCatalog(productIDs: [String]) async throws -> [Product] {
+        catalogCalls.with { $0 += 1 }
+        if holdsCatalog {
+            await withCheckedContinuation { catalogHolds.append($0) }
+        }
+        if shouldFailCatalog { throw SubscriptionError.productUnavailable }
+        return []
+    }
     /// Every entitlement read, from any caller — the honest measure of
     /// "start() bootstrapped once", which counting stream accesses was not.
     nonisolated var readCount: Int { readCountCell.value }
@@ -1339,9 +1364,48 @@ struct SubscriptionStoreTests {
     /// (round three, P2). `Product.products` cannot be forced to fail from
     /// a test, so this pins the observable half: repeated and concurrent
     /// loads coalesce and keep a usable catalog.
+    /// Coalescing, provable without storekitd: two concurrent loads reach
+    /// the client exactly once, and a completed load does not swallow a
+    /// deliberate retry.
+    @Test func concurrentCatalogLoadsCoalesceIntoOneClientRequest() async {
+        let client = StubStoreClient()
+        await client.setHoldCatalog(true)
+        let store = SubscriptionStore(client: client)
+
+        async let first: Void = store.loadProducts()
+        async let second: Void = store.loadProducts()
+        #expect(await settles { client.catalogRequestCount >= 1 })
+        await client.releaseCatalog()
+        _ = await (first, second)
+
+        #expect(client.catalogRequestCount == 1, "concurrent loads each paid a network request")
+        // The stub's catalog is empty, and an empty catalog is honestly
+        // unavailable — but a later retry must still ask again.
+        #expect(store.productsUnavailable)
+        await store.loadProducts()
+        #expect(client.catalogRequestCount == 2)
+    }
+
+    /// A failed load reports an unavailable catalog and never swallows the
+    /// retry that could fix it.
+    @Test func aFailedCatalogLoadIsRetriable() async {
+        let client = StubStoreClient()
+        await client.failCatalog()
+        let store = SubscriptionStore(client: client)
+
+        await store.loadProducts()
+        #expect(store.productsUnavailable)
+        #expect(client.catalogRequestCount == 1)
+
+        await store.loadProducts()
+        #expect(client.catalogRequestCount == 2, "a failed load permanently swallowed retries")
+    }
+
     @Test func repeatedAndConcurrentCatalogLoadsKeepAUsableCatalog() async {
-        // The only test that WANTS the live catalog seam.
-        let store = SubscriptionStore(client: StubStoreClient())
+        // The only test that WANTS the live catalog: content-dependent
+        // rules (sorting, keep-what-works on partial responses) need real
+        // Product values, which tests cannot fabricate.
+        let store = SubscriptionStore(client: LiveStoreClient())
         await store.loadProducts()
         let loaded = store.products.count
         // storekitd honors the scheme's StoreKit configuration under Xcode

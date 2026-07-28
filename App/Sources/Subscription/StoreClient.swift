@@ -29,6 +29,15 @@ protocol StoreClient: Sendable {
     /// Behind the seam so "the paywall stopped advertising a spent free
     /// week" is provable rather than reasoned (round seven, P2).
     func isEligibleForIntroOffer(productID: String, loaded: Product?) async -> Bool
+    /// The purchasable catalog for these product IDs. Behind the seam so
+    /// the store's catalog rules (coalescing, keep-what-works, retry) are
+    /// provable without a cooperative storekitd — the live configuration
+    /// resolves unreliably under xcodebuild (zero and then partial
+    /// catalogs observed on CI and locally, 2026-07-28). Tests cannot
+    /// fabricate `Product` values, so fakes prove the call shape; the
+    /// content-dependent rules keep a live-config test behind a
+    /// known-issue guard.
+    func loadCatalog(productIDs: [String]) async throws -> [Product]
 }
 
 /// One entitlement-changing event, with delivery acknowledgement deferred to
@@ -74,6 +83,10 @@ extension EntitlementRecord {
 /// Production client. The only file in Fable that talks to StoreKit's
 /// transaction machinery.
 struct LiveStoreClient: StoreClient {
+    func loadCatalog(productIDs: [String]) async throws -> [Product] {
+        try await Product.products(for: productIDs)
+    }
+
     func currentEntitlements() async -> [EntitlementRecord] {
         var records: [EntitlementRecord] = []
         for await result in Transaction.currentEntitlements {

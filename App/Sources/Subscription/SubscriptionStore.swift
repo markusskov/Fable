@@ -299,7 +299,7 @@ final class SubscriptionStore {
         }
         let task = Task<Void, Never> {
             do {
-                let loaded = try await Product.products(for: FablePlus.productIDs)  // catalog only
+                let loaded = try await client.loadCatalog(productIDs: FablePlus.productIDs)
                 let sorted = loaded.sorted { lhs, rhs in
                     Self.sortOrder(of: lhs) < Self.sortOrder(of: rhs)
                 }
