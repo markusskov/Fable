@@ -36,6 +36,7 @@ struct SettingsView: View {
             .padding(.horizontal, 24)
             .padding(.top, 36)
             .padding(.bottom, 32)
+            .fableContentColumn()
         }
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()

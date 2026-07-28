@@ -45,6 +45,16 @@ extension View {
         background(FableTheme.nightSky.ignoresSafeArea())
     }
 
+    /// Caps content to a comfortable reading column and centers it.
+    /// Fable's screens are one calm column by design; on iPad (and in
+    /// landscape) they keep that shape instead of stretching to the bezels.
+    /// 640pt holds serif body text near the classic 45–75 characters per
+    /// line; the backgrounds still bleed full-width behind it.
+    func fableContentColumn(maxWidth: CGFloat = 640) -> some View {
+        frame(maxWidth: maxWidth)
+            .frame(maxWidth: .infinity)
+    }
+
     /// The reader's slightly warmer take on the night background.
     func readerBackground() -> some View {
         background(FableTheme.readerSky.ignoresSafeArea())

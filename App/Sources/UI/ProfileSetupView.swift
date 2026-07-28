@@ -124,6 +124,7 @@ struct ProfileSetupView: View {
                 .padding(.top, 8)
             }
             .padding(.horizontal, 24)
+            .fableContentColumn()
         }
         .scrollDismissesKeyboard(.interactively)
         // Ready to type straight away — the name is the only required step
