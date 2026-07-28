@@ -13,6 +13,7 @@ struct TonightView: View {
     @Environment(SubscriptionStore.self) private var subscriptions
     @Environment(StoryReservations.self) private var reservations
     @Environment(PersistenceHealth.self) private var persistence
+    @Environment(CoverArtStudio.self) private var coverArt
     @AppStorage("activeProfileUUID") private var activeProfileUUID = ""
     @Query private var stories: [Story]
     @Query(sort: \StorySeries.createdAt, order: .reverse) private var series: [StorySeries]
@@ -405,6 +406,9 @@ struct TonightView: View {
                 }
             }
             path.append(story)
+            // Strictly after bedtime is served: the reader is already up.
+            // The studio succeeds silently or leaves the emblem in place.
+            coverArt.illustrate(story, in: modelContext, health: persistence)
         }
     }
 
