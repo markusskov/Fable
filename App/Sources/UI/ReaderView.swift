@@ -23,6 +23,7 @@ struct ReaderView: View {
     @Query private var allStories: [Story]
     @AppStorage("reviewAskedAt") private var reviewAskedAt = 0.0
     @AppStorage("reviewAskedVersion") private var reviewAskedVersion = ""
+    @State private var storyCard: UIImage?
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dismiss) private var dismiss
@@ -54,7 +55,18 @@ struct ReaderView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
+                shareButton
+            }
+            ToolbarItem(placement: .topBarTrailing) {
                 narrationButton
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: { storyCard != nil },
+            set: { if !$0 { storyCard = nil } }
+        )) {
+            if let storyCard {
+                ActivityShareSheet(image: storyCard)
             }
         }
         // Bedtime pages stay up for minutes at a time; don't let the screen
@@ -76,6 +88,26 @@ struct ReaderView: View {
         .onChange(of: pageIndex) { _, newIndex in
             narrator.pageWasTurned(to: newIndex)
         }
+    }
+
+    /// The whole story as one typeset image, handed to the family's group
+    /// chat by the system share sheet. A parent control, so it lives in
+    /// the toolbar, not on the end page a child is falling asleep to.
+    private var shareButton: some View {
+        Button {
+            storyCard = StoryCardRenderer.render(.init(
+                title: story.title,
+                childName: story.childName,
+                pages: story.pages,
+                moral: story.moral,
+                themeEmoji: story.theme.emoji,
+                coverArt: story.coverArt
+            ))
+        } label: {
+            Image(systemName: "square.and.arrow.up")
+        }
+        .accessibilityLabel("Share this story")
+        .accessibilityIdentifier("button.shareStory")
     }
 
     /// Read-aloud toggle. Quiet by design: one small symbol, no sheet, no
