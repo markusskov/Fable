@@ -16,10 +16,6 @@ struct CuratedStoryEngine: StoryEngine {
 
     func makeStory(for request: StoryRequest, seed: UInt64) async throws -> StoryContent {
         var rng = SeededRandom(seed: seed)
-        // A language whose curated shelf is still empty gets English: a real
-        // story in the wrong language beats breaking bedtime. The content is
-        // stamped with the language actually served, so nothing downstream
-        // mistakes it for a translation.
         // A collection request forces that collection's template, with the
         // same language honesty as the shelves: the requested language if
         // the collection carries it, English otherwise. An unknown id falls
@@ -35,6 +31,10 @@ struct CuratedStoryEngine: StoryEngine {
                 return CuratedSeriesFraming.framed(rendered, for: request)
             }
         }
+        // A language whose curated shelf is still empty gets English: a real
+        // story in the wrong language beats breaking bedtime. The content is
+        // stamped with the language actually served, so nothing downstream
+        // mistakes it for a translation.
         let language: StoryLanguage =
             (libraries[request.language]?.isEmpty == false) ? request.language : .english
         let library = libraries[language] ?? []
