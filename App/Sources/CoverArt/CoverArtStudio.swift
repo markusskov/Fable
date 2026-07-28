@@ -29,6 +29,17 @@ final class CoverArtStudio {
     /// expensive. Callers never learn the outcome.
     func illustrate(_ story: Story, in context: ModelContext, health: PersistenceHealth?) {
         guard story.coverArt == nil, !story.isDeleted else { return }
+        // An episode inherits its series' cover: one visual identity per
+        // adventure, like a book series sharing a jacket. Freshly painted
+        // episode covers rolled a near-identical scene anyway, because
+        // prompts are theme-keyed by design (owner feedback 2026-07-28;
+        // story-aware prompts are ruled out by ADR 0004). Inherited from
+        // the earliest painted episode so the identity never drifts.
+        if let inherited = Self.seriesCover(for: story) {
+            story.coverArt = inherited
+            Persistence.save(context, whileDoing: "saving a story's cover art", health: health)
+            return
+        }
         let id = story.persistentModelID
         guard !inFlight.contains(id) else { return }
         inFlight.insert(id)
@@ -37,6 +48,16 @@ final class CoverArtStudio {
             let data = try? await engine.makeCover(for: theme)
             finish(id, attaching: data, to: story, in: context, health: health)
         }
+    }
+
+    /// The cover of the earliest-numbered episode that has one, or nil for
+    /// a story outside any series (or the first of its line).
+    private static func seriesCover(for story: Story) -> Data? {
+        guard let episodes = story.series?.episodes else { return nil }
+        return episodes
+            .filter { $0.coverArt != nil }
+            .min { ($0.episodeNumber ?? 0, $0.createdAt) < ($1.episodeNumber ?? 0, $1.createdAt) }?
+            .coverArt
     }
 
     private func finish(

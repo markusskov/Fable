@@ -198,6 +198,52 @@ struct CoverArtStudioTests {
         #expect(story.coverArt == Data([0xFF]))
     }
 
+    /// One visual identity per adventure: an episode takes its series'
+    /// earliest painted cover instead of rolling a near-identical scene of
+    /// its own (owner feedback 2026-07-28).
+    @Test func anEpisodeInheritsItsSeriesCoverWithoutPainting() async throws {
+        let container = try makeContainer()
+        let first = makeStory()
+        first.coverArt = Data([0x11])
+        first.episodeNumber = 1
+        let second = makeStory()
+        second.episodeNumber = 2
+        let series = StorySeries(title: "The Lighthouse", theme: .ocean, childName: "Nova")
+        container.mainContext.insert(series)
+        container.mainContext.insert(first)
+        container.mainContext.insert(second)
+        first.series = series
+        second.series = series
+        try container.mainContext.save()
+
+        let gate = Gate()
+        let studio = CoverArtStudio(engine: GatedCoverEngine(gate: gate))
+        studio.illustrate(second, in: container.mainContext, health: nil)
+
+        // Inheritance is synchronous: no paint started, engine untouched.
+        #expect(second.coverArt == Data([0x11]))
+        #expect(await gate.entries == 0)
+        #expect(!container.mainContext.hasChanges, "the inherited cover was not saved")
+    }
+
+    /// The first episode of a line has nothing to inherit and paints its
+    /// own cover like any story.
+    @Test func theFirstEpisodeOfASeriesPaintsItsOwnCover() async throws {
+        let container = try makeContainer()
+        let story = makeStory()
+        story.episodeNumber = 1
+        let series = StorySeries(title: "The Lighthouse", theme: .ocean, childName: "Nova")
+        container.mainContext.insert(series)
+        container.mainContext.insert(story)
+        story.series = series
+        try container.mainContext.save()
+
+        let studio = CoverArtStudio(engine: FixedCoverEngine(data: Data([0x22])))
+        studio.illustrate(story, in: container.mainContext, health: nil)
+        #expect(await waitForPaints(1, in: studio))
+        #expect(story.coverArt == Data([0x22]))
+    }
+
     @Test func aSecondRequestWhileOneIsInTheAirIsIgnored() async throws {
         let container = try makeContainer()
         let story = makeStory()

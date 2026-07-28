@@ -54,6 +54,14 @@ correct — trade.
   the fallback, per "never break bedtime".
 - One attempt per story, no retry loop: cover art is garnish, and background
   image generation is battery-expensive.
+- The reader's title page decides its emblem once, at open: the cover if it
+  is already painted, the emoji otherwise — never a mid-read swap. A cover
+  that finishes while the family reads greets them on the next open instead
+  (owner feedback 2026-07-28: the swap-in read as a glitch).
+- Series episodes inherit the earliest painted episode's cover — one visual
+  identity per adventure. A freshly painted episode cover rolled a
+  near-identical scene anyway, because prompts are theme-keyed; the
+  story-aware alternative is exactly what this ADR rules out.
 - Covers are for every tier. The free week's story gets the same cover a
   Fable+ story gets; the paywall sells stories, not their jackets.
 - Stories persisted before this feature simply have no cover; no backfill
