@@ -48,6 +48,9 @@ encore.
 > L'abonnement se renouvelle automatiquement jusqu'à sa résiliation dans
 > Réglages.
 >
+> Conditions d'utilisation (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Politique de confidentialité: https://markusskov.github.io/Fable/privacy.html
+>
 > Fais de beaux rêves.
 
 ## Mots-clés (100 max)

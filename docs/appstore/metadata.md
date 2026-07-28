@@ -51,6 +51,9 @@ feature change that alters what the store page promises.
 > currency before you subscribe, and subscriptions renew automatically until
 > cancelled in Settings.
 >
+> Terms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Privacy Policy: https://markusskov.github.io/Fable/privacy.html
+>
 > Sweet dreams.
 
 ## URLs

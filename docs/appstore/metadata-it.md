@@ -45,6 +45,9 @@ ancora.
 > L'abbonamento si rinnova automaticamente finché non viene disdetto da
 > Impostazioni.
 >
+> Termini d'uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Informativa sulla privacy: https://markusskov.github.io/Fable/privacy.html
+>
 > Sogni d'oro.
 
 ## Parole chiave (max 100)

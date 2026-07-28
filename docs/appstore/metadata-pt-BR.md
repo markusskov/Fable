@@ -43,6 +43,9 @@ não fala.
 > app, na sua moeda, antes de você assinar. A assinatura se renova
 > automaticamente até ser cancelada nos Ajustes.
 >
+> Termos de Uso (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/
+> Política de Privacidade: https://markusskov.github.io/Fable/privacy.html
+>
 > Bons sonhos.
 
 ## Palavras-chave (máx. 100)
