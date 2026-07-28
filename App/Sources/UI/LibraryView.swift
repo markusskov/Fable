@@ -81,6 +81,9 @@ struct LibraryView: View {
                     }
                 }
                 .scrollContentBackground(.hidden)
+                // Wider than the text column: list rows carry their own
+                // card chrome and sit comfortably a little broader.
+                .fableContentColumn(maxWidth: 700)
             }
         }
         .fableBackground()

@@ -136,6 +136,7 @@ struct TonightView: View {
                 }
             }
             .padding(.horizontal, 24)
+            .fableContentColumn()
         }
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()

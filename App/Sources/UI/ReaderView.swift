@@ -110,6 +110,7 @@ struct ReaderView: View {
                 .padding(.bottom, 24)
         }
         .padding(.horizontal, 32)
+        .fableContentColumn()
     }
 
     private func storyPage(_ text: String, isLast: Bool) -> some View {
@@ -165,6 +166,7 @@ struct ReaderView: View {
             }
             .padding(.horizontal, 32)
             .padding(.bottom, 24)
+            .fableContentColumn()
         }
     }
 

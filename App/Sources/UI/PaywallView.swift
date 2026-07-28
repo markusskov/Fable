@@ -38,6 +38,7 @@ struct PaywallView: View {
             }
             .padding(.horizontal, 24)
             .padding(.top, 28)
+            .fableContentColumn()
         }
         .scrollEdgeEffectStyle(.soft, for: .top)
         .fableBackground()

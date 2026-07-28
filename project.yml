@@ -25,15 +25,18 @@ targets:
         # String(localized:) literals in Swift — the check that keeps
         # Localizable.xcstrings complete lives on this flag.
         SWIFT_EMIT_LOC_STRINGS: YES
-        # iPhone-only for v1 (roadmap defers a real iPad layout to post-1.0);
-        # iPad runs the app in compatibility mode and ASC then needs no iPad
-        # screenshots. Flip to "1,2" only alongside actual iPad layout work.
-        TARGETED_DEVICE_FAMILY: "1"
+        # iPhone + iPad since the v1.1 reading-column layout (Milestone 5).
+        # NOTE for the next ASC submission: iPad support makes 13" iPad
+        # screenshots a required listing asset (see OWNER-ASKS).
+        TARGETED_DEVICE_FAMILY: "1,2"
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: 5
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        # iPad supports every orientation (a bedtime tablet lives on its
+        # side); the reading-column layout is orientation-agnostic.
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         INFOPLIST_KEY_CFBundleDisplayName: Fable
         # Only Apple's OS-provided TLS/StoreKit crypto — exempt, so App Store
         # Connect never pauses builds on the export-compliance question.
