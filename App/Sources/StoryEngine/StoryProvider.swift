@@ -54,7 +54,12 @@ struct StoryProvider: Sendable {
         // story re-checked by the gate.
         let safe = ContentSafetyCheck.neutralized(request)
         let seed = UInt64.random(in: UInt64.min...UInt64.max)
-        for _ in 0..<Self.modelAttempts {
+        // Collection stories are curated-only (ADR 0005): the premium
+        // promise is editorial quality, so the model is never consulted.
+        // 0 attempts, not a separate path — everything below the loop
+        // (curated, emergency, floor, and the gate on each) is identical.
+        let modelAttempts = safe.collectionID == nil ? Self.modelAttempts : 0
+        for _ in 0..<modelAttempts {
             // Before every attempt, not only when the engine cooperates by
             // throwing CancellationError: an engine that swallows
             // cancellation and fails for its own reasons must not buy
