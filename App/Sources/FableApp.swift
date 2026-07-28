@@ -6,6 +6,18 @@ struct FableApp: App {
     @State private var subscriptions = SubscriptionStore()
     @State private var reservations = StoryReservations()
     @State private var persistence = PersistenceHealth()
+    // App-scoped so a cover can finish painting across profile switches and
+    // navigation; it holds no per-screen state.
+    @State private var coverArt = FableApp.makeCoverArtStudio()
+
+    private static func makeCoverArtStudio() -> CoverArtStudio {
+        #if DEBUG
+        if StubCoverArtEngine.isRequested {
+            return CoverArtStudio(engine: StubCoverArtEngine())
+        }
+        #endif
+        return CoverArtStudio()
+    }
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -15,6 +27,7 @@ struct FableApp: App {
                 .environment(subscriptions)
                 .environment(reservations)
                 .environment(persistence)
+                .environment(coverArt)
                 // Entitlements resolve in the background; nothing in the story
                 // flow waits on the store.
                 .task { subscriptions.start() }

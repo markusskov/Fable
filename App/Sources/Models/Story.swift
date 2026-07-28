@@ -27,6 +27,11 @@ final class Story {
     /// The child this story was told for. Optional for pre-profiles stories,
     /// which are treated as belonging to every child.
     var profile: ChildProfile?
+    /// Tonight's cover, painted after the story was committed. Nil whenever
+    /// generation was unavailable or failed — the UI keeps its emoji emblem
+    /// and no one is told (ADR 0004). Never rendered from parent input:
+    /// prompts are app-controlled by construction.
+    @Attribute(.externalStorage) var coverArt: Data?
 
     var theme: StoryTheme {
         get { StoryTheme(rawValue: themeRaw) ?? .adventure }

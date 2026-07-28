@@ -108,7 +108,7 @@ Verdict after verification: overwhelmingly correct. Fix order follows the review
 
 ## Milestone 5 — Grow (post-1.0)
 
-- [ ] Illustrations via ImagePlayground (cover art per story)
+- [x] Illustrations via ImagePlayground (cover art per story) — ADR 0004: image prompts are built ONLY from app-controlled vocabulary (theme-keyed reviewed scenes + a shared "no words or letters" style contract), because pixels cannot pass `ContentSafetyCheck`; parent-typed values and model prose never reach an image prompt, enforced by the prompt type's signature. On-device styles only — `.externalProvider` is pinned absent by test, since it is service-backed and would break the privacy promise. Generation runs strictly after the story is committed (reader already up), attaches to `Story.coverArt` (external storage) and saves quietly; every failure leaves the emoji emblem in place, silently. Covers are for every tier; no backfill for pre-feature stories. `-fable-debug-cover-stub` (DEBUG) paints a placeholder so the cover branch is visible on unenrolled simulators — verified live: fallback (unenrolled), stubbed cover in reader + library, persistence across relaunch, mixed covered/uncovered library.
 - [ ] Seasonal collections (premium curated templates)
 - [ ] iPad layout, then Mac Catalyst evaluation
 - [ ] Story audio: AVSpeechSynthesizer narration with parental voice options

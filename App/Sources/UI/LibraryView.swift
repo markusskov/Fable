@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 /// Every story ever told, newest first. Old favorites are half the ritual.
 struct LibraryView: View {
@@ -35,7 +36,16 @@ struct LibraryView: View {
                         path.append(story)
                     } label: {
                         HStack(spacing: 14) {
-                            Text(story.theme.emoji).font(.title3)
+                            if let cover = story.coverArt, let image = UIImage(data: cover) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 40, height: 40)
+                                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                                    .accessibilityHidden(true)
+                            } else {
+                                Text(story.theme.emoji).font(.title3)
+                            }
                             VStack(alignment: .leading, spacing: 3) {
                                 Text(story.title)
                                     .font(.system(.body, design: .serif, weight: .medium))
