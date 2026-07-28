@@ -1,4 +1,6 @@
 import SwiftUI
+import SwiftData
+import StoreKit
 import UIKit
 
 /// The reading experience: one page at a time, generous serif type,
@@ -17,6 +19,10 @@ struct ReaderView: View {
     @State private var emblemCover: Data?
     @State private var narrator = StoryNarrator(engine: SynthesizerSpeechEngine())
     @AppStorage("narrationVoiceID") private var narrationVoiceID = ""
+    @Environment(\.requestReview) private var requestReview
+    @Query private var allStories: [Story]
+    @AppStorage("reviewAskedAt") private var reviewAskedAt = 0.0
+    @AppStorage("reviewAskedVersion") private var reviewAskedVersion = ""
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dismiss) private var dismiss
@@ -190,6 +196,11 @@ struct ReaderView: View {
                         // explicit way out — deliberately not "read another
                         // story"; endings should end.
                         Button {
+                            // The one delight moment Fable will ever ask a
+                            // rating at: closing the book on a RE-READ.
+                            // The gate (and the system's own caps) decide;
+                            // most closes stay perfectly quiet.
+                            maybeAskForReview()
                             dismiss()
                         } label: {
                             Label("Close the storybook", systemImage: "book.closed")
@@ -241,6 +252,23 @@ struct ReaderView: View {
                 .buttonStyle(.plain)
             }
         }
+    }
+
+    private func maybeAskForReview() {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        guard ReviewPromptGate.shouldAsk(
+            closingStoryCreatedAt: story.createdAt,
+            storiesTold: allStories.count,
+            lastAsked: reviewAskedAt > 0 ? Date(timeIntervalSince1970: reviewAskedAt) : nil,
+            lastAskedVersion: reviewAskedVersion.isEmpty ? nil : reviewAskedVersion,
+            currentVersion: version
+        ) else { return }
+        // Recorded BEFORE the request: the system may decline to show
+        // anything, and that still spends this version's one ask — never
+        // let a quiet decline turn into a retry loop.
+        reviewAskedAt = Date.now.timeIntervalSince1970
+        reviewAskedVersion = version
+        requestReview()
     }
 
     private func startSeries() {
