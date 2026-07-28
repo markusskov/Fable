@@ -20,6 +20,13 @@ cd "$(dirname "$0")/.."
 DEVICE_NAME="${DEVICE:-iPhone 17 Pro Max}"
 BUNDLE_ID="com.markusskov.fable"
 
+# iPad captures land in their own set so the iPhone sets are never
+# overwritten: ASC wants both, per listing.
+case "$DEVICE_NAME" in
+  *iPad*) SET_PREFIX="ipad-13/" ;;
+  *)      SET_PREFIX="" ;;
+esac
+
 # Language -> region, matching the app's supported set. Region only affects
 # formatting (the dates on library rows), so each language gets its home market.
 LANGUAGES=(en nb de es fr it pt-BR)
@@ -54,7 +61,7 @@ xcrun simctl status_bar "$UDID" override \
 
 for LANG_CODE in "${LANGUAGES[@]}"; do
   REGION_CODE="$(region_for "$LANG_CODE")"
-  OUT_DIR="docs/appstore/screenshots/$LANG_CODE"
+  OUT_DIR="docs/appstore/screenshots/${SET_PREFIX}$LANG_CODE"
   echo ""
   echo "=== $LANG_CODE ($REGION_CODE) ==="
 
@@ -63,10 +70,14 @@ for LANG_CODE in "${LANGUAGES[@]}"; do
 
   WORK_DIR=$(mktemp -d)
   RESULT_BUNDLE="$WORK_DIR/screenshots.xcresult"
+  # Only the staged-evening lane: the target also holds IPadLayoutTests,
+  # which would run first (alphabetically), create the profile, and rob
+  # this test of the fresh install it scripts.
   xcodebuild -project Fable.xcodeproj -scheme FableScreenshots \
     -destination "id=$UDID" \
     -testLanguage "$LANG_CODE" -testRegion "$REGION_CODE" \
     -resultBundlePath "$RESULT_BUNDLE" \
+    -only-testing:"FableScreenshots/ScreenshotTests" \
     test
 
   EXPORT_DIR="$WORK_DIR/attachments"
