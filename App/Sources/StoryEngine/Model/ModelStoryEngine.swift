@@ -61,13 +61,42 @@ struct ModelStoryEngine: StoryEngine {
             pages[pages.count - 2] += " " + last
             pages.removeLast()
         }
+        let language = content.language
         return StoryContent(
-            title: content.title,
-            pages: pages,
-            moral: content.moral,
-            recap: content.recap,
-            language: content.language
+            title: Self.typographicallyNormalized(content.title, language: language),
+            pages: pages.map { Self.typographicallyNormalized($0, language: language) },
+            moral: Self.typographicallyNormalized(content.moral, language: language),
+            recap: Self.typographicallyNormalized(content.recap, language: language),
+            language: language
         )
+    }
+
+    /// The model was observed writing possessives with apostrophe
+    /// LOOKALIKES — "Pelle‚s" with a low-nine quote that renders as a
+    /// stray comma on the baseline (owner report from a real device,
+    /// 2026-07-28). Every lookalike between two letters becomes the real
+    /// typographic apostrophe, in every language; quotes that open or
+    /// close dialogue touch a non-letter on at least one side and are
+    /// left alone. Norwegian additionally drops the apostrophe from the
+    /// genitive entirely: «Pelles side», never «Pelle’s side» — the
+    /// apostrophe-s is an anglicism the model reaches for under the
+    /// weight of its English training.
+    static func typographicallyNormalized(_ text: String, language: StoryLanguage) -> String {
+        var result = text
+        let betweenLetters = /([\p{L}])['‘‚‛ʼʻ´`＇¸]([\p{L}])/
+        // Twice, because a replacement consumes its trailing letter and
+        // would otherwise skip an immediately following possessive.
+        for _ in 0..<2 {
+            result = result.replacing(betweenLetters) { match in
+                "\(match.1)’\(match.2)"
+            }
+        }
+        if language == .norwegianBokmal {
+            result = result.replacing(/([\p{L}])’([sS])\b/) { match in
+                "\(match.1)\(match.2)"
+            }
+        }
+        return result
     }
 
     /// The reader draws its own "The End" marker; a model that writes one

@@ -290,6 +290,72 @@ struct ModelStoryEngineTests {
         )
     }
 
+    // MARK: - Typography normalization (owner device report 2026-07-28)
+
+    /// The observed artifact verbatim: a low-nine quote where an
+    /// apostrophe belongs, rendering as a stray comma on the baseline.
+    @Test func lookalikeApostrophesBecomeRealApostrophes() {
+        #expect(ModelStoryEngine.typographicallyNormalized(
+            "Fluff\u{201A}s blanket and Nova\u{00B4}s lantern", language: .english
+        ) == "Fluff\u{2019}s blanket and Nova\u{2019}s lantern")
+        // Straight quotes between letters curl too.
+        #expect(ModelStoryEngine.typographicallyNormalized(
+            "don't worry", language: .english
+        ) == "don\u{2019}t worry")
+    }
+
+    /// Norwegian forms the genitive with no apostrophe at all: the
+    /// anglicism "Pelle's side" must come out as «Pelles side».
+    @Test func norwegianGenitivesLoseTheApostropheEntirely() {
+        #expect(ModelStoryEngine.typographicallyNormalized(
+            "Markus f\u{00F8}lte seg trygg ved Pelle\u{201A}s side, med Fluff\u{00B8}s dyne rundt seg",
+            language: .norwegianBokmal
+        ) == "Markus f\u{00F8}lte seg trygg ved Pelles side, med Fluffs dyne rundt seg")
+        // Adjacent possessives: the second must not be skipped.
+        #expect(ModelStoryEngine.typographicallyNormalized(
+            "Mia\u{2018}s og Leo\u{201A}s", language: .norwegianBokmal
+        ) == "Mias og Leos")
+    }
+
+    /// Contractions in the Romance languages keep their apostrophe — only
+    /// the character is normalized, never the grammar.
+    @Test func romanceContractionsKeepTheirApostrophe() {
+        #expect(ModelStoryEngine.typographicallyNormalized(
+            "C'est l'heure des r\u{00EA}ves", language: .french
+        ) == "C\u{2019}est l\u{2019}heure des r\u{00EA}ves")
+    }
+
+    /// Dialogue quotes touch a non-letter on at least one side and must
+    /// survive untouched.
+    @Test func dialogueQuotesAreNotApostrophesAndStay() {
+        let line = "\u{00AB}Se\u{00BB}, hvisket reven. 'Natta' sa m\u{00E5}nen."
+        #expect(ModelStoryEngine.typographicallyNormalized(line, language: .norwegianBokmal) == line)
+    }
+
+    /// The whole story is normalized on the way through repagination —
+    /// title, pages, moral, and recap alike.
+    @Test func repaginationNormalizesEveryField() {
+        let content = StoryContent(
+            title: "Nova\u{201A}s kveld",
+            pages: [
+                String(repeating: "En fin kveld ved vannet. ", count: 4) + "Pelle\u{00B4}s dyne var varm.",
+                String(repeating: "Snart sov alle sammen godt. ", count: 4) + "God natt, Nova.",
+            ],
+            moral: "Fluff\u{2018}s venner sover godt.",
+            recap: "Nova\u{201A}s tur til vannet.",
+            language: .norwegianBokmal
+        )
+        let request = StoryRequest(
+            childName: "Nova", ageBand: .little, theme: .adventure,
+            companion: "", comfortObject: "", language: .norwegianBokmal
+        )
+        let cleaned = ModelStoryEngine.repaginated(content, for: request)
+        #expect(cleaned.title == "Novas kveld")
+        #expect(cleaned.pages.first?.contains("Pelles dyne") == true)
+        #expect(cleaned.moral == "Fluffs venner sover godt.")
+        #expect(cleaned.recap == "Novas tur til vannet.")
+    }
+
     // MARK: - Prompt hygiene (roadmap finding #10)
 
     /// Parent-typed values live in the fenced data block, not in the
