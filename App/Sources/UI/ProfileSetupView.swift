@@ -119,6 +119,10 @@ struct ProfileSetupView: View {
                         .padding(.vertical, 14)
                 }
                 .buttonStyle(.borderedProminent)
+                // Dark-on-gold like every other prominent button; the
+                // default white label on the gold accent was low-contrast
+                // (owner caught it in the screenshot round, 2026-07-29).
+                .foregroundStyle(FableTheme.nightDeep)
                 .accessibilityIdentifier("button.primary")
                 .disabled(!canContinue)
                 .padding(.top, 8)
