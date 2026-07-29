@@ -12,7 +12,7 @@ dashes anywhere in customer-facing text.
 ## Name and subtitle
 
 - **Name:** `Fable Bedtime` (brand, not translated)
-- **Subtitle (max 30):** `Gutenachtgeschichten über dein Kind` is 35 — too
+- **Subtitle (max 30):** `Geschichten über dein Kind` (26, as set live by the owner)
   long. Use: `Geschichten über dein Kind` (26)
 
 ## Description
