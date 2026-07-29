@@ -74,6 +74,14 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 
 ## Submission log
 
+- **2026-07-29: FABLE BEDTIME IS LIVE ON THE APP STORE.** Owner's launch
+  smoke test on the production build, all green: fresh install, profile,
+  first story, REAL Fable+ monthly purchase (first revenue), delete +
+  reinstall with the subscription active without restore (StoreKit 2
+  entitlements following the Apple ID, as the money-path review designed),
+  clean unsubscribe. Next: the v1.1 train (docs/appstore/v1.1-submission.md)
+  on the owner's word, then the launch chain in docs/launch/.
+
 - **2026-07-29: v1.0 build 5 APPROVED for distribution.** One cycle: submitted
   2026-07-27, automated 3.1.2 metadata rejection 2026-07-28, EULA links added
   to all descriptions, resubmitted same day, approved. Release is Manual —
