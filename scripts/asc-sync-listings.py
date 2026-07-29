@@ -255,6 +255,69 @@ if __name__ == "__main__":
                   f"kw={len(fields['keywords'] or '')}ch promo={len(fields['promotionalText'] or '')}ch")
     elif command == "push":
         push()
+    elif command == "push-subs":
+        pass  # handled below, after the subscription helpers are defined
     else:
         print(__doc__)
-        print("commands: whoami | inspect | parse | push")
+        print("commands: whoami | inspect | parse | push | push-subs")
+
+# ---- subscription localizations ---------------------------------------------
+
+GROUP_ID = "22257435"
+SUBSCRIPTIONS = {"yearly": "6793728130", "monthly": "6793729663"}
+SUB_LINE = re.compile(r"^- Fable\+ (Yearly|Monthly)[^`]*`([^`]+)`[^`]*`([^`]+)`", re.M)
+
+def parse_subscription_copy(path):
+    """(plan -> (display name, description)) from a pack's subscriptions
+    section. Lines share one shape in every language:
+    '- Fable+ Yearly, <label>: `name`, <label>: `description` (nn)'."""
+    text = pathlib.Path(path).read_text()
+    copy = {}
+    for match in SUB_LINE.finditer(text):
+        plan = match.group(1).lower()
+        copy[plan] = (plain(match.group(2)), plain(match.group(3)))
+    return copy
+
+def push_subscriptions():
+    wanted = ["es-ES", "fr-FR", "it", "pt-BR"]
+    existing_group = {
+        loc["attributes"]["locale"]
+        for loc in call("GET", f"/v1/subscriptionGroups/{GROUP_ID}/subscriptionGroupLocalizations")["data"]
+    }
+    for locale in wanted:
+        if locale not in existing_group:
+            call("POST", "/v1/subscriptionGroupLocalizations", {"data": {
+                "type": "subscriptionGroupLocalizations",
+                "attributes": {"locale": locale, "name": "Fable+"},
+                "relationships": {"subscriptionGroup": {"data": {
+                    "type": "subscriptionGroups", "id": GROUP_ID}}},
+            }})
+            print(f"groupLoc {locale}: created")
+    for plan, sub_id in SUBSCRIPTIONS.items():
+        # Approved subscriptions carry live+draft row pairs per locale;
+        # edits must land on the draft.
+        existing = {}
+        for loc in call("GET", f"/v1/subscriptions/{sub_id}/subscriptionLocalizations")["data"]:
+            locale = loc["attributes"]["locale"]
+            if locale not in existing or loc["attributes"].get("state") == "PREPARE_FOR_SUBMISSION":
+                existing[locale] = loc["id"]
+        for locale in wanted:
+            name, description = parse_subscription_copy(PACKS[ASC_TO_PACK[locale]])[plan]
+            attrs = {"name": name, "description": description}
+            if locale in existing:
+                call("PATCH", f"/v1/subscriptionLocalizations/{existing[locale]}", {"data": {
+                    "type": "subscriptionLocalizations",
+                    "id": existing[locale], "attributes": attrs}})
+                print(f"subLoc {plan}/{locale}: patched {name!r}")
+            else:
+                attrs["locale"] = locale
+                call("POST", "/v1/subscriptionLocalizations", {"data": {
+                    "type": "subscriptionLocalizations",
+                    "attributes": attrs,
+                    "relationships": {"subscription": {"data": {
+                        "type": "subscriptions", "id": sub_id}}},
+                }})
+                print(f"subLoc {plan}/{locale}: created {name!r} / {description!r}")
+
+if len(sys.argv) > 1 and sys.argv[1] == "push-subs":
+    push_subscriptions()
