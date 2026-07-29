@@ -67,12 +67,21 @@ def section(text, heading):
 # scripts/check-store-metadata.py).
 TRAILING_COUNT = re.compile(r"\s*\(\d+(?:\s+\w+)?\)\s*$")
 
+# App Store fields are PLAIN TEXT: markdown emphasis in the packs is for
+# the humans reading the repo, and a pushed ** renders as literal
+# asterisks on the store page (owner caught it live, 2026-07-29).
+BOLD = re.compile(r"\*\*([^*]+)\*\*")
+ITALIC = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
+
+def plain(text):
+    return ITALIC.sub(r"\1", BOLD.sub(r"\1", text))
+
 def blockquote(chunk):
     lines = []
     for line in chunk.splitlines():
         if line.startswith(">"):
             lines.append(line[2:] if line.startswith("> ") else line[1:])
-    return TRAILING_COUNT.sub("", "\n".join(lines).strip()).strip()
+    return plain(TRAILING_COUNT.sub("", "\n".join(lines).strip()).strip())
 
 def backticked(chunk, label):
     match = re.search(rf"\*\*{re.escape(label)}[^:]*:\*\* `([^`]*)`", chunk)
