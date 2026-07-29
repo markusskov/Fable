@@ -27,6 +27,15 @@ case "$DEVICE_NAME" in
   *)      SET_PREFIX="" ;;
 esac
 
+# CLEAN=1: frame-ready pixels — the app hides its status bar (so no
+# 9:41 override either) and the set gets its own directory named for the
+# device's point class. For the owner's Figma framing, not for direct
+# ASC upload.
+if [[ "${CLEAN:-0}" == "1" ]]; then
+  export TEST_RUNNER_FABLE_CLEAN_CHROME=1
+  SET_PREFIX="clean/"
+fi
+
 # Language -> region, matching the app's supported set. Region only affects
 # formatting (the dates on library rows), so each language gets its home market.
 LANGUAGES=(en nb de es fr it pt-BR)
@@ -55,9 +64,11 @@ xcodegen generate
 xcrun simctl boot "$UDID" 2>/dev/null || true
 xcrun simctl bootstatus "$UDID" -b
 
-xcrun simctl status_bar "$UDID" override \
-  --time "9:41" --batteryState charged --batteryLevel 100 \
-  --wifiBars 3 --cellularBars 4 --operatorName ""
+if [[ "${CLEAN:-0}" != "1" ]]; then
+  xcrun simctl status_bar "$UDID" override \
+    --time "9:41" --batteryState charged --batteryLevel 100 \
+    --wifiBars 3 --cellularBars 4 --operatorName ""
+fi
 
 for LANG_CODE in "${LANGUAGES[@]}"; do
   REGION_CODE="$(region_for "$LANG_CODE")"

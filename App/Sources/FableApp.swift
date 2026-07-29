@@ -20,9 +20,21 @@ struct FableApp: App {
     }
     @Environment(\.scenePhase) private var scenePhase
 
+    /// Marketing-capture chrome removal: `-fable-clean-chrome` hides the
+    /// status bar so screenshot frames start from clean pixels (owner
+    /// request 2026-07-29). DEBUG-only, like the other capture flags.
+    private static var hidesStatusBar: Bool {
+        #if DEBUG
+        ProcessInfo.processInfo.arguments.contains("-fable-clean-chrome")
+        #else
+        false
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()
+                .statusBarHidden(Self.hidesStatusBar)
                 .preferredColorScheme(.dark)
                 .environment(subscriptions)
                 .environment(reservations)

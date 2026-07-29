@@ -22,6 +22,10 @@ final class ScreenshotTests: XCTestCase {
         let app = XCUIApplication()
         // Fable+ so the series feature is stageable.
         app.launchArguments = ["-fable-debug-plus"]
+        // CLEAN=1 capture runs hide the status bar for frame-ready pixels.
+        if ProcessInfo.processInfo.environment["FABLE_CLEAN_CHROME"] != nil {
+            app.launchArguments.append("-fable-clean-chrome")
+        }
         app.launch()
 
         // ── First run: who are tonight's stories for? ──────────────────────
@@ -111,6 +115,9 @@ final class ScreenshotTests: XCTestCase {
         // ── The paywall, which only a free family can see ─────────────────
         app.terminate()
         app.launchArguments = [] // no debug entitlement this time
+        if ProcessInfo.processInfo.environment["FABLE_CLEAN_CHROME"] != nil {
+            app.launchArguments.append("-fable-clean-chrome")
+        }
         app.launch()
 
         let menu = app.buttons["menu.profile"]
