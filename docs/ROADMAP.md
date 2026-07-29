@@ -160,8 +160,72 @@ Verdict after verification: overwhelmingly correct. Fix order follows the review
 - [ ] Apple Search Ads: only after 30+ days of trial/LTV data, brand + high-intent exact terms.
 - [ ] Measurement stays ASC-only (impressions → page views → installs → trials → paid): the no-tracking promise holds; it's enough to steer ASO and featuring.
 
+## Milestone 7 — Measure & respond (starts when v1.1 is live)
+
+North star, for every decision below: renewing subscriptions through calm
+trust. Never break bedtime, one-line privacy label, no engagement bait —
+these outrank any growth idea on this list.
+
+- [ ] `scripts/asc-metrics.py`: pull the funnel (impressions → product page
+  views → installs → trials → paid) per storefront via the ASC API key, and
+  commit a short weekly readout to `docs/metrics/`. Turns "measurement stays
+  ASC-only" from a blindfold into an operating rhythm. Everything in
+  Milestones 8–9 gets decided by these numbers.
+- [ ] Support loop: owner forwards real emails; sessions answer from
+  docs/launch/support-responses.md, fix same-day where a fix is right, and
+  feed recurring themes back into this roadmap.
+- [ ] 30-day readout: first strategy review against real data — CJK gate
+  (does any of ja/ko/zh justify a hand-written shelf?), storefront pricing
+  anomalies, iPad share, trial→paid by market. Written up in docs/metrics/.
+
+## Milestone 8 — Compounding retention (months 2–4)
+
+- [ ] Autumn collection (editorial deadline: early September) — the
+  mechanism ships seasons; each collection is now pure editorial: one arc,
+  seven retellings, gate sweeps, a card. Same bar as Summer Nights.
+- [ ] **Winter/holiday collection (editorial deadline: mid-November).** The
+  most important content drop of the year: December is peak gifting and
+  peak subscription intent for exactly this product. Plan a second
+  featuring nomination around it.
+- [ ] ADR: library continuity. Reinstall-loses-library is today's honest
+  trade-off; at month six of family memories it becomes our sharpest edge.
+  Research opt-in sync via the family's own private CloudKit database (we
+  still cannot read anything; verify the privacy-label consequence
+  carefully) versus a local export/import archive. Decide in an ADR with
+  the same rigor as ADR 0004/0005; honest in-app copy either way.
+- [ ] Story sparks widget (from icebox): tonight's suggestion on the lock
+  screen — calm, no badges, deepens the nightly ritual.
+- [ ] Audio as moat: Personal Voice adoption surface (settings polish, a
+  gentle first-run mention), narration quality pass with real-device
+  listening. A parent's own voice reading a story that never left the
+  phone is the thing GPT-wrapper competitors cannot copy.
+- [ ] CJK expansion IF the 30-day readout justifies it: each language is a
+  real editorial investment; per-storefront funnel decides, honesty rule
+  unchanged (no shipped language reads like a translation).
+
+## Milestone 9 — Franchise & scale (signal-gated, months 4–12)
+
+- [ ] Four collections a year as the subscription's heartbeat (spring
+  closes the cycle).
+- [ ] Sibling mode (from icebox): one story, two heroes — the natural
+  Fable+ feature for multi-child families.
+- [ ] Apple Search Ads: only after 30+ days of trial/LTV data; brand +
+  high-intent exact match (already the standing plan).
+- [ ] Regional pricing pass informed by per-storefront conversion.
+- [ ] Mac "Designed for iPad" polish pass IF iPad numbers show families on
+  big screens.
+- [ ] Re-nominate for featuring at every genuine hook (winter collection,
+  major OS-feature adoption): a privacy-first showcase of Apple's own
+  frameworks is exactly what editorial wants.
+
+Standing risks, planned around rather than ignored: FoundationModels
+quality shifts with iOS releases (hedge: the curated shelves keep growing
+as permanent assets); "AI bedtime stories" commoditization by big players
+(moat: trust + seven-language craft + the no-server story — keep widening
+it); bus factor of one owner (mitigation: everything in this repo, every
+surprising decision an ADR, memory current, so any session can run the
+whole company cold).
+
 ## Icebox / ideas
 
 - Watch app: "wind-down" audio-only mode
-- Sibling mode: one story, two heroes
-- "Story sparks" widget: tonight's suggestion on the lock screen
