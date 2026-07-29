@@ -79,7 +79,12 @@ final class ScreenshotTests: XCTestCase {
         app.buttons["button.closeStorybook"].tap()
 
         // ── Two more stories so the storybook looks lived-in ──────────────
-        for theme in ["ocean", "magic"] {
+        // ocean + animals, NOT magic: magic shares the lantern-path
+        // template (and its title pool) with the adventure story told
+        // first, and two stories rolling the same title made the staged
+        // library look broken (owner's framing round, 2026-07-29). Three
+        // distinct templates cannot collide.
+        for theme in ["ocean", "animals"] {
             XCTAssertTrue(tellButton.waitForExistence(timeout: 20))
             let card = app.buttons["theme.\(theme)"]
             if card.exists { card.tap() }
