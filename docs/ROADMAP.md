@@ -74,6 +74,15 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 
 ## Submission log
 
+- **2026-07-29: v1.1 (build 6) SUBMITTED for review** — the seven-language
+  release, one day after 1.0 went live. Store side built almost entirely via
+  the ASC API (scripts/asc-sync-listings.py): four new listing localizations,
+  What's New ×7, subscription localizations ×7, plain-text verified. Owner's
+  new night-violet screenshot set on en (and as fallback for the sprint
+  locales); de/no keep their earlier localized framed sets. On approval:
+  owner releases, then the launch chain in docs/launch/ fires (blog posts,
+  Show HN, featuring nomination, Norway push).
+
 - **2026-07-29: FABLE BEDTIME IS LIVE ON THE APP STORE.** Owner's launch
   smoke test on the production build, all green: fresh install, profile,
   first story, REAL Fable+ monthly purchase (first revenue), delete +
