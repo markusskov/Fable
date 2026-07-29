@@ -4,14 +4,11 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 
 ## Open
 
-0. **APPROVED 2026-07-29 — press Release when ready.** v1.0 (build 5) is
-   approved; release is Manual. Launch-day steps: press Release, then the
-   approved branch of docs/launch/first-day-checklist.md (fresh-install
-   smoke test from the App Store build, listing check, real-purchase test,
-   glance at Agreements/Tax/Banking per Apple's contracts note). Say the
-   word in a session to start the v1.1 train (seven-language listings,
-   both screenshot sets, iPad support) and, once v1.1 is live, the launch
-   material in docs/launch/.
+0. **LIVE 2026-07-29 — launch smoke test passed, including a real purchase.**
+   Nothing pending from launch. Next owner moments: say "run the v1.1
+   train" in a session (repo side is pre-staged, you upload the build and
+   paste the four new localizations per docs/appstore/v1.1-submission.md),
+   and once v1.1 is live, send the launch material in docs/launch/.
 1. **Norwegian story-safety vocabulary — skim when you have 10 minutes (not blocking).** Story-language plumbing landed: when a device runs in Norwegian and Apple Intelligence supports it, model stories are written in bokmål and judged by Norwegian safety vocabularies. As the native speaker, skim the two lists in `App/Sources/StoryEngine/ContentSafetyCheck.swift` (`norwegianDeniedWords`, `norwegianSleepSignals`) and the bokmål directive in `App/Sources/StoryEngine/StoryLanguage.swift`. Deliberate calls to sanity-check: homonyms «dør»/«redde»/«kjempe» are NOT denied (false positives on door/rescue/giant); «redd» IS denied; a Norwegian story must wind down with Norwegian sleep words — an English "goodnight" ending is rejected on purpose.
 2. **SUBMISSION DAY — the App Store Connect work, in order.** Build 3 was withdrawn (it predated the safety fixes and had no in-app legal links). Everything on the code side for a replacement is done: build number is now **4**, the privacy manifest ships, and the listing text below is corrected. What is left is yours.
 
