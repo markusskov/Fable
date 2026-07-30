@@ -4,13 +4,18 @@ Things only the repository owner can provide. Items move to *Done* when confirme
 
 ## Open
 
-0. **v1.1 IN REVIEW (submitted 2026-07-29).** 1.0 is live and selling; 1.1
-   (seven languages, iPad, covers, seasonal, read-aloud, story cards) is in
-   Apple's queue. On the verdict: approval → press Release, then say the
-   word to fire the launch chain (docs/launch/); rejection → paste the
-   message into a session, the playbook handles it. Optional whenever:
-   localized new-style screenshot frames for es/fr/it/pt-BR (clean captures
-   ready in docs/appstore/screenshots/clean/).
+0. **v1.1 LIVE (2026-07-30) — your four launch sends, in this order, at
+   your pace.** Repo side is done: press page + both blog posts are live on
+   the site.
+   1. **Show HN**: submit per docs/launch/show-hn.md (title + text ready;
+      swap in the live blog/App Store links). Best on a weekday morning US
+      time.
+   2. **Apple featuring nomination**: paste docs/launch/featuring-nomination.md
+      into ASC → Featuring nominations. The multilingual v1.1 is the hook.
+   3. **Press emails**: pitch per docs/launch/press-kit.md to MacStories,
+      9to5Mac, parenting-tech press; link the press page.
+   4. **Norway push**: your network + Norwegian parenting communities; the
+      nb store page is live.
 1. **Norwegian story-safety vocabulary — skim when you have 10 minutes (not blocking).** Story-language plumbing landed: when a device runs in Norwegian and Apple Intelligence supports it, model stories are written in bokmål and judged by Norwegian safety vocabularies. As the native speaker, skim the two lists in `App/Sources/StoryEngine/ContentSafetyCheck.swift` (`norwegianDeniedWords`, `norwegianSleepSignals`) and the bokmål directive in `App/Sources/StoryEngine/StoryLanguage.swift`. Deliberate calls to sanity-check: homonyms «dør»/«redde»/«kjempe» are NOT denied (false positives on door/rescue/giant); «redd» IS denied; a Norwegian story must wind down with Norwegian sleep words — an English "goodnight" ending is rejected on purpose.
 2. **SUBMISSION DAY — the App Store Connect work, in order.** Build 3 was withdrawn (it predated the safety fixes and had no in-app legal links). Everything on the code side for a replacement is done: build number is now **4**, the privacy manifest ships, and the listing text below is corrected. What is left is yours.
 
