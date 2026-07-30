@@ -1,80 +1,91 @@
-# Ad angle inventory
+# Ad angle inventory — hooks and scenes
 
-The tested positionings for the discovery campaign. Rules: every claim
-true, ads held to the paywall's honesty bar, no fake people, no urgency
-mechanics. English first (Stage 1 is broad English, US-led); winning
-angles get localized later. Creative assets referenced from
-docs/appstore/screenshots/clean/en/ and story-card exports.
+Rewritten 2026-07-30 after the owner's creative verdict on v1: statements
+don't sell, hooks do. Every angle now carries a HOOK (the feeling that
+stops the thumb), a SCENE (the image-generation prompt for the emotional
+layer), and SUPPORT (the primary text that explains). The deterministic
+factory composites brand type over the generated scene; product UI
+appears small or not at all.
 
-Format per angle: primary text · headline · creative.
+Rules unchanged: every claim true, ads held to the paywall's honesty bar,
+no fake people presented as real users, no urgency mechanics. English
+first; winners get localized.
 
-## 1. Privacy-absolute
-- "A bedtime story app that collects nothing. No account. No ads. No
-  analytics. The App Store privacy label is one line: Data Not Collected."
-- Headline: "Made on your phone. Kept on your phone."
-- Creative: night background + the literal one-line privacy label.
+Shared scene style suffix: "warm storybook illustration, cozy nighttime
+blues and deep violet with golden light, soft and calm, no text".
 
-## 2. Your child is the hero
-- "Tonight's story stars the person your child loves most: themselves.
-  Their name, their sidekick, their cozy blanket, woven into a brand-new
-  story every night."
-- Headline: "Tonight's story stars your child."
-- Creative: reader title page (01) with a child's-name title visible.
+## 1. Same-story fatigue
+- HOOK: "You've read that dinosaur book 400 times. Tonight: something new."
+- SCENE: a well-loved, visibly worn stack of the same children's books on
+  a nightstand, one lamp, night bedroom.
+- SUPPORT: "Fable writes a brand-new bedtime story every night, starring
+  your child. Made on your phone, by your phone."
 
-## 3. Calm by design
-- "No streaks. No badges. No notifications. No ads. A kids' app that wants
-  the screen to go dark."
-- Headline: "The app that ends with eyes closed."
-- Creative: reader end page (04): The End, moral, sweet dreams.
+## 2. In the story (personalization)
+- HOOK: "He asks for the same story every night. Tonight, he's IN it."
+- SCENE: a small child tucked in bed, wide-eyed and delighted, listening;
+  a parent silhouette reading from a softly glowing phone.
+- SUPPORT: "Their name. Their stuffed fox. Their cozy blanket. Woven into
+  tonight's story."
 
-## 4. A parent's own voice
-- "Fable can read tonight's story in YOUR voice. Recorded once on your
-  phone, never uploaded anywhere. For the nights you can't be there."
-- Headline: "Your voice, reading. Even from far away."
-- Creative: reader with the speaker control visible; caption on image.
+## 3. Asleep before the last page
+- HOOK: "She fell asleep before the last page. Again. (That's the point.)"
+- SCENE: a child fast asleep mid-story, book-light glow fading, a parent
+  tiptoeing out of frame.
+- SUPPORT: "Stories engineered to wind down. No cliffhangers, no
+  excitement spikes. Every ending lands in sleep."
 
-## 5. The bedtime struggle, solved gently
-- "The last fifteen minutes before sleep are the hardest of the day. Fable
-  turns them into the calmest: one fresh story, generous type, a slow
-  wind-down that always lands in sleep."
-- Headline: "Bedtime, finally calm."
-- Creative: story page (03) with the serif type large.
+## 4. The privacy flip
+- HOOK: "A bedtime app that knows your kid's name — and never tells anyone."
+- SCENE: a phone face-down on a nightstand next to a sleeping child, moon
+  through the window, everything at rest.
+- SUPPORT: "No account. No ads. No analytics. Privacy label: Data Not
+  Collected. Stories are written on the device and never leave it."
 
-## 6. Never the same story twice
-- "A new story every night: tonight a sea voyage, tomorrow a lantern path.
-  Same hero (yours), same ending (asleep)."
-- Headline: "A new story every single night."
-- Creative: Tonight screen (02) with the theme grid.
+## 5. The bedtime negotiation
+- HOOK: "The bedtime negotiation ends tonight. You come armed with a story
+  about THEM."
+- SCENE: a hallway at night, a small determined child in pajamas facing a
+  tired but smiling parent, warm light from the bedroom door.
+- SUPPORT: "One tap. A fresh story where your child is the hero. Suddenly
+  bed is where the good stuff happens."
 
-## 7. Works in airplane mode
-- "The stories are written ON the phone by on-device AI. No connection, no
-  cloud, no waiting. Works over the Atlantic at bedtime."
-- Headline: "On-device AI. Airplane mode approved."
-- Creative: technical-parent variant of the privacy visual.
+## 6. Your voice, far away
+- HOOK: "Away tonight? Your voice can still read the story."
+- SCENE: a child in bed listening to a glowing phone, and somewhere far, a
+  parent in a hotel room at night; two warm lights, one story.
+- SUPPORT: "Record your Personal Voice once, on your phone. Fable reads
+  tonight's story with it. Nothing is ever uploaded."
 
-## 8. Continue the adventure
-- "Last night's story doesn't have to end. Fable continues the adventure
-  night after night, and remembers what happened before."
-- Headline: "Every night, a new chapter."
-- Creative: Tonight screen with the series card visible.
+## 7. Airplane mode (the traveler)
+- HOOK: "Somewhere over the Atlantic, at bedtime, with no Wi-Fi: a brand-new
+  story."
+- SCENE: an airplane cabin at night, a parent and child sharing one glowing
+  phone under a blanket, stars out the window.
+- SUPPORT: "The stories are written ON the phone by on-device AI. No
+  connection needed, ever."
 
-## 9. Story cards (the share loop as an ad)
-- "Every story can be shared as one beautiful page: the whole tale, cover
-  to goodnight. Grandparents love them."
-- Headline: "Tonight's story, keepable."
-- Creative: an actual story card export on the night background.
+## 8. The chapter ritual
+- HOOK: "'What happens next?' Finally a bedtime question you'll love."
+- SCENE: a child leaning forward eagerly at a page turn, warm reading
+  light, the room already half-asleep around them.
+- SUPPORT: "Fable continues last night's adventure, night after night, and
+  remembers what happened before."
 
-## 10. Seven languages (Stage 2, localized targeting)
-- "Bedtime stories in your language. Hand-written in each one, never
-  machine-translated. English, norsk, Deutsch, español, français,
-  italiano, português."
-- Headline: localized per market.
-- Creative: localized Tonight screens from the clean sets.
+## Compositing spec
+- Scene: full-bleed, generated per angle via Route A (Nano Banana/Gemini,
+  tools/adfactory/scenegen-gemini.py, key in ~/Documents/Keys/gemini.txt —
+  owner provisions). Route B (on-device ImageCreator) was tried 2026-07-30
+  and is dead on this host: creationFailed from any CLI context, even for
+  people-free scenes; tools/adfactory/Sources/scenegen kept for Macs where
+  it works.
+- Scrim: violet-to-transparent gradient top and bottom for text legibility.
+- Type: hook headline top (rounded bold, one highlighted word), support
+  small above footer, "🌙 Fable Bedtime · On the App Store" lockup.
+- Product UI: none, or one small floating story-card/cover inset. The
+  scene sells the feeling; the store page sells the product.
 
-## Measurement
-- Stage 1 read: CTR/CPC per angle from Meta metrics (no attribution
-  needed). 48h to first signal, one week to a stable ranking.
-- Stage 2 read: winning angle per-country breakdowns + ASC storefront
-  lift + trial starts. Scaling gate: cost-per-trial × trial→paid vs ~$34
-  net yearly.
-- Kill-and-double weekly, in the metrics readout.
+## Measurement (unchanged)
+- Stage 1: CTR/CPC per angle, broad English US-led, no attribution needed.
+- Stage 2: winner per-country + ASC lift. Scaling gate: cost-per-trial ×
+  trial→paid vs ~$34 net yearly. Kill-and-double weekly.
