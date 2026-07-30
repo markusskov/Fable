@@ -36,7 +36,7 @@ blues and deep violet with golden light, soft and calm, no text".
   excitement spikes. Every ending lands in sleep."
 
 ## 4. The privacy flip
-- HOOK: "A bedtime app that knows your kid's name — and never tells anyone."
+- HOOK: "A bedtime app that knows your kid's name. And never tells anyone."
 - SCENE: a phone face-down on a nightstand next to a sleeping child, moon
   through the window, everything at rest.
 - SUPPORT: "No account. No ads. No analytics. Privacy label: Data Not
