@@ -16,3 +16,7 @@ xcuserdata/
 
 # macOS
 .DS_Store
+
+# Ad factory
+tools/adfactory/.build/
+out/

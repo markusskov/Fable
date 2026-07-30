@@ -162,7 +162,7 @@ Verdict after verification: overwhelmingly correct. Fix order follows the review
 - [ ] Apple featuring nomination (App Store Connect → Featuring): the pitch writes itself — on-device Foundation Models, one-line privacy label, Family Sharing, calm design. Submit with v1.1's multilingual release as the hook. **DRAFTED** 2026-07-28 → docs/launch/featuring-nomination.md; owner submits at v1.1.
 - [ ] Press kit page on the site (icon, screenshots, fact sheet, founder line) + pitch emails to Apple-ecosystem press (MacStories, 9to5Mac) and parenting-tech press. **DRAFTED** → docs/launch/press-kit.md (site page + assets list); owner sends at launch. Support templates and the either-verdict first-day checklist drafted alongside (support-responses.md, first-day-checklist.md).
 - [ ] Norway beachhead with v1.1: Norwegian store page goes live, owner's network + Norwegian parenting communities; shallow local charts make early visibility realistic.
-- [ ] Show HN + dev-story blog posts on the site ("an AI bedtime app with no server", "the safety gate") — the on-device architecture is genuinely interesting to that audience. Timed with v1.1. **DRAFTED** → docs/launch/blog-no-server.md, blog-safety-gate.md, show-hn.md; sessions turn the blog drafts into site/ pages at v1.1 prep.
+- [ ] ~~Show HN~~ **Product Hunt launch** (owner lacks an aged HN account; we do not manufacture one — if the posts reach HN organically via someone else, fine, but we do not game it) + dev-story blog posts on the site ("an AI bedtime app with no server", "the safety gate") — the on-device architecture is genuinely interesting to that audience. Timed with v1.1. **DRAFTED** → docs/launch/blog-no-server.md, blog-safety-gate.md, show-hn.md; sessions turn the blog drafts into site/ pages at v1.1 prep.
 - [x] In-app review prompt, calm edition — shipped ahead of approval (pure code, verdict-agnostic; started 2026-07-28 while build 5 sat in review). `ReviewPromptGate`, all rules pure and tested: only at the close of a RE-READ (story ≥24h old — tonight's telling never asks), library ≥5 stories, at most once per app version, 60 quiet days between asks (the quiet period outranks a version bump), and the system's own 3-per-year cap on top. The ask is recorded before the request so a silent system decline still spends the version's one ask. No strings, no UI of our own — `requestReview` at the close-storybook tap, so most closes stay perfectly quiet.
 - [x] Story cards (v1.2 growth bet) — shipped early 2026-07-28 (pure code, verdict-agnostic). The WHOLE story as one tall typeset image: cover (or emblem), title, dedication, every page in the reader serif, moral, «Told with Fable» footer — the only marketing Fable does inside a family's group chat. `StoryCardView` + `ImageRenderer` at 1080px wide, straight into the system share sheet; free for every tier (gating a growth loop defeats it); share icon in the reader toolbar (a parent control, not an end-page button a child falls asleep to). Render smoke-tested (export width, taller-never-clipped, cover + emblem variants); 2 new catalog keys ×7.
 - [ ] Apple Search Ads: only after 30+ days of trial/LTV data, brand + high-intent exact terms.
@@ -185,6 +185,23 @@ these outrank any growth idea on this list.
 - [ ] 30-day readout: first strategy review against real data — CJK gate
   (does any of ja/ko/zh justify a hand-written shelf?), storefront pricing
   anomalies, iPad share, trial→paid by market. Written up in docs/metrics/.
+- [ ] **Paid discovery (amended 2026-07-30 — the calendar gate deadlocked on
+  zero organic data; discovery spend IS how the data arrives).** Hard-capped
+  discovery budget (~$300–500 total, owner sets the card and cap): Stage 1
+  is an angle test on broad English, US-led — 5–10 honest static creatives
+  from our own assets (story cards, night screenshots, the one-line privacy
+  label; NO avatar UGC, no fake testimonials, ads held to the paywall's
+  honesty bar), read by CTR/CPC per angle from Meta's own metrics, which
+  need no attribution. Stage 2: winning angle only, per-country breakdowns
+  + ASC storefront lift decide where money converts (Norway becomes the
+  precision instrument and community beachhead here, not the opener).
+  SCALING gate is funnel math, not calendar: cost-per-trial × trial→paid
+  vs ~$34 net yearly, readable from day 7–10 of trials. Reads stay modest,
+  writes go through the Marketing API, and the attribution ADR
+  (AdAttributionKit postbacks) is considered only if scaling is earned.
+- [ ] Angle inventory: docs/launch/ad-angles.md — the tested positionings
+  with copy per angle and the creative each maps to. The prompt database of
+  our marketing agent.
 
 ## Milestone 8 — Compounding retention (months 2–4)
 
