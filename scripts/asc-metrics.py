@@ -63,22 +63,46 @@ def sales(day):
     body = call("GET", path, raw=True)
     text = gzip.decompress(body).decode("utf-8", errors="replace")
     rows = list(csv.DictReader(io.StringIO(text), delimiter="\t"))
-    ours = [r for r in rows if r.get("Apple Identifier") == APP_ID]
+    # Subscription rows carry the IAP's own Apple Identifier, not the
+    # app's (the launch-day monthly vanished from the first summary) —
+    # match the SKU family instead.
+    ours = [r for r in rows
+            if r.get("Apple Identifier") == APP_ID
+            or (r.get("SKU") or "").startswith("com.markusskov.fable")]
     by_country = {}
-    proceeds = 0.0
+    proceeds = {}
     for row in ours:
         units = int(row.get("Units", 0))
         country = row.get("Country Code", "?")
-        kind = row.get("Product Type Identifier", "")
-        # 1/1F/1T etc = app download; IA*/renewals = purchases
-        bucket = "downloads" if kind.startswith("1") else "purchases"
-        by_country.setdefault(country, {"downloads": 0, "purchases": 0})
+        kind = row.get("Product Type Identifier", "").strip()
+        device = row.get("Device", "").strip()
+        # App units: 1*=first download, 3*=redownload, 7*=update.
+        # IA*/renewal rows are the money. (Type 3 was mis-bucketed as a
+        # "purchase" on the first live pull and briefly minted a phantom
+        # US trial — 2026-07-31.)
+        if kind.startswith("1"):
+            bucket = "downloads"
+        elif kind.startswith("3"):
+            bucket = "redownloads"
+        elif kind.startswith("7"):
+            bucket = "updates"
+        else:
+            bucket = "purchases"
+        by_country.setdefault(country, {"downloads": 0, "redownloads": 0,
+                                        "updates": 0, "purchases": 0, "devices": set()})
         by_country[country][bucket] += units
-        proceeds += float(row.get("Developer Proceeds", 0) or 0) * units
+        by_country[country]["devices"].add(device)
+        currency = row.get("Currency of Proceeds", "?").strip() or "?"
+        proceeds[currency] = proceeds.get(currency, 0.0) + \
+            float(row.get("Developer Proceeds", 0) or 0) * units
     print(f"{day} — {len(ours)} sales rows")
     for country, counts in sorted(by_country.items()):
-        print(f"  {country}: {counts['downloads']} downloads, {counts['purchases']} purchases")
-    print(f"  proceeds: ~${proceeds:.2f} (mixed currencies, unconverted)")
+        devices = "/".join(sorted(d for d in counts["devices"] if d))
+        print(f"  {country}: {counts['downloads']} downloads, "
+              f"{counts['redownloads']} redownloads, "
+              f"{counts['purchases']} purchases ({devices})")
+    money = ", ".join(f"{amount:.2f} {cur}" for cur, amount in sorted(proceeds.items()) if amount)
+    print(f"  proceeds: {money or '0'}")
     if not ours:
         print("  (no rows for the app; a quiet day or the report is not ready yet)")
 
