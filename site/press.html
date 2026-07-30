@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fable Bedtime — Press Kit</title>
+  <meta name="description" content="Press kit for Fable Bedtime: fact sheet, story, and contact. A personalized bedtime story app with no server, built on on-device Apple Intelligence.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site">
+    <span class="moon" aria-hidden="true">🌙</span>
+    <h1>Fable Bedtime</h1>
+    <p class="tagline">Tonight's story stars your child.</p>
+    <nav class="site">
+      <a href="./">Support</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="press.html">Press</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Press kit</h2>
+
+    <h3>Fact sheet</h3>
+    <div class="card">
+      <p><strong>App:</strong> Fable Bedtime, on the App Store for iPhone and iPad (iOS 26+)</p>
+      <p><strong>What it does:</strong> writes your child a brand-new bedtime story every night: their name, their little companion, their favorite comfort object, woven into a calm tale that always lands softly in sleep. Painted covers, read-aloud narration, and the option to hear stories in a parent's own voice.</p>
+      <p><strong>Privacy:</strong> no account, no server, no analytics. App Store privacy label: Data Not Collected. Story generation runs on the device with Apple Intelligence; when it is unavailable, a hand-written story library steps in.</p>
+      <p><strong>Languages:</strong> English, Norwegian, German, Spanish, French, Italian, Brazilian Portuguese. Stories, not just menus: every language's story shelf is written by hand in that language.</p>
+      <p><strong>Price:</strong> free forever (3 starter stories, then one new story a week). Fable+ for unlimited stories, story series, and a profile for every child. Family Sharing included; 7 day free trial on the yearly plan.</p>
+      <p><strong>Founder:</strong> Markus Skov (Norway). Fable is built by a team of AI engineering agents under the founder's direction, and we are happy to talk about that too.</p>
+      <p><strong>Contact:</strong> <a href="mailto:markusskov@gmail.com?subject=Fable%20Bedtime%20press">markusskov@gmail.com</a></p>
+    </div>
+
+    <h3>The story for technology press</h3>
+    <p>
+      The interesting part is architectural: Fable is a generative AI consumer
+      app with literally no backend. Foundation Models write the prose, Image
+      Playground paints the covers, Personal Voice reads the story in a
+      parent's own voice, and a deterministic, hand-written story engine sits
+      underneath as the always-works floor. The safety design assumes the
+      model is untrusted: every output crosses a language-aware content gate
+      before a child sees it, and every failure falls silently to a calmer
+      layer. There are no error states at bedtime, by design.
+    </p>
+    <p>
+      Two engineering deep-dives:
+      <a href="blog-no-server.html">An AI bedtime app with no server</a> and
+      <a href="blog-safety-gate.html">The safety gate: shipping model output
+      to a three-year-old</a>.
+    </p>
+
+    <h3>One paragraph, quotable</h3>
+    <p class="card">
+      Fable writes your child a brand-new bedtime story every night. Their
+      name, their stuffed fox, their cozy blanket, woven into a calm tale
+      that always ends in sleep. Everything happens on the phone itself:
+      there is no account to create, no server to trust, and nothing to
+      collect. When the on-device model cannot write, a shelf of hand-written
+      stories steps in, so bedtime never waits and never breaks.
+    </p>
+  </main>
+
+  <footer class="site">
+    <p>Fable Bedtime · <a href="./">Support</a> · <a href="privacy.html">Privacy Policy</a></p>
+  </footer>
+</body>
+</html>

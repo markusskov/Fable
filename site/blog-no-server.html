@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>An AI bedtime app with no server — Fable Bedtime</title>
+  <meta name="description" content="How Fable Bedtime generates personalized bedtime stories with zero backend: on-device Apple Intelligence, a hand-written story floor, and a privacy label that reads Data Not Collected.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site">
+    <span class="moon" aria-hidden="true">🌙</span>
+    <h1>Fable Bedtime</h1>
+    <p class="tagline">Notes from building a calm app</p>
+    <nav class="site">
+      <a href="./">Support</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="press.html">Press</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>An AI bedtime app with no server</h2>
+    <p class="muted">July 2026 · Markus Skov</p>
+
+    <p>
+      Fable writes my daughter a new bedtime story every night. Her name is
+      in it, her stuffed fox is in it, and it always ends with her falling
+      asleep. The part that surprises people is not the AI. It is that the
+      app has no server.
+    </p>
+    <p>
+      Not "we minimize data collection". No server. There is no account
+      system, no API endpoint, no analytics SDK, no crash reporter phoning
+      home. The App Store privacy label is one line: Data Not Collected. If
+      you reinstall the app, your library is gone, because we could not read
+      it if we wanted to. That is a real trade-off, and we tell families
+      about it in the app instead of hiding it.
+    </p>
+    <p>
+      How does a generative AI app work with no backend? Apple Intelligence
+      ships a language model inside the operating system. Fable hands it a
+      carefully fenced prompt (the child's name and the parent's words are
+      data, never instructions), receives a structured story back, and then
+      treats that story as untrusted input: every page passes a
+      language-aware content gate before a child ever sees it. Scary words,
+      wrong-language endings, missing wind-downs, stories that do not land
+      in sleep: all rejected.
+    </p>
+    <p>
+      Rejected into what? That is the second architectural decision.
+      Underneath the model sits a shelf of hand-written, parameterized
+      stories in seven languages, deterministic under a seeded generator,
+      edited to publishable quality. If the model is unavailable, slow, or
+      writes something the gate refuses, the shelf answers instead,
+      silently. Beneath the shelf sits an emergency story built only from
+      neutralized values, and beneath that a single constant story that
+      cannot fail. Four floors, and a child only ever sees the top one that
+      worked. There are no error states at bedtime, because at 8pm with a
+      tired three-year-old, an error dialog is a product bug no matter how
+      pretty it is.
+    </p>
+    <p>
+      Covers work the same way: Image Playground paints them on the device
+      from prompts the app fully controls, and if it cannot, the story keeps
+      its quiet emoji emblem. Narration is on-device speech synthesis, and
+      with Personal Voice a parent can lend the app their own voice, which
+      also never leaves the phone.
+    </p>
+    <p>
+      The result is an AI product whose entire threat model fits in a
+      sentence: nothing goes in but the OS, and nothing comes out at all.
+    </p>
+    <p>
+      If you want the safety half of this story, it has its own post:
+      <a href="blog-safety-gate.html">The safety gate: shipping model output
+      to a three-year-old</a>.
+    </p>
+  </main>
+
+  <footer class="site">
+    <p>Fable Bedtime · <a href="./">Support</a> · <a href="privacy.html">Privacy Policy</a></p>
+  </footer>
+</body>
+</html>

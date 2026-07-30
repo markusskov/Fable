@@ -74,6 +74,14 @@ Three workstreams per language, in honesty-order (never ship a language whose st
 
 ## Submission log
 
+- **2026-07-30: v1.1 APPROVED and LIVE.** The seven-language release shipped
+  one day after submission, zero rejections. Launch chain unlocked: press
+  page and both engineering blog posts published to the site (repo side);
+  owner sends remain Show HN, featuring nomination, press emails, Norway
+  push (docs/launch/). Owner completed localized screenshot sets in all
+  seven languages for the next version. Milestone 7 (metrics loop) is now
+  the top open work.
+
 - **2026-07-29: v1.1 (build 6) SUBMITTED for review** — the seven-language
   release, one day after 1.0 went live. Store side built almost entirely via
   the ASC API (scripts/asc-sync-listings.py): four new listing localizations,
