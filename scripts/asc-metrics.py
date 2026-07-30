@@ -38,7 +38,8 @@ def call(method, path, payload=None, raw=False):
     req = urllib.request.Request(
         BASE + path, method=method,
         headers={"Authorization": f"Bearer {token()}",
-                 "Content-Type": "application/json"},
+                 "Content-Type": "application/json",
+                 "Accept": "application/a-gzip" if raw else "application/json"},
         data=json.dumps(payload).encode() if payload else None)
     try:
         with urllib.request.urlopen(req) as response:
@@ -54,7 +55,7 @@ def sales(day):
         raise SystemExit(f"no vendor number at {VENDOR_FILE} — ASC → Payments "
                          "and Financial Reports shows it (8-digit number); "
                          "one line in that file")
-    vendor = VENDOR_FILE.read_text().strip()
+    vendor = "".join(ch for ch in VENDOR_FILE.read_text() if ch.isdigit())
     path = ("/v1/salesReports?filter[frequency]=DAILY"
             f"&filter[reportDate]={day}"
             "&filter[reportSubType]=SUMMARY&filter[reportType]=SALES"
