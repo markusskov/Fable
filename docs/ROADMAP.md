@@ -202,6 +202,17 @@ these outrank any growth idea on this list.
 - [ ] Angle inventory: docs/launch/ad-angles.md — the tested positionings
   with copy per angle and the creative each maps to. The prompt database of
   our marketing agent.
+- [ ] **ASO v1.2 metadata package** (competitive research done 2026-08-01 →
+  docs/appstore/aso-competitive-review-2026-08.md; owner decides the title
+  question in OWNER-ASKS #4). Verdict: conversion assets at niche standard
+  or above, discoverability below it — we use 13/30 title chars in a niche
+  where every competitor maxes out ~30; primary category Lifestyle where no
+  competitor lives (they live in Books/Education); keyword field spends ~a
+  third of its budget on title/subtitle duplicates. Package: title/subtitle/
+  keywords rework, Books primary category, en-GB + es-MX cross-locale
+  metadata for extra US/UK index, seasonal promo-text rotation (no release
+  needed), localized-pack de-dup pass. Measure the change via asc-metrics.py
+  four weeks after v1.2.
 
 ## Milestone 8 — Compounding retention (months 2–4)
 
