@@ -212,7 +212,9 @@ these outrank any growth idea on this list.
   keywords rework, Books primary category, en-GB + es-MX cross-locale
   metadata for extra US/UK index, seasonal promo-text rotation (no release
   needed), localized-pack de-dup pass. Measure the change via asc-metrics.py
-  four weeks after v1.2.
+  four weeks after v1.2. **en-US pack drafted and char-verified →
+  docs/appstore/metadata-v1.2-en-US.md**; remaining: owner yes/no, six
+  localized packs' de-dup pass, en-GB + es-MX packs.
 
 ## Milestone 8 — Compounding retention (months 2–4)
 

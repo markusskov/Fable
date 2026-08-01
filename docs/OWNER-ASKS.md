@@ -59,9 +59,11 @@ Things only the repository owner can provide. Items move to *Done* when confirme
    prefix), subtitle **"Your child is the hero"**, keywords de-duplicated,
    primary category **Books** (from Lifestyle). All version-gated → ships
    with v1.2. Also yours anytime, no release needed: swap the promotional
-   text to feature Summer Nights (draft in the review doc). Say yes/no/edits
-   and a session prepares the exact ASC paste + updates all seven metadata
-   packs.
+   text to feature Summer Nights. **The full en-US pack is ready to paste:
+   docs/appstore/metadata-v1.2-en-US.md** (name/subtitle/keywords/description
+   char-verified, ASC checklist included; its promotional text is paste-able
+   today, no release needed). Say yes/no/edits; on yes a session runs the
+   same de-dup pass over the six localized packs before v1.2.
 3. ~~Branch protection on `main`~~ **DONE 2026-07-28 by a session** (owner had standing-authorized "say the word"; the word arrived as a full-autonomy mandate, and a same-day merge-with-red-CI slip proved the need). Required status checks "Build & test (iOS Simulator)" + "Release script (dry run)", enforced for admins, no force pushes. "Merged after CI is green" is now physics, not discipline. ORIGINAL ASK: `main` has no protection rules, so `gh pr merge --auto` merges the moment a PR is mergeable instead of waiting for CI (observed on PR #38, 2026-07-24; the change was fully tested locally, and post-merge CI passed, so nothing shipped broken). To make "merged after CI is green" enforced rather than discipline: GitHub → Settings → Branches → Add branch ruleset for `main`, require status checks "Build & test (iOS Simulator)" and "Release script (dry run)". Or say the word and a session runs the equivalent `gh api` call. Until then, sessions merge only after watching CI finish.
 
 ## Done
